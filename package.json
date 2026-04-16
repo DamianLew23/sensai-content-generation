@@ -1,0 +1,19 @@
+{
+  "name": "sensai-content-generation",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:infra": "docker compose -f docker-compose.dev.yml up -d",
+    "dev:infra:down": "docker compose -f docker-compose.dev.yml down",
+    "dev:api": "pnpm --filter @sensai/api start:dev",
+    "dev:web": "pnpm --filter @sensai/web dev",
+    "db:generate": "pnpm --filter @sensai/api db:generate",
+    "db:migrate": "pnpm --filter @sensai/api db:migrate",
+    "db:seed": "pnpm --filter @sensai/api db:seed"
+  },
+  "engines": {
+    "node": ">=20.11",
+    "pnpm": ">=9.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

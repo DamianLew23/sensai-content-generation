@@ -1,0 +1,14 @@
+node_modules/
+.pnpm-store/
+dist/
+.next/
+.turbo/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/
+.vercel/
+# Drizzle generated
+apps/api/drizzle/
+!apps/api/drizzle/meta/.gitkeep
