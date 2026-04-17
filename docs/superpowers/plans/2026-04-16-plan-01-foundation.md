@@ -433,7 +433,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 - Create: `apps/api/src/app.module.ts`
 - Create: `apps/api/src/config/env.ts`
 
-- [ ] **Step 1: Create apps/api/package.json**
+- [x] **Step 1: Create apps/api/package.json**
 
 ```json
 {
@@ -483,7 +483,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 2: Create apps/api/tsconfig.json**
+- [x] **Step 2: Create apps/api/tsconfig.json**
 
 ```json
 {
@@ -513,7 +513,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 3: Create apps/api/tsconfig.build.json**
+- [x] **Step 3: Create apps/api/tsconfig.build.json**
 
 ```json
 {
@@ -522,7 +522,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 4: Create apps/api/nest-cli.json**
+- [x] **Step 4: Create apps/api/nest-cli.json**
 
 ```json
 {
@@ -535,7 +535,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 5: Create apps/api/.env.example**
+- [x] **Step 5: Create apps/api/.env.example**
 
 ```
 NODE_ENV=development
@@ -559,7 +559,7 @@ DEFAULT_MODEL=openai/gpt-5-mini
 API_BEARER_TOKEN=dev-token-change-me
 ```
 
-- [ ] **Step 6: Create apps/api/src/config/env.ts**
+- [x] **Step 6: Create apps/api/src/config/env.ts**
 
 ```ts
 import { z } from "zod";
@@ -592,7 +592,7 @@ export function loadEnv(): Env {
 }
 ```
 
-- [ ] **Step 7: Create apps/api/src/app.module.ts**
+- [x] **Step 7: Create apps/api/src/app.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -616,7 +616,7 @@ import { LoggerModule } from "nestjs-pino";
 export class AppModule {}
 ```
 
-- [ ] **Step 8: Create apps/api/src/main.ts**
+- [x] **Step 8: Create apps/api/src/main.ts**
 
 ```ts
 import { NestFactory } from "@nestjs/core";
@@ -639,7 +639,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- [ ] **Step 9: Install + verify build**
+- [x] **Step 9: Install + verify build**
 
 ```bash
 cd apps/api && pnpm install
@@ -649,7 +649,7 @@ pnpm build
 
 Expected: clean typecheck and build.
 
-- [ ] **Step 10: Smoke-run the API**
+- [x] **Step 10: Smoke-run the API**
 
 Prepare env:
 ```bash
@@ -664,7 +664,7 @@ pnpm --filter @sensai/api start:dev
 
 Expected: log `API listening on http://localhost:4000`, process stays alive. Kill with Ctrl+C.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add apps/api packages/shared
