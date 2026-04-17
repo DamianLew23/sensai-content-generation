@@ -1457,7 +1457,7 @@ git commit -m "feat(api): define StepHandler contract and registry"
 - Create: `apps/api/src/handlers/brief.handler.ts`
 - Create: `apps/api/src/handlers/handlers.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/prompts/brief.prompt.ts**
+- [x] **Step 1: Create apps/api/src/prompts/brief.prompt.ts**
 
 ```ts
 import { z } from "zod";
@@ -1506,7 +1506,7 @@ export const briefPrompt = {
 };
 ```
 
-- [ ] **Step 2: Create apps/api/src/handlers/brief.handler.ts**
+- [x] **Step 2: Create apps/api/src/handlers/brief.handler.ts**
 
 ```ts
 import { Injectable } from "@nestjs/common";
@@ -1541,7 +1541,7 @@ export class BriefHandler implements StepHandler {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/handlers/handlers.module.ts**
+- [x] **Step 3: Create apps/api/src/handlers/handlers.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1562,13 +1562,13 @@ import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 export class HandlersModule {}
 ```
 
-- [ ] **Step 4: Typecheck**
+- [x] **Step 4: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/api/src/prompts apps/api/src/handlers
