@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { LoggerModule } from "nestjs-pino";
 import { DbModule } from "./db/db.module";
+import { ProjectsModule } from "./projects/projects.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DbModule } from "./db/db.module";
       },
     }),
     DbModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {}

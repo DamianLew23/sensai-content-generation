@@ -981,7 +981,7 @@ git commit -m "feat(api): add drizzle schema for all tables + migration runner"
 - Create: `apps/api/src/projects/projects.service.ts`
 - Create: `apps/api/src/projects/projects.controller.ts`
 
-- [ ] **Step 1: Create apps/api/src/projects/projects.service.ts**
+- [x] **Step 1: Create apps/api/src/projects/projects.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1006,7 +1006,7 @@ export class ProjectsService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/projects/projects.controller.ts**
+- [x] **Step 2: Create apps/api/src/projects/projects.controller.ts**
 
 ```ts
 import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
@@ -1028,7 +1028,7 @@ export class ProjectsController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/projects/projects.module.ts**
+- [x] **Step 3: Create apps/api/src/projects/projects.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1043,15 +1043,15 @@ import { ProjectsService } from "./projects.service";
 export class ProjectsModule {}
 ```
 
-- [ ] **Step 4: Wire into AppModule** (add `ProjectsModule` to `imports` array)
+- [x] **Step 4: Wire into AppModule** (add `ProjectsModule` to `imports` array)
 
-- [ ] **Step 5: Verify typecheck**
+- [x] **Step 5: Verify typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/src/projects apps/api/src/app.module.ts
