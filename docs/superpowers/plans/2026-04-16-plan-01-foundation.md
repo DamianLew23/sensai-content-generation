@@ -218,7 +218,7 @@ git commit -m "chore: init monorepo scaffolding"
 **Files:**
 - Create: `docker-compose.dev.yml`
 
-- [ ] **Step 1: Write docker-compose.dev.yml**
+- [x] **Step 1: Write docker-compose.dev.yml**
 
 ```yaml
 services:
@@ -259,7 +259,7 @@ volumes:
   sensai_redis_data:
 ```
 
-- [ ] **Step 2: Verify services start**
+- [x] **Step 2: Verify services start**
 
 ```bash
 pnpm dev:infra
@@ -268,7 +268,7 @@ docker ps | grep sensai
 
 Expected: two healthy containers running `sensai-postgres-dev` and `sensai-redis-dev`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add docker-compose.dev.yml
