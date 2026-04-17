@@ -285,7 +285,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 - Create: `packages/shared/src/index.ts`
 - Create: `packages/shared/src/schemas.ts`
 
-- [ ] **Step 1: Create packages/shared/package.json**
+- [x] **Step 1: Create packages/shared/package.json**
 
 ```json
 {
@@ -309,7 +309,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 }
 ```
 
-- [ ] **Step 2: Create packages/shared/tsconfig.json**
+- [x] **Step 2: Create packages/shared/tsconfig.json**
 
 ```json
 {
@@ -328,7 +328,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 }
 ```
 
-- [ ] **Step 3: Create packages/shared/src/schemas.ts**
+- [x] **Step 3: Create packages/shared/src/schemas.ts**
 
 ```ts
 import { z } from "zod";
@@ -398,13 +398,13 @@ export const StartRunDto = z.object({
 export type StartRunDto = z.infer<typeof StartRunDto>;
 ```
 
-- [ ] **Step 4: Create packages/shared/src/index.ts**
+- [x] **Step 4: Create packages/shared/src/index.ts**
 
 ```ts
 export * from "./schemas";
 ```
 
-- [ ] **Step 5: Install + typecheck**
+- [x] **Step 5: Install + typecheck**
 
 ```bash
 cd packages/shared && pnpm install && pnpm typecheck
@@ -412,7 +412,7 @@ cd packages/shared && pnpm install && pnpm typecheck
 
 Expected: no errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/shared
