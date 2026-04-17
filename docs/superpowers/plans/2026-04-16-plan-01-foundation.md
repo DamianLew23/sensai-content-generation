@@ -1381,7 +1381,7 @@ git commit -m "feat(api): add llm module with openrouter client and cost trackin
 - Create: `apps/api/src/orchestrator/step-handler.ts`
 - Create: `apps/api/src/orchestrator/step-registry.ts`
 
-- [ ] **Step 1: Create apps/api/src/orchestrator/step-handler.ts**
+- [x] **Step 1: Create apps/api/src/orchestrator/step-handler.ts**
 
 ```ts
 import type { pipelineRuns, pipelineSteps, projects } from "../db/schema";
@@ -1411,7 +1411,7 @@ export interface StepHandler {
 export const STEP_HANDLERS = Symbol("STEP_HANDLERS");
 ```
 
-- [ ] **Step 2: Create apps/api/src/orchestrator/step-registry.ts**
+- [x] **Step 2: Create apps/api/src/orchestrator/step-registry.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1433,7 +1433,7 @@ export class StepRegistry {
 }
 ```
 
-- [ ] **Step 3: Typecheck**
+- [x] **Step 3: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
@@ -1441,7 +1441,7 @@ pnpm --filter @sensai/api typecheck
 
 Expected: clean (files are referenced later).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/api/src/orchestrator/step-handler.ts apps/api/src/orchestrator/step-registry.ts
