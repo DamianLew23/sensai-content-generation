@@ -4,6 +4,7 @@ import { LoggerModule } from "nestjs-pino";
 import { DbModule } from "./db/db.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { TemplatesModule } from "./templates/templates.module";
+import { LlmModule } from "./llm/llm.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TemplatesModule } from "./templates/templates.module";
     DbModule,
     ProjectsModule,
     TemplatesModule,
+    LlmModule,
   ],
 })
 export class AppModule {}

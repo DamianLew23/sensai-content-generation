@@ -1160,7 +1160,7 @@ git commit -m "feat(api): add templates module (list + get)"
 - Create: `apps/api/src/llm/llm.client.ts`
 - Create: `apps/api/src/llm/llm.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/llm/pricing.ts**
+- [x] **Step 1: Create apps/api/src/llm/pricing.ts**
 
 ```ts
 // Simple static pricing table — per 1M tokens (USD). Update manually.
@@ -1192,7 +1192,7 @@ export function calculateCostUsd(
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/llm/cost-tracker.service.ts**
+- [x] **Step 2: Create apps/api/src/llm/cost-tracker.service.ts**
 
 ```ts
 import { Inject, Injectable } from "@nestjs/common";
@@ -1222,7 +1222,7 @@ export class CostTrackerService {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/llm/llm.client.ts**
+- [x] **Step 3: Create apps/api/src/llm/llm.client.ts**
 
 ```ts
 import { Injectable, Logger } from "@nestjs/common";
@@ -1343,7 +1343,7 @@ export class LlmClient {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/llm/llm.module.ts**
+- [x] **Step 4: Create apps/api/src/llm/llm.module.ts**
 
 ```ts
 import { Global, Module } from "@nestjs/common";
@@ -1358,15 +1358,15 @@ import { CostTrackerService } from "./cost-tracker.service";
 export class LlmModule {}
 ```
 
-- [ ] **Step 5: Wire LlmModule into AppModule**
+- [x] **Step 5: Wire LlmModule into AppModule**
 
-- [ ] **Step 6: Typecheck**
+- [x] **Step 6: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/api/src/llm apps/api/src/app.module.ts
