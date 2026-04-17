@@ -5,6 +5,7 @@ import { DbModule } from "./db/db.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { LlmModule } from "./llm/llm.module";
+import { OrchestratorModule } from "./orchestrator/orchestrator.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LlmModule } from "./llm/llm.module";
     ProjectsModule,
     TemplatesModule,
     LlmModule,
+    OrchestratorModule,
   ],
 })
 export class AppModule {}

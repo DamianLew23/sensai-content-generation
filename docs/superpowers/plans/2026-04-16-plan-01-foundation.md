@@ -1585,7 +1585,7 @@ git commit -m "feat(api): add brief step handler (llm.brief) + prompt"
 - Create: `apps/api/src/orchestrator/reconcile.service.ts`
 - Create: `apps/api/src/orchestrator/orchestrator.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/orchestrator/orchestrator.service.ts**
+- [x] **Step 1: Create apps/api/src/orchestrator/orchestrator.service.ts**
 
 ```ts
 import { Inject, Injectable, Logger } from "@nestjs/common";
@@ -1662,7 +1662,7 @@ export class OrchestratorService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/orchestrator/queue.constants.ts**
+- [x] **Step 2: Create apps/api/src/orchestrator/queue.constants.ts**
 
 ```ts
 export const QUEUE_NAME = "pipeline-steps";
@@ -1673,7 +1673,7 @@ export interface StepJobData {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/orchestrator/pipeline.worker.ts**
+- [x] **Step 3: Create apps/api/src/orchestrator/pipeline.worker.ts**
 
 ```ts
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
@@ -1808,7 +1808,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/orchestrator/reconcile.service.ts**
+- [x] **Step 4: Create apps/api/src/orchestrator/reconcile.service.ts**
 
 ```ts
 import { Inject, Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
@@ -1867,7 +1867,7 @@ export class ReconcileService implements OnApplicationBootstrap {
 }
 ```
 
-- [ ] **Step 5: Create apps/api/src/orchestrator/orchestrator.module.ts**
+- [x] **Step 5: Create apps/api/src/orchestrator/orchestrator.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1906,16 +1906,16 @@ import { QUEUE_NAME } from "./queue.constants";
 export class OrchestratorModule {}
 ```
 
-- [ ] **Step 6: Wire OrchestratorModule into AppModule**
+- [x] **Step 6: Wire OrchestratorModule into AppModule**
 
-- [ ] **Step 7: Typecheck + build**
+- [x] **Step 7: Typecheck + build**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 pnpm --filter @sensai/api build
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/api/src/orchestrator apps/api/src/app.module.ts
