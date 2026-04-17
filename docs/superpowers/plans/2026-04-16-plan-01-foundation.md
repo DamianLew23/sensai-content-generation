@@ -1067,7 +1067,7 @@ git commit -m "feat(api): add projects module (list + get)"
 - Create: `apps/api/src/templates/templates.service.ts`
 - Create: `apps/api/src/templates/templates.controller.ts`
 
-- [ ] **Step 1: Create apps/api/src/templates/templates.service.ts**
+- [x] **Step 1: Create apps/api/src/templates/templates.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1103,7 +1103,7 @@ export class TemplatesService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/templates/templates.controller.ts**
+- [x] **Step 2: Create apps/api/src/templates/templates.controller.ts**
 
 ```ts
 import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
@@ -1125,7 +1125,7 @@ export class TemplatesController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/templates/templates.module.ts**
+- [x] **Step 3: Create apps/api/src/templates/templates.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1140,9 +1140,9 @@ import { TemplatesService } from "./templates.service";
 export class TemplatesModule {}
 ```
 
-- [ ] **Step 4: Wire TemplatesModule into AppModule**
+- [x] **Step 4: Wire TemplatesModule into AppModule**
 
-- [ ] **Step 5: Typecheck + commit**
+- [x] **Step 5: Typecheck + commit**
 
 ```bash
 pnpm --filter @sensai/api typecheck
