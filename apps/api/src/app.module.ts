@@ -6,6 +6,7 @@ import { ProjectsModule } from "./projects/projects.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { LlmModule } from "./llm/llm.module";
 import { OrchestratorModule } from "./orchestrator/orchestrator.module";
+import { RunsModule } from "./runs/runs.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { OrchestratorModule } from "./orchestrator/orchestrator.module";
     TemplatesModule,
     LlmModule,
     OrchestratorModule,
+    RunsModule,
   ],
 })
 export class AppModule {}

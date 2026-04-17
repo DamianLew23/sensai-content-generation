@@ -1931,7 +1931,7 @@ git commit -m "feat(api): add orchestrator with bullmq worker and reconcile"
 - Create: `apps/api/src/runs/runs.controller.ts`
 - Create: `apps/api/src/runs/runs.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/runs/runs.service.ts**
+- [x] **Step 1: Create apps/api/src/runs/runs.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -2005,7 +2005,7 @@ export class RunsService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/runs/runs.controller.ts**
+- [x] **Step 2: Create apps/api/src/runs/runs.controller.ts**
 
 ```ts
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
@@ -2034,7 +2034,7 @@ export class RunsController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/runs/runs.module.ts**
+- [x] **Step 3: Create apps/api/src/runs/runs.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -2052,7 +2052,7 @@ import { OrchestratorModule } from "../orchestrator/orchestrator.module";
 export class RunsModule {}
 ```
 
-- [ ] **Step 4: Wire RunsModule into AppModule**
+- [x] **Step 4: Wire RunsModule into AppModule**
 
 Final `AppModule` should import (in addition to ConfigModule, LoggerModule, DbModule, LlmModule):
 - `ProjectsModule`
@@ -2060,14 +2060,14 @@ Final `AppModule` should import (in addition to ConfigModule, LoggerModule, DbMo
 - `OrchestratorModule`
 - `RunsModule`
 
-- [ ] **Step 5: Typecheck + build**
+- [x] **Step 5: Typecheck + build**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 pnpm --filter @sensai/api build
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/src/runs apps/api/src/app.module.ts
