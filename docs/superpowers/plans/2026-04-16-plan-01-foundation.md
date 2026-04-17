@@ -682,7 +682,7 @@ git commit -m "feat(api): bootstrap nest app with env validation and pino logger
 - Create: `apps/api/src/db/db.module.ts`
 - Create: `apps/api/src/db/migrate.ts`
 
-- [ ] **Step 1: Create apps/api/drizzle.config.ts**
+- [x] **Step 1: Create apps/api/drizzle.config.ts**
 
 ```ts
 import { defineConfig } from "drizzle-kit";
@@ -707,7 +707,7 @@ Install dotenv as dev dep:
 pnpm --filter @sensai/api add -D dotenv
 ```
 
-- [ ] **Step 2: Create apps/api/src/db/schema.ts**
+- [x] **Step 2: Create apps/api/src/db/schema.ts**
 
 ```ts
 import {
@@ -862,7 +862,7 @@ export const toolCache = pgTable(
 
 *Note: `cost_usd` stored as `text` (rendered from string) to preserve decimal precision without importing a decimal lib. Convert to `numeric(18,8)` in Plan 4 if precise aggregation needed.*
 
-- [ ] **Step 3: Create apps/api/src/db/client.ts**
+- [x] **Step 3: Create apps/api/src/db/client.ts**
 
 ```ts
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
@@ -878,7 +878,7 @@ export function createDb(databaseUrl: string): { db: Db; pool: Pool } {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/db/db.module.ts**
+- [x] **Step 4: Create apps/api/src/db/db.module.ts**
 
 ```ts
 import { Global, Module } from "@nestjs/common";
@@ -904,7 +904,7 @@ export const DB_TOKEN = Symbol("DB");
 export class DbModule {}
 ```
 
-- [ ] **Step 5: Create apps/api/src/db/migrate.ts**
+- [x] **Step 5: Create apps/api/src/db/migrate.ts**
 
 ```ts
 import "dotenv/config";
@@ -924,7 +924,7 @@ main().catch((e) => {
 });
 ```
 
-- [ ] **Step 6: Wire DbModule into AppModule**
+- [x] **Step 6: Wire DbModule into AppModule**
 
 Modify `apps/api/src/app.module.ts` to import `DbModule`:
 
@@ -952,7 +952,7 @@ import { DbModule } from "./db/db.module";
 export class AppModule {}
 ```
 
-- [ ] **Step 7: Generate + apply migration**
+- [x] **Step 7: Generate + apply migration**
 
 ```bash
 pnpm --filter @sensai/api db:generate
@@ -965,7 +965,7 @@ docker exec -it sensai-postgres-dev psql -U sensai -d sensai -c "\dt"
 ```
 Expected: lists `projects`, `pipeline_templates`, `pipeline_runs`, `pipeline_steps`, `llm_calls`, `tool_calls`, `tool_cache`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/api/drizzle.config.ts apps/api/src/db apps/api/src/app.module.ts apps/api/drizzle

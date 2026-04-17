@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { LoggerModule } from "nestjs-pino";
+import { DbModule } from "./db/db.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { LoggerModule } from "nestjs-pino";
         level: process.env.LOG_LEVEL ?? "info",
       },
     }),
+    DbModule,
   ],
 })
 export class AppModule {}
