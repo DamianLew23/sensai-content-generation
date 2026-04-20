@@ -9,7 +9,8 @@
     "dev:web": "pnpm --filter @sensai/web dev",
     "db:generate": "pnpm --filter @sensai/api db:generate",
     "db:migrate": "pnpm --filter @sensai/api db:migrate",
-    "db:seed": "pnpm --filter @sensai/api db:seed"
+    "db:seed": "pnpm --filter @sensai/api db:seed",
+    "test": "pnpm -r --if-present test"
   },
   "engines": {
     "node": ">=20.11",

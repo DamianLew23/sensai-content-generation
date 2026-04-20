@@ -10,6 +10,9 @@ const EnvSchema = z.object({
   OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
   DEFAULT_MODEL: z.string().default("openai/gpt-5-mini"),
   API_BEARER_TOKEN: z.string().min(1),
+  DATAFORSEO_LOGIN: z.string().min(1),
+  DATAFORSEO_PASSWORD: z.string().min(1),
+  MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

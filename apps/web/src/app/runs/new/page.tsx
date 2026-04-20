@@ -22,7 +22,7 @@ export default function NewRunPage() {
       templateId,
       input: {
         topic,
-        mainKeyword: mainKeyword || undefined,
+        mainKeyword: mainKeyword.trim(),
       },
     });
     router.push(`/runs/${run.id}`);
@@ -83,17 +83,21 @@ export default function NewRunPage() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-medium">Główne słowo kluczowe (opcjonalnie)</label>
+          <label className="text-sm font-medium">Główne słowo kluczowe</label>
           <input
+            required
+            minLength={2}
             value={mainKeyword}
             onChange={(e) => setMainKeyword(e.target.value)}
+            placeholder="np. ai dla małych firm"
             className="w-full rounded border px-3 py-2"
           />
+          <p className="text-xs text-muted-foreground">Wymagane dla szablonów z research SERP.</p>
         </div>
 
         <button
           type="submit"
-          disabled={!projectId || !templateId || topic.length < 3 || start.isPending}
+          disabled={!projectId || !templateId || topic.length < 3 || mainKeyword.trim().length < 2 || start.isPending}
           className="rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
         >
           {start.isPending ? "Startuję…" : "Start"}

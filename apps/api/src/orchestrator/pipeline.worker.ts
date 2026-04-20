@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { Job, Worker } from "bullmq";
+import { Job, Worker, UnrecoverableError } from "bullmq";
 import { Redis } from "ioredis";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { pipelineRuns, pipelineSteps, projects } from "../db/schema";
@@ -9,6 +9,7 @@ import { loadEnv } from "../config/env";
 import { StepRegistry } from "./step-registry";
 import { OrchestratorService } from "./orchestrator.service";
 import { QUEUE_NAME, type StepJobData } from "./queue.constants";
+import { CostLimitExceededError } from "./cost-limit-exceeded.error";
 
 @Injectable()
 export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
@@ -81,6 +82,8 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
     const handler = this.registry.resolve(step.type);
 
     try {
+      await this.checkCostCap(runId);
+
       const result = await handler.execute({
         run,
         step,
@@ -100,15 +103,17 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 
       await this.orchestrator.advance(runId, step.stepOrder);
     } catch (err: any) {
+      const isCostCap = err instanceof CostLimitExceededError;
       const serialized = {
         message: err?.message ?? String(err),
         name: err?.name,
+        code: typeof err?.code === "string" ? err.code : undefined,
         stack: err?.stack,
         attempt,
         timestamp: new Date().toISOString(),
       };
       const maxAttempts = job.opts.attempts ?? 1;
-      const isFinal = attempt >= maxAttempts;
+      const isFinal = isCostCap || attempt >= maxAttempts;
       await this.db
         .update(pipelineSteps)
         .set({
@@ -124,7 +129,28 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
           .set({ status: "failed", finishedAt: new Date() })
           .where(eq(pipelineRuns.id, runId));
       }
+      if (isCostCap) {
+        throw new UnrecoverableError(err.message);
+      }
       throw err;
+    }
+  }
+
+  private async checkCostCap(runId: string): Promise<void> {
+    const env = loadEnv();
+    const cap = parseFloat(env.MAX_COST_PER_RUN_USD);
+    const result = await this.db.execute(sql`
+      SELECT COALESCE(SUM(cost_usd::numeric), 0)::float8 AS sum_cost
+      FROM (
+        SELECT cost_usd FROM llm_calls WHERE run_id = ${runId}::uuid
+        UNION ALL
+        SELECT cost_usd FROM tool_calls WHERE run_id = ${runId}::uuid
+      ) t
+    `);
+    const row = (result as unknown as { rows: { sum_cost: number }[] }).rows[0];
+    const sumCost = Number(row?.sum_cost ?? 0);
+    if (sumCost >= cap) {
+      throw new CostLimitExceededError(runId, cap, sumCost);
     }
   }
 }

@@ -5,6 +5,7 @@ import { DbModule } from "./db/db.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { LlmModule } from "./llm/llm.module";
+import { ToolsModule } from "./tools/tools.module";
 import { OrchestratorModule } from "./orchestrator/orchestrator.module";
 import { RunsModule } from "./runs/runs.module";
 
@@ -24,6 +25,7 @@ import { RunsModule } from "./runs/runs.module";
     ProjectsModule,
     TemplatesModule,
     LlmModule,
+    ToolsModule,
     OrchestratorModule,
     RunsModule,
   ],
