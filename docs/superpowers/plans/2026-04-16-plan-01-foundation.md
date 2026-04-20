@@ -218,7 +218,7 @@ git commit -m "chore: init monorepo scaffolding"
 **Files:**
 - Create: `docker-compose.dev.yml`
 
-- [ ] **Step 1: Write docker-compose.dev.yml**
+- [x] **Step 1: Write docker-compose.dev.yml**
 
 ```yaml
 services:
@@ -259,7 +259,7 @@ volumes:
   sensai_redis_data:
 ```
 
-- [ ] **Step 2: Verify services start**
+- [x] **Step 2: Verify services start**
 
 ```bash
 pnpm dev:infra
@@ -268,7 +268,7 @@ docker ps | grep sensai
 
 Expected: two healthy containers running `sensai-postgres-dev` and `sensai-redis-dev`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add docker-compose.dev.yml
@@ -285,7 +285,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 - Create: `packages/shared/src/index.ts`
 - Create: `packages/shared/src/schemas.ts`
 
-- [ ] **Step 1: Create packages/shared/package.json**
+- [x] **Step 1: Create packages/shared/package.json**
 
 ```json
 {
@@ -309,7 +309,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 }
 ```
 
-- [ ] **Step 2: Create packages/shared/tsconfig.json**
+- [x] **Step 2: Create packages/shared/tsconfig.json**
 
 ```json
 {
@@ -328,7 +328,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 }
 ```
 
-- [ ] **Step 3: Create packages/shared/src/schemas.ts**
+- [x] **Step 3: Create packages/shared/src/schemas.ts**
 
 ```ts
 import { z } from "zod";
@@ -398,13 +398,13 @@ export const StartRunDto = z.object({
 export type StartRunDto = z.infer<typeof StartRunDto>;
 ```
 
-- [ ] **Step 4: Create packages/shared/src/index.ts**
+- [x] **Step 4: Create packages/shared/src/index.ts**
 
 ```ts
 export * from "./schemas";
 ```
 
-- [ ] **Step 5: Install + typecheck**
+- [x] **Step 5: Install + typecheck**
 
 ```bash
 cd packages/shared && pnpm install && pnpm typecheck
@@ -412,7 +412,7 @@ cd packages/shared && pnpm install && pnpm typecheck
 
 Expected: no errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/shared
@@ -433,7 +433,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 - Create: `apps/api/src/app.module.ts`
 - Create: `apps/api/src/config/env.ts`
 
-- [ ] **Step 1: Create apps/api/package.json**
+- [x] **Step 1: Create apps/api/package.json**
 
 ```json
 {
@@ -483,7 +483,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 2: Create apps/api/tsconfig.json**
+- [x] **Step 2: Create apps/api/tsconfig.json**
 
 ```json
 {
@@ -513,7 +513,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 3: Create apps/api/tsconfig.build.json**
+- [x] **Step 3: Create apps/api/tsconfig.build.json**
 
 ```json
 {
@@ -522,7 +522,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 4: Create apps/api/nest-cli.json**
+- [x] **Step 4: Create apps/api/nest-cli.json**
 
 ```json
 {
@@ -535,7 +535,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 }
 ```
 
-- [ ] **Step 5: Create apps/api/.env.example**
+- [x] **Step 5: Create apps/api/.env.example**
 
 ```
 NODE_ENV=development
@@ -559,7 +559,7 @@ DEFAULT_MODEL=openai/gpt-5-mini
 API_BEARER_TOKEN=dev-token-change-me
 ```
 
-- [ ] **Step 6: Create apps/api/src/config/env.ts**
+- [x] **Step 6: Create apps/api/src/config/env.ts**
 
 ```ts
 import { z } from "zod";
@@ -592,7 +592,7 @@ export function loadEnv(): Env {
 }
 ```
 
-- [ ] **Step 7: Create apps/api/src/app.module.ts**
+- [x] **Step 7: Create apps/api/src/app.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -616,7 +616,7 @@ import { LoggerModule } from "nestjs-pino";
 export class AppModule {}
 ```
 
-- [ ] **Step 8: Create apps/api/src/main.ts**
+- [x] **Step 8: Create apps/api/src/main.ts**
 
 ```ts
 import { NestFactory } from "@nestjs/core";
@@ -639,7 +639,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- [ ] **Step 9: Install + verify build**
+- [x] **Step 9: Install + verify build**
 
 ```bash
 cd apps/api && pnpm install
@@ -649,7 +649,7 @@ pnpm build
 
 Expected: clean typecheck and build.
 
-- [ ] **Step 10: Smoke-run the API**
+- [x] **Step 10: Smoke-run the API**
 
 Prepare env:
 ```bash
@@ -664,7 +664,7 @@ pnpm --filter @sensai/api start:dev
 
 Expected: log `API listening on http://localhost:4000`, process stays alive. Kill with Ctrl+C.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add apps/api packages/shared
@@ -682,7 +682,7 @@ git commit -m "feat(api): bootstrap nest app with env validation and pino logger
 - Create: `apps/api/src/db/db.module.ts`
 - Create: `apps/api/src/db/migrate.ts`
 
-- [ ] **Step 1: Create apps/api/drizzle.config.ts**
+- [x] **Step 1: Create apps/api/drizzle.config.ts**
 
 ```ts
 import { defineConfig } from "drizzle-kit";
@@ -707,7 +707,7 @@ Install dotenv as dev dep:
 pnpm --filter @sensai/api add -D dotenv
 ```
 
-- [ ] **Step 2: Create apps/api/src/db/schema.ts**
+- [x] **Step 2: Create apps/api/src/db/schema.ts**
 
 ```ts
 import {
@@ -862,7 +862,7 @@ export const toolCache = pgTable(
 
 *Note: `cost_usd` stored as `text` (rendered from string) to preserve decimal precision without importing a decimal lib. Convert to `numeric(18,8)` in Plan 4 if precise aggregation needed.*
 
-- [ ] **Step 3: Create apps/api/src/db/client.ts**
+- [x] **Step 3: Create apps/api/src/db/client.ts**
 
 ```ts
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
@@ -878,7 +878,7 @@ export function createDb(databaseUrl: string): { db: Db; pool: Pool } {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/db/db.module.ts**
+- [x] **Step 4: Create apps/api/src/db/db.module.ts**
 
 ```ts
 import { Global, Module } from "@nestjs/common";
@@ -904,7 +904,7 @@ export const DB_TOKEN = Symbol("DB");
 export class DbModule {}
 ```
 
-- [ ] **Step 5: Create apps/api/src/db/migrate.ts**
+- [x] **Step 5: Create apps/api/src/db/migrate.ts**
 
 ```ts
 import "dotenv/config";
@@ -924,7 +924,7 @@ main().catch((e) => {
 });
 ```
 
-- [ ] **Step 6: Wire DbModule into AppModule**
+- [x] **Step 6: Wire DbModule into AppModule**
 
 Modify `apps/api/src/app.module.ts` to import `DbModule`:
 
@@ -952,7 +952,7 @@ import { DbModule } from "./db/db.module";
 export class AppModule {}
 ```
 
-- [ ] **Step 7: Generate + apply migration**
+- [x] **Step 7: Generate + apply migration**
 
 ```bash
 pnpm --filter @sensai/api db:generate
@@ -965,7 +965,7 @@ docker exec -it sensai-postgres-dev psql -U sensai -d sensai -c "\dt"
 ```
 Expected: lists `projects`, `pipeline_templates`, `pipeline_runs`, `pipeline_steps`, `llm_calls`, `tool_calls`, `tool_cache`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/api/drizzle.config.ts apps/api/src/db apps/api/src/app.module.ts apps/api/drizzle
@@ -981,7 +981,7 @@ git commit -m "feat(api): add drizzle schema for all tables + migration runner"
 - Create: `apps/api/src/projects/projects.service.ts`
 - Create: `apps/api/src/projects/projects.controller.ts`
 
-- [ ] **Step 1: Create apps/api/src/projects/projects.service.ts**
+- [x] **Step 1: Create apps/api/src/projects/projects.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1006,7 +1006,7 @@ export class ProjectsService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/projects/projects.controller.ts**
+- [x] **Step 2: Create apps/api/src/projects/projects.controller.ts**
 
 ```ts
 import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
@@ -1028,7 +1028,7 @@ export class ProjectsController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/projects/projects.module.ts**
+- [x] **Step 3: Create apps/api/src/projects/projects.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1043,15 +1043,15 @@ import { ProjectsService } from "./projects.service";
 export class ProjectsModule {}
 ```
 
-- [ ] **Step 4: Wire into AppModule** (add `ProjectsModule` to `imports` array)
+- [x] **Step 4: Wire into AppModule** (add `ProjectsModule` to `imports` array)
 
-- [ ] **Step 5: Verify typecheck**
+- [x] **Step 5: Verify typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/src/projects apps/api/src/app.module.ts
@@ -1067,7 +1067,7 @@ git commit -m "feat(api): add projects module (list + get)"
 - Create: `apps/api/src/templates/templates.service.ts`
 - Create: `apps/api/src/templates/templates.controller.ts`
 
-- [ ] **Step 1: Create apps/api/src/templates/templates.service.ts**
+- [x] **Step 1: Create apps/api/src/templates/templates.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1103,7 +1103,7 @@ export class TemplatesService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/templates/templates.controller.ts**
+- [x] **Step 2: Create apps/api/src/templates/templates.controller.ts**
 
 ```ts
 import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
@@ -1125,7 +1125,7 @@ export class TemplatesController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/templates/templates.module.ts**
+- [x] **Step 3: Create apps/api/src/templates/templates.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1140,9 +1140,9 @@ import { TemplatesService } from "./templates.service";
 export class TemplatesModule {}
 ```
 
-- [ ] **Step 4: Wire TemplatesModule into AppModule**
+- [x] **Step 4: Wire TemplatesModule into AppModule**
 
-- [ ] **Step 5: Typecheck + commit**
+- [x] **Step 5: Typecheck + commit**
 
 ```bash
 pnpm --filter @sensai/api typecheck
@@ -1160,7 +1160,7 @@ git commit -m "feat(api): add templates module (list + get)"
 - Create: `apps/api/src/llm/llm.client.ts`
 - Create: `apps/api/src/llm/llm.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/llm/pricing.ts**
+- [x] **Step 1: Create apps/api/src/llm/pricing.ts**
 
 ```ts
 // Simple static pricing table — per 1M tokens (USD). Update manually.
@@ -1192,7 +1192,7 @@ export function calculateCostUsd(
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/llm/cost-tracker.service.ts**
+- [x] **Step 2: Create apps/api/src/llm/cost-tracker.service.ts**
 
 ```ts
 import { Inject, Injectable } from "@nestjs/common";
@@ -1222,7 +1222,7 @@ export class CostTrackerService {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/llm/llm.client.ts**
+- [x] **Step 3: Create apps/api/src/llm/llm.client.ts**
 
 ```ts
 import { Injectable, Logger } from "@nestjs/common";
@@ -1343,7 +1343,7 @@ export class LlmClient {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/llm/llm.module.ts**
+- [x] **Step 4: Create apps/api/src/llm/llm.module.ts**
 
 ```ts
 import { Global, Module } from "@nestjs/common";
@@ -1358,15 +1358,15 @@ import { CostTrackerService } from "./cost-tracker.service";
 export class LlmModule {}
 ```
 
-- [ ] **Step 5: Wire LlmModule into AppModule**
+- [x] **Step 5: Wire LlmModule into AppModule**
 
-- [ ] **Step 6: Typecheck**
+- [x] **Step 6: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/api/src/llm apps/api/src/app.module.ts
@@ -1381,7 +1381,7 @@ git commit -m "feat(api): add llm module with openrouter client and cost trackin
 - Create: `apps/api/src/orchestrator/step-handler.ts`
 - Create: `apps/api/src/orchestrator/step-registry.ts`
 
-- [ ] **Step 1: Create apps/api/src/orchestrator/step-handler.ts**
+- [x] **Step 1: Create apps/api/src/orchestrator/step-handler.ts**
 
 ```ts
 import type { pipelineRuns, pipelineSteps, projects } from "../db/schema";
@@ -1411,7 +1411,7 @@ export interface StepHandler {
 export const STEP_HANDLERS = Symbol("STEP_HANDLERS");
 ```
 
-- [ ] **Step 2: Create apps/api/src/orchestrator/step-registry.ts**
+- [x] **Step 2: Create apps/api/src/orchestrator/step-registry.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -1433,7 +1433,7 @@ export class StepRegistry {
 }
 ```
 
-- [ ] **Step 3: Typecheck**
+- [x] **Step 3: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
@@ -1441,7 +1441,7 @@ pnpm --filter @sensai/api typecheck
 
 Expected: clean (files are referenced later).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/api/src/orchestrator/step-handler.ts apps/api/src/orchestrator/step-registry.ts
@@ -1457,7 +1457,7 @@ git commit -m "feat(api): define StepHandler contract and registry"
 - Create: `apps/api/src/handlers/brief.handler.ts`
 - Create: `apps/api/src/handlers/handlers.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/prompts/brief.prompt.ts**
+- [x] **Step 1: Create apps/api/src/prompts/brief.prompt.ts**
 
 ```ts
 import { z } from "zod";
@@ -1506,7 +1506,7 @@ export const briefPrompt = {
 };
 ```
 
-- [ ] **Step 2: Create apps/api/src/handlers/brief.handler.ts**
+- [x] **Step 2: Create apps/api/src/handlers/brief.handler.ts**
 
 ```ts
 import { Injectable } from "@nestjs/common";
@@ -1541,7 +1541,7 @@ export class BriefHandler implements StepHandler {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/handlers/handlers.module.ts**
+- [x] **Step 3: Create apps/api/src/handlers/handlers.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1562,13 +1562,13 @@ import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 export class HandlersModule {}
 ```
 
-- [ ] **Step 4: Typecheck**
+- [x] **Step 4: Typecheck**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/api/src/prompts apps/api/src/handlers
@@ -1585,7 +1585,7 @@ git commit -m "feat(api): add brief step handler (llm.brief) + prompt"
 - Create: `apps/api/src/orchestrator/reconcile.service.ts`
 - Create: `apps/api/src/orchestrator/orchestrator.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/orchestrator/orchestrator.service.ts**
+- [x] **Step 1: Create apps/api/src/orchestrator/orchestrator.service.ts**
 
 ```ts
 import { Inject, Injectable, Logger } from "@nestjs/common";
@@ -1662,7 +1662,7 @@ export class OrchestratorService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/orchestrator/queue.constants.ts**
+- [x] **Step 2: Create apps/api/src/orchestrator/queue.constants.ts**
 
 ```ts
 export const QUEUE_NAME = "pipeline-steps";
@@ -1673,7 +1673,7 @@ export interface StepJobData {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/orchestrator/pipeline.worker.ts**
+- [x] **Step 3: Create apps/api/src/orchestrator/pipeline.worker.ts**
 
 ```ts
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
@@ -1808,7 +1808,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 }
 ```
 
-- [ ] **Step 4: Create apps/api/src/orchestrator/reconcile.service.ts**
+- [x] **Step 4: Create apps/api/src/orchestrator/reconcile.service.ts**
 
 ```ts
 import { Inject, Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
@@ -1867,7 +1867,7 @@ export class ReconcileService implements OnApplicationBootstrap {
 }
 ```
 
-- [ ] **Step 5: Create apps/api/src/orchestrator/orchestrator.module.ts**
+- [x] **Step 5: Create apps/api/src/orchestrator/orchestrator.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -1906,16 +1906,16 @@ import { QUEUE_NAME } from "./queue.constants";
 export class OrchestratorModule {}
 ```
 
-- [ ] **Step 6: Wire OrchestratorModule into AppModule**
+- [x] **Step 6: Wire OrchestratorModule into AppModule**
 
-- [ ] **Step 7: Typecheck + build**
+- [x] **Step 7: Typecheck + build**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 pnpm --filter @sensai/api build
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/api/src/orchestrator apps/api/src/app.module.ts
@@ -1931,7 +1931,7 @@ git commit -m "feat(api): add orchestrator with bullmq worker and reconcile"
 - Create: `apps/api/src/runs/runs.controller.ts`
 - Create: `apps/api/src/runs/runs.module.ts`
 
-- [ ] **Step 1: Create apps/api/src/runs/runs.service.ts**
+- [x] **Step 1: Create apps/api/src/runs/runs.service.ts**
 
 ```ts
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
@@ -2005,7 +2005,7 @@ export class RunsService {
 }
 ```
 
-- [ ] **Step 2: Create apps/api/src/runs/runs.controller.ts**
+- [x] **Step 2: Create apps/api/src/runs/runs.controller.ts**
 
 ```ts
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
@@ -2034,7 +2034,7 @@ export class RunsController {
 }
 ```
 
-- [ ] **Step 3: Create apps/api/src/runs/runs.module.ts**
+- [x] **Step 3: Create apps/api/src/runs/runs.module.ts**
 
 ```ts
 import { Module } from "@nestjs/common";
@@ -2052,7 +2052,7 @@ import { OrchestratorModule } from "../orchestrator/orchestrator.module";
 export class RunsModule {}
 ```
 
-- [ ] **Step 4: Wire RunsModule into AppModule**
+- [x] **Step 4: Wire RunsModule into AppModule**
 
 Final `AppModule` should import (in addition to ConfigModule, LoggerModule, DbModule, LlmModule):
 - `ProjectsModule`
@@ -2060,14 +2060,14 @@ Final `AppModule` should import (in addition to ConfigModule, LoggerModule, DbMo
 - `OrchestratorModule`
 - `RunsModule`
 
-- [ ] **Step 5: Typecheck + build**
+- [x] **Step 5: Typecheck + build**
 
 ```bash
 pnpm --filter @sensai/api typecheck
 pnpm --filter @sensai/api build
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/src/runs apps/api/src/app.module.ts

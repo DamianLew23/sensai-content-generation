@@ -1,0 +1,46 @@
+{
+  "name": "@sensai/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/seed/seed.ts",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^1.0.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@sensai/shared": "workspace:*",
+    "ai": "^5.0.0",
+    "bullmq": "^5.21.0",
+    "drizzle-orm": "^0.36.0",
+    "ioredis": "^5.4.1",
+    "nestjs-pino": "^4.1.0",
+    "pg": "^8.13.0",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.2",
+    "postgres": "^3.4.4",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.10",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.30.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.4"
+  }
+}

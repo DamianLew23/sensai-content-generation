@@ -2,6 +2,7 @@ node_modules/
 .pnpm-store/
 dist/
 .next/
+*.tsbuildinfo
 .turbo/
 .env
 .env.local
@@ -9,6 +10,7 @@ dist/
 .DS_Store
 coverage/
 .vercel/
+.claude/settings.local.json
 # Drizzle generated
 apps/api/drizzle/
 !apps/api/drizzle/meta/.gitkeep
