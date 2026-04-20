@@ -41,6 +41,7 @@ export class LlmClient {
       name: "openrouter",
       apiKey: env.OPENROUTER_API_KEY,
       baseURL: env.OPENROUTER_BASE_URL,
+      supportsStructuredOutputs: true,
     });
     this.defaultModel = env.DEFAULT_MODEL;
   }
