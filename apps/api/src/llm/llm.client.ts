@@ -3,7 +3,6 @@ import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import {
   generateObject as aiGenerateObject,
   generateText as aiGenerateText,
-  type LanguageModel,
 } from "ai";
 import { ZodSchema } from "zod";
 import { loadEnv } from "../config/env";
@@ -46,11 +45,8 @@ export class LlmClient {
     this.defaultModel = env.DEFAULT_MODEL;
   }
 
-  // Bridge between @ai-sdk/openai-compatible@1.x (LanguageModelV2) and ai@4.x
-  // (which types its `model` parameter as LanguageModelV1). The runtime protocol
-  // is compatible; only the TS types disagree. Cast at the boundary.
-  private modelFor(modelId: string): LanguageModel {
-    return this.provider(modelId) as unknown as LanguageModel;
+  private modelFor(modelId: string) {
+    return this.provider(modelId);
   }
 
   async generateText(args: {
@@ -66,8 +62,8 @@ export class LlmClient {
       prompt: args.prompt,
     });
     const latencyMs = Date.now() - started;
-    const promptTokens = res.usage?.promptTokens ?? 0;
-    const completionTokens = res.usage?.completionTokens ?? 0;
+    const promptTokens = res.usage?.inputTokens ?? 0;
+    const completionTokens = res.usage?.outputTokens ?? 0;
     const costUsd = calculateCostUsd(model, promptTokens, completionTokens);
     await this.costTracker.record({
       runId: args.ctx.runId,
@@ -91,15 +87,18 @@ export class LlmClient {
   }): Promise<LlmObjectResult<T>> {
     const model = args.ctx.model ?? this.defaultModel;
     const started = Date.now();
-    const res = await aiGenerateObject({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const schema = args.schema as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await aiGenerateObject<any>({
       model: this.modelFor(model),
       system: args.system,
       prompt: args.prompt,
-      schema: args.schema,
+      schema,
     });
     const latencyMs = Date.now() - started;
-    const promptTokens = res.usage?.promptTokens ?? 0;
-    const completionTokens = res.usage?.completionTokens ?? 0;
+    const promptTokens = res.usage?.inputTokens ?? 0;
+    const completionTokens = res.usage?.outputTokens ?? 0;
     const costUsd = calculateCostUsd(model, promptTokens, completionTokens);
     await this.costTracker.record({
       runId: args.ctx.runId,
