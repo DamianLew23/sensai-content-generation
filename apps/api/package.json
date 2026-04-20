@@ -8,6 +8,8 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/seed/seed.ts",
@@ -25,6 +27,7 @@
     "drizzle-orm": "^0.36.0",
     "ioredis": "^5.4.1",
     "nestjs-pino": "^4.1.0",
+    "p-retry": "^8.0.0",
     "pg": "^8.13.0",
     "pino": "^9.4.0",
     "pino-pretty": "^11.2.2",
@@ -38,9 +41,11 @@
     "@nestjs/schematics": "^11.0.0",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.11.10",
+    "@vitest/coverage-v8": "^4.1.4",
     "dotenv": "^17.4.2",
     "drizzle-kit": "^0.30.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^4.1.4"
   }
 }
