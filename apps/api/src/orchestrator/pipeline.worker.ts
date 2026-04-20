@@ -103,15 +103,17 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 
       await this.orchestrator.advance(runId, step.stepOrder);
     } catch (err: any) {
+      const isCostCap = err instanceof CostLimitExceededError;
       const serialized = {
         message: err?.message ?? String(err),
         name: err?.name,
+        code: typeof err?.code === "string" ? err.code : undefined,
         stack: err?.stack,
         attempt,
         timestamp: new Date().toISOString(),
       };
       const maxAttempts = job.opts.attempts ?? 1;
-      const isFinal = attempt >= maxAttempts;
+      const isFinal = isCostCap || attempt >= maxAttempts;
       await this.db
         .update(pipelineSteps)
         .set({
@@ -127,7 +129,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
           .set({ status: "failed", finishedAt: new Date() })
           .where(eq(pipelineRuns.id, runId));
       }
-      if (err instanceof CostLimitExceededError) {
+      if (isCostCap) {
         throw new UnrecoverableError(err.message);
       }
       throw err;
