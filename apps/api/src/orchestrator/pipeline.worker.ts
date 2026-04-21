@@ -103,6 +103,11 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 
       await this.orchestrator.advance(runId, step.stepOrder);
     } catch (err: any) {
+      const isHttp4xx =
+        err?.name === "HttpError" &&
+        typeof err?.status === "number" &&
+        err.status >= 400 && err.status < 500 &&
+        err.status !== 429;
       const isCostCap = err instanceof CostLimitExceededError;
       const serialized = {
         message: err?.message ?? String(err),
@@ -113,7 +118,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
         timestamp: new Date().toISOString(),
       };
       const maxAttempts = job.opts.attempts ?? 1;
-      const isFinal = isCostCap || attempt >= maxAttempts;
+      const isFinal = isCostCap || isHttp4xx || attempt >= maxAttempts;
       await this.db
         .update(pipelineSteps)
         .set({
@@ -129,7 +134,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
           .set({ status: "failed", finishedAt: new Date() })
           .where(eq(pipelineRuns.id, runId));
       }
-      if (isCostCap) {
+      if (isCostCap || isHttp4xx) {
         throw new UnrecoverableError(err.message);
       }
       throw err;
@@ -139,6 +144,13 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
   private async checkCostCap(runId: string): Promise<void> {
     const env = loadEnv();
     const cap = parseFloat(env.MAX_COST_PER_RUN_USD);
+    if (!Number.isFinite(cap) || cap <= 0) {
+      this.logger.warn(
+        { raw: env.MAX_COST_PER_RUN_USD },
+        "MAX_COST_PER_RUN_USD invalid, cost cap disabled",
+      );
+      return;
+    }
     const result = await this.db.execute(sql`
       SELECT COALESCE(SUM(cost_usd::numeric), 0)::float8 AS sum_cost
       FROM (
