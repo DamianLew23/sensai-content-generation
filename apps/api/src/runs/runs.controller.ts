@@ -21,4 +21,13 @@ export class RunsController {
     const dto = StartRunDto.parse(body);
     return this.svc.start(dto);
   }
+
+  @Post(":id/steps/:stepId/resume")
+  resume(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Param("stepId", new ParseUUIDPipe()) stepId: string,
+    @Body() body: unknown,
+  ) {
+    return this.svc.resume(id, stepId, body);
+  }
 }
