@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useRun } from "@/lib/hooks";
 import { RunTimeline } from "@/components/run-timeline";
+import { ApproveScrapeForm } from "./approve-scrape-form";
 
 export default function RunDetailPage() {
   const params = useParams<{ id: string }>();
@@ -11,6 +12,19 @@ export default function RunDetailPage() {
   const [selectedStepId, setSelectedStepId] = useState<string | undefined>();
 
   const selectedStep = run.data?.steps.find((s) => s.id === selectedStepId) ?? run.data?.steps[0];
+
+  const currentStep = run.data?.steps.find((s) => s.stepOrder === run.data?.currentStepOrder);
+  const isAwaitingScrape =
+    run.data?.status === "awaiting_approval" && currentStep?.type === "tool.scrape";
+
+  const prevOutput = isAwaitingScrape
+    ? run.data?.steps.find((s) => s.stepOrder === currentStep!.stepOrder - 1)?.output
+    : null;
+
+  const serpItems: Array<{ title: string; url: string; description: string; position: number }> =
+    prevOutput && typeof prevOutput === "object" && Array.isArray((prevOutput as any).items)
+      ? (prevOutput as any).items
+      : [];
 
   return (
     <div className="space-y-6">
@@ -29,6 +43,14 @@ export default function RunDetailPage() {
               status: <span className="font-mono">{run.data.status}</span>
             </p>
           </header>
+
+          {isAwaitingScrape && currentStep && serpItems.length > 0 && (
+            <ApproveScrapeForm
+              runId={run.data.id}
+              stepId={currentStep.id}
+              serpItems={serpItems}
+            />
+          )}
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr]">
             <aside>
