@@ -38,15 +38,41 @@ Wprowadzić do pipeline'u warstwę scrapingu (wyłącznie Firecrawl w tej iterac
 
 ```
 apps/api/src/
-├── tools/firecrawl/
-│   ├── firecrawl.client.ts
-│   ├── firecrawl.errors.ts
-│   ├── firecrawl.module.ts
-│   └── scrape.types.ts
+├── tools/
+│   ├── http-error.ts              # WYCIĄGAMY z dataforseo/dataforseo.errors.ts
+│   │                              #   + dodajemy pole `code = "http_${status}"`
+│   └── firecrawl/
+│       ├── firecrawl.client.ts
+│       ├── firecrawl.errors.ts    # FirecrawlApiError (domain-level, nie HTTP)
+│       ├── firecrawl.module.ts
+│       └── scrape.types.ts
 ├── handlers/
 │   └── scrape-fetch.handler.ts
 └── seed/
     └── seed.ts                    # modyfikacja: trzeci upsertTemplate
+```
+
+### Refactor z Planu 02
+
+`HttpError` jest obecnie w `tools/dataforseo/dataforseo.errors.ts`. Wyciągamy do `tools/http-error.ts` i rozszerzamy o pole `code`:
+
+```ts
+// apps/api/src/tools/http-error.ts
+export class HttpError extends Error {
+  public readonly code: string;
+  constructor(public readonly status: number, public readonly body: string) {
+    super(`HTTP ${status}: ${body.slice(0, 200)}`);
+    this.name = "HttpError";
+    this.code = `http_${status}`;     // NOWE — worker serializuje do error.code
+  }
+}
+```
+
+`dataforseo.errors.ts` re-eksportuje z nowej lokalizacji (zero-cost dla istniejących importów w DataForSeoClient):
+
+```ts
+export { HttpError } from "../http-error";
+export class DataForSeoApiError extends Error { ... }   // bez zmian
 ```
 
 ### Nowe pliki (shared + web)
@@ -65,6 +91,7 @@ apps/web/src/app/runs/[id]/
 | Plik | Zmiana |
 |---|---|
 | `apps/api/src/handlers/handlers.module.ts` | rejestracja `ScrapeFetchHandler` w `STEP_HANDLERS` |
+| `apps/api/src/tools/dataforseo/dataforseo.errors.ts` | re-export `HttpError` z nowej lokalizacji `tools/http-error.ts` |
 | `apps/api/src/handlers/brief.handler.ts` | opcjonalny odczyt `previousOutputs.scrape` |
 | `apps/api/src/prompts/brief.prompts.ts` | nowa sekcja „Content from top pages" (aktywna gdy scrape obecny) |
 | `apps/api/src/runs/runs.controller.ts` | nowy endpoint `POST :id/steps/:stepId/resume` |
@@ -241,7 +268,9 @@ if (run.status === "awaiting_approval" && currentStep?.type === "tool.scrape") {
   - ≥500 → retry
   - Inne 4xx → `HttpError(status, ...)` → AbortError
 
-Struktura `HttpError`: `{ name: "HttpError", status: number, code: "http_" + status, message }`.
+Struktura `HttpError` (po refactorze wyżej): `{ name: "HttpError", status: number, code: "http_${status}", message }`.
+
+**Założenie o p-retry:** `AbortError(originalError)` jest przez `p-retry` rozwijany do `originalError` przy rethrow (zgodnie z docs `p-retry`). Worker łapie więc bezpośrednio `HttpError`, nie wrapper `AbortError`. Weryfikujemy w teście `firecrawl-client.test.ts` („throws AbortError on 401") — asercja: `expect(promise).rejects.toMatchObject({ name: "HttpError", status: 401 })`.
 
 ### Scrape handler
 
@@ -307,6 +336,12 @@ Warn logowany przy każdym wywołaniu (tj. przed każdym krokiem), bo `checkCost
   ```
 - `ToolCallRecorder.record` odbiera `costUsd: "0"` dla cache-hit i `costUsd: "0.0015"` dla cache-miss per URL.
 - Przy `MAX_COST_PER_RUN_USD=5` i per-run max scrape = 5 URL × 0.0015 = $0.0075 — pomijalne w limicie; LLM jest dominujący.
+
+## Nowe zależności
+
+`apps/api/package.json` → `dependencies`:
+- `p-limit` — concurrency control w scrape handlerze (p-limit(3)). Node-native alternatywy (`Promise.all` na chunkach) są mniej elastyczne przy short-circuit z 401/402.
+- `p-retry` — już jest (`^8.0.0`, z Planu 02).
 
 ## Env
 
