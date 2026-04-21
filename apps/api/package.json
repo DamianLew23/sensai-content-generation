@@ -27,6 +27,7 @@
     "drizzle-orm": "^0.36.0",
     "ioredis": "^5.4.1",
     "nestjs-pino": "^4.1.0",
+    "p-limit": "^6",
     "p-retry": "^8.0.0",
     "pg": "^8.13.0",
     "pino": "^9.4.0",

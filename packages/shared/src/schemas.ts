@@ -63,3 +63,34 @@ export const StartRunDto = z.object({
   input: RunInput,
 });
 export type StartRunDto = z.infer<typeof StartRunDto>;
+
+export const ScrapePage = z.object({
+  url: z.string().url(),
+  title: z.string(),
+  markdown: z.string(),
+  rawLength: z.number().int().nonnegative(),
+  truncated: z.boolean(),
+  source: z.literal("firecrawl"),
+  fetchedAt: z.string().datetime(),
+});
+export type ScrapePage = z.infer<typeof ScrapePage>;
+
+export const ScrapeFailure = z.object({
+  url: z.string().url(),
+  reason: z.string(),
+  httpStatus: z.number().int().optional(),
+});
+export type ScrapeFailure = z.infer<typeof ScrapeFailure>;
+
+export const ScrapeResult = z.object({
+  pages: ScrapePage.array(),
+  failures: ScrapeFailure.array(),
+});
+export type ScrapeResult = z.infer<typeof ScrapeResult>;
+
+export const ResumeStepDto = z.object({
+  input: z.object({
+    urls: z.string().url().array().min(1).max(5),
+  }),
+});
+export type ResumeStepDto = z.infer<typeof ResumeStepDto>;

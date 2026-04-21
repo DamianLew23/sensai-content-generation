@@ -1,12 +1,13 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { desc, eq } from "drizzle-orm";
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { and, desc, eq } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { pipelineRuns, pipelineSteps } from "../db/schema";
 import { ProjectsService } from "../projects/projects.service";
 import { TemplatesService } from "../templates/templates.service";
 import { OrchestratorService } from "../orchestrator/orchestrator.service";
-import { StartRunDto } from "@sensai/shared";
+import { ResumeStepDto, StartRunDto } from "@sensai/shared";
+import { validateResumeRequest, ResumeValidationError } from "./resume-validation";
 
 @Injectable()
 export class RunsService {
@@ -65,5 +66,49 @@ export class RunsService {
     await this.orchestrator.enqueueStep(run.id, firstStep.id);
 
     return { ...run, steps: insertedSteps };
+  }
+
+  async resume(runId: string, stepId: string, dto: unknown) {
+    const parsed = ResumeStepDto.parse(dto);
+
+    const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
+    if (!run) throw new NotFoundException(`Run ${runId} not found`);
+
+    const [step] = await this.db
+      .select()
+      .from(pipelineSteps)
+      .where(and(eq(pipelineSteps.id, stepId), eq(pipelineSteps.runId, runId)));
+    if (!step) throw new NotFoundException(`Step ${stepId} not found in run ${runId}`);
+
+    const [prevStep] = await this.db
+      .select()
+      .from(pipelineSteps)
+      .where(and(eq(pipelineSteps.runId, runId), eq(pipelineSteps.stepOrder, step.stepOrder - 1)));
+    const prevStepOutput = prevStep?.output ?? null;
+
+    try {
+      validateResumeRequest({ run, step, prevStepOutput, dto: parsed });
+    } catch (err) {
+      if (err instanceof ResumeValidationError) {
+        if (err.httpStatus === 409) throw new ConflictException({ code: err.code, message: err.message });
+        if (err.httpStatus === 400) throw new BadRequestException({ code: err.code, message: err.message, ...(err.details ?? {}) });
+      }
+      throw err;
+    }
+
+    await this.db.transaction(async (tx) => {
+      await tx
+        .update(pipelineSteps)
+        .set({ input: parsed.input })
+        .where(eq(pipelineSteps.id, stepId));
+      await tx
+        .update(pipelineRuns)
+        .set({ status: "running" })
+        .where(eq(pipelineRuns.id, runId));
+    });
+
+    await this.orchestrator.enqueueStep(runId, stepId);
+
+    return this.get(runId);
   }
 }
