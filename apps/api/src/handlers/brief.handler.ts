@@ -3,6 +3,7 @@ import { LlmClient } from "../llm/llm.client";
 import { briefPrompt } from "../prompts/brief.prompt";
 import type { StepContext, StepHandler, StepResult } from "../orchestrator/step-handler";
 import type { ProjectConfig, RunInput } from "@sensai/shared";
+import { ScrapeResult } from "@sensai/shared";
 import { SerpResult } from "../tools/dataforseo/serp.types";
 
 @Injectable()
@@ -19,6 +20,9 @@ export class BriefHandler implements StepHandler {
     const research = SerpResult.safeParse(ctx.previousOutputs.research);
     const serpContext = research.success ? research.data.items : undefined;
 
+    const scrapeParsed = ScrapeResult.safeParse(ctx.previousOutputs.scrape);
+    const scrapePages = scrapeParsed.success ? scrapeParsed.data.pages : undefined;
+
     const res = await this.llm.generateObject({
       ctx: {
         runId: ctx.run.id,
@@ -27,7 +31,7 @@ export class BriefHandler implements StepHandler {
         model,
       },
       system: briefPrompt.system(ctx.project),
-      prompt: briefPrompt.user(input, serpContext),
+      prompt: briefPrompt.user(input, serpContext, scrapePages),
       schema: briefPrompt.schema,
     });
     return { output: res.object };

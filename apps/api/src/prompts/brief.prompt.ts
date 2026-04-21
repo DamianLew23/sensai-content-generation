@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { ProjectRow } from "../orchestrator/step-handler";
 import type { ProjectConfig, RunInput } from "@sensai/shared";
+import type { ScrapePage } from "@sensai/shared";
 import type { SerpItem } from "../tools/dataforseo/serp.types";
 
 export const BriefOutputSchema = z.object({
@@ -24,6 +25,22 @@ function formatSerpContext(items: SerpItem[]): string {
   ].join("\n");
 }
 
+function formatScrapeContext(pages: ScrapePage[]): string {
+  const sections = pages.map((p) => [
+    `### ${p.title || p.url}`,
+    `URL: ${p.url}${p.truncated ? ` (skrócone do ${p.markdown.length} znaków z ${p.rawLength})` : ""}`,
+    "",
+    p.markdown,
+  ].join("\n"));
+  return [
+    "## Treść stron konkurencji (wybranych przez operatora):",
+    "",
+    ...sections,
+    "",
+    "Wykorzystaj tę treść — znajdź luki jakościowe, wspólne tezy do powtórzenia, pomysły na unikalny angle.",
+  ].join("\n");
+}
+
 export const briefPrompt = {
   system(project: ProjectRow) {
     const cfg = project.config as ProjectConfig;
@@ -36,7 +53,7 @@ export const briefPrompt = {
       `Zwróć odpowiedź wyłącznie jako obiekt JSON zgodny ze schematem.`,
     ].filter(Boolean).join("\n\n");
   },
-  user(input: RunInput, serpContext?: SerpItem[]) {
+  user(input: RunInput, serpContext?: SerpItem[], scrapePages?: ScrapePage[]) {
     const lines = [
       `Temat artykułu: ${input.topic}`,
       input.mainKeyword && `Główne słowo kluczowe: ${input.mainKeyword}`,
@@ -45,6 +62,9 @@ export const briefPrompt = {
     ].filter(Boolean);
     if (serpContext && serpContext.length > 0) {
       lines.push("", formatSerpContext(serpContext));
+    }
+    if (scrapePages && scrapePages.length > 0) {
+      lines.push("", formatScrapeContext(scrapePages));
     }
     lines.push("", "Przygotuj brief.");
     return lines.join("\n");
