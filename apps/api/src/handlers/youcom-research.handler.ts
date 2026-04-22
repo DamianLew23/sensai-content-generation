@@ -12,6 +12,9 @@ const TTL_DAYS = 14;
 
 type YoucomHandlerEnv = Pick<
   Env,
+  | "YOUCOM_API_KEY"
+  | "YOUCOM_BASE_URL"
+  | "YOUCOM_TIMEOUT_MS"
   | "YOUCOM_DEFAULT_EFFORT"
   | "YOUCOM_COST_LITE"
   | "YOUCOM_COST_STANDARD"
