@@ -88,7 +88,50 @@ $ curl -sf http://localhost:11235/health
 - [x] docker compose up crawl4ai działa + health OK
 - [x] `.env.example` zawiera `CRAWL4AI_BASE_URL` + `CRAWL4AI_TIMEOUT_MS`
 - [x] README zawiera "Development — scraping z crawl4ai"
-- [ ] **Manualny smoke** `pnpm tsx scripts/smoke-plan-04.ts` — wymaga API running + seed data; user uruchomi przed merge'em
+- [x] **Manualny smoke** `pnpm tsx scripts/smoke-plan-04.ts` — przeszedł 2026-04-22 (run `8471f772-62ab-4628-b76e-b9696b41e041`), patrz sekcja "Smoke result" niżej
+
+## Smoke result (run `8471f772-62ab-4628-b76e-b9696b41e041`, 2026-04-22)
+
+Keyword: `linkedin outreach` → SERP (DataForSEO) → top 3 URL-e wybrane do scrape step → resume.
+
+**Pages:**
+```
+1. linkedin.com/top-content/recruitment-hr/.../linkedin-outreach-strategies/  → source: crawl4ai
+2. cyfrowyprzedsiebiorca.pl/poradnik/outreach-marketing-na-linkedin           → source: crawl4ai
+3. pl.linkedin.com/posts/linkedinlocalkrakow_jak-zrobic-wartosciowy-outreach/ → source: crawl4ai
+```
+
+**Failures:** `[]` (0)
+**crawl4ai success rate:** 3/3 (100%)
+
+### Metryki sukcesu ze spec'u
+
+1. ✅ ≥2 URL-e LinkedIn z `source="crawl4ai"` — **2 LinkedIn URL-e** (oba przez crawl4ai, żaden w `failures`)
+2. ✅ `failures[]` pustszy niż w Plan 03 — Plan 03 miał 2 LinkedIn fails z `http_403`, Plan 04 ma 0
+3. ✅ Koszt run scrape: **$0** (crawl4ai self-hosted, zero Firecrawl fallback w tym smoke)
+
+### DB verification — dual-layer audit trail
+
+```sql
+SELECT tool, COUNT(*), COUNT(*) FILTER (WHERE error IS NOT NULL) AS failures
+FROM tool_calls
+WHERE run_id = '8471f772-62ab-4628-b76e-b9696b41e041'
+GROUP BY tool ORDER BY tool;
+```
+
+| tool | count | failures |
+|---|---|---|
+| crawl4ai (inner) | 3 | 0 |
+| scrape (outer, unified cache) | 3 | 0 |
+| dataforseo (SERP) | 1 | 0 |
+
+Dual-layer recording działa: każda strona ma 1 row `scrape` (outer cache) + 1 row `crawl4ai` (inner per-scraper) — razem 3+3 dla trzech URL-i.
+
+### Fold-in (z samego smoke runu)
+
+Smoke script miał zły kształt `input` body w POST `/runs` (spec planu miał `{topic, keyword, contentType}`, a `StartRunDto` wymaga `topic` + SERP handler wymaga `mainKeyword`). Poprawione w commit `37fa46b` na `{topic, mainKeyword}`.
+
+---
 
 ## Known limitations (forwarded do post-merge memory)
 
