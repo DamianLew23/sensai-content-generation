@@ -123,4 +123,21 @@ describe("ScrapeFetchHandler", () => {
       error: { reason: "cf_challenge" },
     }));
   });
+
+  it("crawl4ai 401 na pierwszym URL → batch abort, firecrawl nie wołany", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(401, "unauthorized")),
+    };
+    const firecrawl = mkFirecrawl();
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    await expect(
+      handler.execute(mkCtx(["https://a.example.com", "https://b.example.com", "https://c.example.com"])),
+    ).rejects.toMatchObject({ name: "HttpError", status: 401 });
+
+    expect(crawl4ai.scrape).toHaveBeenCalledTimes(1);
+    expect(firecrawl.scrape).not.toHaveBeenCalled();
+  });
 });
