@@ -114,11 +114,12 @@ export class ScrapeFetchHandler implements StepHandler {
         await this.recordInner(ctx, "crawl4ai", c4aHash, Date.now() - c4aStart, { reason: "cf_challenge" });
         attempts.push({ source: "crawl4ai", reason: "cf_challenge" });
       } else {
-        await this.recordInner(ctx, "crawl4ai", c4aHash, Date.now() - c4aStart, null, CRAWL4AI_COST_PER_SCRAPE);
+        const c4aLatency = Date.now() - c4aStart;
+        await this.recordInner(ctx, "crawl4ai", c4aHash, c4aLatency, null, CRAWL4AI_COST_PER_SCRAPE);
         return {
           result: toScrapePage(raw, "crawl4ai"),
           costUsd: CRAWL4AI_COST_PER_SCRAPE,
-          latencyMs: Date.now() - c4aStart,
+          latencyMs: c4aLatency,
         };
       }
     } catch (err) {
@@ -141,11 +142,12 @@ export class ScrapeFetchHandler implements StepHandler {
     const fcStart = Date.now();
     try {
       const raw = await this.firecrawl.scrape({ url });
-      await this.recordInner(ctx, "firecrawl", fcHash, Date.now() - fcStart, null, FIRECRAWL_COST_PER_SCRAPE);
+      const fcLatency = Date.now() - fcStart;
+      await this.recordInner(ctx, "firecrawl", fcHash, fcLatency, null, FIRECRAWL_COST_PER_SCRAPE);
       return {
         result: toScrapePage(raw, "firecrawl"),
         costUsd: FIRECRAWL_COST_PER_SCRAPE,
-        latencyMs: Date.now() - fcStart,
+        latencyMs: fcLatency,
       };
     } catch (err) {
       if (err instanceof HttpError && (err.status === 401 || err.status === 402)) {
