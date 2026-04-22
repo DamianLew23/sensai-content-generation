@@ -46,7 +46,7 @@ async function main() {
     body: JSON.stringify({
       projectId: PROJECT_ID,
       templateId: TEMPLATE_ID,
-      input: { topic: KEYWORD, keyword: KEYWORD, contentType: "blog" },
+      input: { topic: KEYWORD, mainKeyword: KEYWORD },
     }),
   });
   const runId = startRes.id;
