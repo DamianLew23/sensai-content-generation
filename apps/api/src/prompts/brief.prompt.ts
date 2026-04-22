@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ProjectRow } from "../orchestrator/step-handler";
-import type { ProjectConfig, RunInput } from "@sensai/shared";
+import type { ProjectConfig, RunInput, ResearchBriefing } from "@sensai/shared";
 import type { ScrapePage } from "@sensai/shared";
 import type { SerpItem } from "../tools/dataforseo/serp.types";
 
@@ -41,6 +41,22 @@ function formatScrapeContext(pages: ScrapePage[]): string {
   ].join("\n");
 }
 
+function formatDeepResearch(r: ResearchBriefing): string {
+  const sourceLines = r.sources.map((s, idx) =>
+    `[${idx + 1}] ${s.title ? `${s.title} — ` : ""}${s.url}`,
+  );
+  return [
+    "## Deep research briefing (z you.com):",
+    "",
+    r.content,
+    "",
+    "### Źródła",
+    ...sourceLines,
+    "",
+    "Ten briefing zawiera syntezę wiedzy o temacie z wielu źródeł. Wykorzystaj fakty, dane i perspektywy ekspertów przy kształtowaniu kąta i filarów treści.",
+  ].join("\n");
+}
+
 export const briefPrompt = {
   system(project: ProjectRow) {
     const cfg = project.config as ProjectConfig;
@@ -53,13 +69,21 @@ export const briefPrompt = {
       `Zwróć odpowiedź wyłącznie jako obiekt JSON zgodny ze schematem.`,
     ].filter(Boolean).join("\n\n");
   },
-  user(input: RunInput, serpContext?: SerpItem[], scrapePages?: ScrapePage[]) {
+  user(
+    input: RunInput,
+    serpContext?: SerpItem[],
+    scrapePages?: ScrapePage[],
+    deepResearch?: ResearchBriefing,
+  ) {
     const lines = [
       `Temat artykułu: ${input.topic}`,
       input.mainKeyword && `Główne słowo kluczowe: ${input.mainKeyword}`,
       input.intent && `Intent użytkownika: ${input.intent}`,
       input.contentType && `Typ treści: ${input.contentType}`,
     ].filter(Boolean);
+    if (deepResearch && deepResearch.content.length > 0) {
+      lines.push("", formatDeepResearch(deepResearch));
+    }
     if (serpContext && serpContext.length > 0) {
       lines.push("", formatSerpContext(serpContext));
     }
