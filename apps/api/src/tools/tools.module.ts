@@ -5,10 +5,11 @@ import { ToolCacheService } from "./tool-cache.service";
 import { DataForSeoModule } from "./dataforseo/dataforseo.module";
 import { FirecrawlModule } from "./firecrawl/firecrawl.module";
 import { Crawl4aiModule } from "./crawl4ai/crawl4ai.module";
+import { YoucomModule } from "./youcom/youcom.module";
 
 @Module({
-  imports: [DbModule, DataForSeoModule, FirecrawlModule, Crawl4aiModule],
+  imports: [DbModule, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule],
   providers: [ToolCallRecorder, ToolCacheService],
-  exports: [ToolCacheService, ToolCallRecorder, DataForSeoModule, FirecrawlModule, Crawl4aiModule],
+  exports: [ToolCacheService, ToolCallRecorder, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule],
 })
 export class ToolsModule {}
