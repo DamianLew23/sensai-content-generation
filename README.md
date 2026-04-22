@@ -25,3 +25,30 @@ API:      http://localhost:8000
 Smoke-tested: create run via UI → OpenRouter LLM call → brief output JSON → cost recorded in `llm_calls`.
 Failure path: 3 retries + `failed` status + error visible in UI.
 Reconcile: restart during active run resumes automatically.
+
+## Development — scraping z crawl4ai
+
+Plan 04 wprowadza crawl4ai jako primary scraper z fallbackiem na Firecrawl.
+
+### Uruchomienie crawl4ai
+
+```bash
+docker compose -f docker-compose.dev.yml up -d crawl4ai
+```
+
+Sprawdzenie health:
+```bash
+curl http://localhost:11235/health
+```
+
+### ENV
+
+API wymaga:
+- `CRAWL4AI_BASE_URL=http://localhost:11235` (dev)
+- `CRAWL4AI_TIMEOUT_MS=20000` (default; opcjonalne)
+
+### Limit RAM
+
+crawl4ai + Playwright Chromium zużywa ~1-2 GB w pik przy 3 równoległych scrapach.
+Na VPS CPX21 (4GB) jest OK; na mniejszych maszynach można zmniejszyć concurrency
+w `ScrapeFetchHandler` z `p-limit(3)` do `p-limit(2)`.

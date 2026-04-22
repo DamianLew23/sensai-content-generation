@@ -31,6 +31,20 @@ services:
       timeout: 3s
       retries: 10
 
+  crawl4ai:
+    image: unclecode/crawl4ai:latest
+    container_name: sensai-crawl4ai-dev
+    restart: unless-stopped
+    ports:
+      - "${CRAWL4AI_PORT:-11235}:11235"
+    shm_size: "1gb"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11235/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 volumes:
   sensai_pg_data:
   sensai_redis_data:
