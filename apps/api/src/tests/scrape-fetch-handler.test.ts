@@ -140,4 +140,23 @@ describe("ScrapeFetchHandler", () => {
     expect(crawl4ai.scrape).toHaveBeenCalledTimes(1);
     expect(firecrawl.scrape).not.toHaveBeenCalled();
   });
+
+  it("firecrawl 401 po fallbacku z crawl4ai → batch abort", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(403, "forbidden")),
+    };
+    const firecrawl = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(401, "unauthorized")),
+    };
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    await expect(
+      handler.execute(mkCtx(["https://a.example.com", "https://b.example.com"])),
+    ).rejects.toMatchObject({ name: "HttpError", status: 401 });
+
+    expect(crawl4ai.scrape).toHaveBeenCalledTimes(1);
+    expect(firecrawl.scrape).toHaveBeenCalledTimes(1);
+  });
 });
