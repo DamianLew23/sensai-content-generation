@@ -52,12 +52,22 @@ async function main() {
     ],
   });
 
+  const blogSeoDeepResearch = await upsertTemplate(db, "Blog SEO — deep research", 1, {
+    steps: [
+      { key: "deepResearch", type: "tool.youcom.research", auto: true },
+      { key: "research",     type: "tool.serp.fetch",     auto: true },
+      { key: "scrape",       type: "tool.scrape",         auto: false },
+      { key: "brief",        type: "llm.brief",           auto: true },
+    ],
+  });
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
   console.log(`    "${briefOnly.name}" v${briefOnly.version}: ${briefOnly.id}`);
   console.log(`    "${briefResearch.name}" v${briefResearch.version}: ${briefResearch.id}`);
   console.log(`    "${briefResearchScrape.name}" v${briefResearchScrape.version}: ${briefResearchScrape.id}`);
+  console.log(`    "${blogSeoDeepResearch.name}" v${blogSeoDeepResearch.version}: ${blogSeoDeepResearch.id}`);
 
   await pool.end();
 }

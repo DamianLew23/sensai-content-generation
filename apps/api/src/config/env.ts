@@ -16,6 +16,14 @@ const EnvSchema = z.object({
   FIRECRAWL_BASE_URL: z.string().url().default("https://api.firecrawl.dev"),
   CRAWL4AI_BASE_URL: z.string().url(),
   CRAWL4AI_TIMEOUT_MS: z.coerce.number().int().positive().default(20_000),
+  YOUCOM_API_KEY: z.string().min(1),
+  YOUCOM_BASE_URL: z.string().url().default("https://api.you.com"),
+  YOUCOM_TIMEOUT_MS: z.coerce.number().int().positive().default(300_000),
+  YOUCOM_DEFAULT_EFFORT: z.enum(["lite", "standard", "deep", "exhaustive"]).default("deep"),
+  YOUCOM_COST_LITE: z.coerce.number().nonnegative().default(0.02),
+  YOUCOM_COST_STANDARD: z.coerce.number().nonnegative().default(0.05),
+  YOUCOM_COST_DEEP: z.coerce.number().nonnegative().default(0.15),
+  YOUCOM_COST_EXHAUSTIVE: z.coerce.number().nonnegative().default(0.40),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 

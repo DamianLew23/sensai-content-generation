@@ -53,6 +53,53 @@ export declare const TemplateStepsDef: z.ZodObject<{
     }[];
 }>;
 export type TemplateStepsDef = z.infer<typeof TemplateStepsDef>;
+export declare const ResearchEffort: z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>;
+export type ResearchEffort = z.infer<typeof ResearchEffort>;
+export declare const ResearchSource: z.ZodObject<{
+    url: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    snippets: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    url: string;
+    snippets: string[];
+    title?: string | undefined;
+}, {
+    url: string;
+    title?: string | undefined;
+    snippets?: string[] | undefined;
+}>;
+export type ResearchSource = z.infer<typeof ResearchSource>;
+export declare const ResearchBriefing: z.ZodObject<{
+    content: z.ZodString;
+    sources: z.ZodArray<z.ZodObject<{
+        url: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        snippets: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        url: string;
+        snippets: string[];
+        title?: string | undefined;
+    }, {
+        url: string;
+        title?: string | undefined;
+        snippets?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    content: string;
+    sources: {
+        url: string;
+        snippets: string[];
+        title?: string | undefined;
+    }[];
+}, {
+    content: string;
+    sources: {
+        url: string;
+        title?: string | undefined;
+        snippets?: string[] | undefined;
+    }[];
+}>;
+export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
 export declare const ProjectConfig: z.ZodObject<{
     toneOfVoice: z.ZodDefault<z.ZodString>;
     targetAudience: z.ZodDefault<z.ZodString>;
@@ -76,6 +123,7 @@ export declare const ProjectConfig: z.ZodObject<{
         edit?: string | undefined;
         seo?: string | undefined;
     }>>;
+    researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
     promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     toneOfVoice: string;
@@ -89,6 +137,7 @@ export declare const ProjectConfig: z.ZodObject<{
         seo?: string | undefined;
     };
     promptOverrides: Record<string, string>;
+    researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
 }, {
     toneOfVoice?: string | undefined;
     targetAudience?: string | undefined;
@@ -100,6 +149,7 @@ export declare const ProjectConfig: z.ZodObject<{
         edit?: string | undefined;
         seo?: string | undefined;
     } | undefined;
+    researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
     promptOverrides?: Record<string, string> | undefined;
 }>;
 export type ProjectConfig = z.infer<typeof ProjectConfig>;
