@@ -159,4 +159,46 @@ describe("ScrapeFetchHandler", () => {
     expect(crawl4ai.scrape).toHaveBeenCalledTimes(1);
     expect(firecrawl.scrape).toHaveBeenCalledTimes(1);
   });
+
+  it("obie próby fail → ScrapeFailure.attempts[2]", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(403, "forbidden")),
+    };
+    const firecrawl = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(503, "unavailable")),
+    };
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    await expect(
+      handler.execute(mkCtx(["https://a.example.com"])),
+    ).rejects.toThrow(/all scrape urls failed/i);
+  });
+
+  it("obie próby fail — tylko w mieszanym batchu produkuje failures[].attempts", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockImplementation(async ({ url }: { url: string }) => {
+        if (url === "https://bad.example.com") throw new HttpError(403, "forbidden");
+        return { url, markdown: "crawl4ai markdown content ".repeat(20), title: "C4A" };
+      }),
+    };
+    const firecrawl = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(503, "unavailable")),
+    };
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    const result = await handler.execute(
+      mkCtx(["https://a.example.com", "https://bad.example.com"]),
+    );
+    const out = result.output as any;
+    expect(out.pages).toHaveLength(1);
+    expect(out.failures).toHaveLength(1);
+    expect(out.failures[0].url).toBe("https://bad.example.com");
+    expect(out.failures[0].attempts).toHaveLength(2);
+    expect(out.failures[0].attempts[0].source).toBe("crawl4ai");
+    expect(out.failures[0].attempts[1].source).toBe("firecrawl");
+  });
 });
