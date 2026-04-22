@@ -32,6 +32,22 @@ export const TemplateStepsDef = z.object({
 });
 export type TemplateStepsDef = z.infer<typeof TemplateStepsDef>;
 
+export const ResearchEffort = z.enum(["lite", "standard", "deep", "exhaustive"]);
+export type ResearchEffort = z.infer<typeof ResearchEffort>;
+
+export const ResearchSource = z.object({
+  url: z.string().url(),
+  title: z.string().optional(),
+  snippets: z.string().array().default([]),
+});
+export type ResearchSource = z.infer<typeof ResearchSource>;
+
+export const ResearchBriefing = z.object({
+  content: z.string(),
+  sources: ResearchSource.array(),
+});
+export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
+
 export const ProjectConfig = z.object({
   toneOfVoice: z.string().default(""),
   targetAudience: z.string().default(""),
@@ -45,6 +61,7 @@ export const ProjectConfig = z.object({
       seo: z.string().optional(),
     })
     .default({}),
+  researchEffort: ResearchEffort.optional(),
   promptOverrides: z.record(z.string()).default({}),
 });
 export type ProjectConfig = z.infer<typeof ProjectConfig>;

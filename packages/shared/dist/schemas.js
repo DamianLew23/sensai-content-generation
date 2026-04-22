@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -26,6 +26,16 @@ exports.StepDef = zod_1.z.object({
 exports.TemplateStepsDef = zod_1.z.object({
     steps: zod_1.z.array(exports.StepDef).min(1),
 });
+exports.ResearchEffort = zod_1.z.enum(["lite", "standard", "deep", "exhaustive"]);
+exports.ResearchSource = zod_1.z.object({
+    url: zod_1.z.string().url(),
+    title: zod_1.z.string().optional(),
+    snippets: zod_1.z.string().array().default([]),
+});
+exports.ResearchBriefing = zod_1.z.object({
+    content: zod_1.z.string(),
+    sources: exports.ResearchSource.array(),
+});
 exports.ProjectConfig = zod_1.z.object({
     toneOfVoice: zod_1.z.string().default(""),
     targetAudience: zod_1.z.string().default(""),
@@ -39,6 +49,7 @@ exports.ProjectConfig = zod_1.z.object({
         seo: zod_1.z.string().optional(),
     })
         .default({}),
+    researchEffort: exports.ResearchEffort.optional(),
     promptOverrides: zod_1.z.record(zod_1.z.string()).default({}),
 });
 exports.RunInput = zod_1.z.object({
