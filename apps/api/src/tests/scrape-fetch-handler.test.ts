@@ -201,4 +201,20 @@ describe("ScrapeFetchHandler", () => {
     expect(out.failures[0].attempts[0].source).toBe("crawl4ai");
     expect(out.failures[0].attempts[1].source).toBe("firecrawl");
   });
+
+  it("crawl4ai 500 (non-fallback status) → hard fail, firecrawl NIE wołany", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockRejectedValue(new HttpError(500, "internal error")),
+    };
+    const firecrawl = mkFirecrawl();
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    const result = await handler.execute(mkCtx(["https://a.example.com"]));
+    const out = result.output as any;
+    expect(out.failures).toHaveLength(1);
+    expect(out.failures[0].reason).toBe("http_500");
+    expect(firecrawl.scrape).not.toHaveBeenCalled();
+  });
 });

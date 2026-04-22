@@ -39,6 +39,7 @@ export class ScrapeFetchHandler implements StepHandler {
     const pages: ScrapePage[] = [];
     const failures: ScrapeFailure[] = [];
     let shortCircuit: Error | null = null;
+    let exhaustedCount = 0;
 
     const handleOne = async (url: string): Promise<void> => {
       if (shortCircuit) return;
@@ -58,6 +59,7 @@ export class ScrapeFetchHandler implements StepHandler {
             httpStatus: last?.httpStatus,
             attempts: err.attempts,
           });
+          exhaustedCount++;
           return;
         }
         failures.push({ url, reason: classifyReason(err), httpStatus: err instanceof HttpError ? err.status : undefined });
@@ -73,7 +75,7 @@ export class ScrapeFetchHandler implements StepHandler {
     }
 
     if (shortCircuit) throw shortCircuit;
-    if (pages.length === 0) {
+    if (pages.length === 0 && exhaustedCount > 0) {
       throw new Error(`All scrape URLs failed (${failures.length} failures)`);
     }
 
