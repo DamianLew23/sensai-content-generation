@@ -81,4 +81,23 @@ describe("ScrapeFetchHandler", () => {
     const recordedTools = recorder.record.mock.calls.map((c: any[]) => c[0].tool);
     expect(recordedTools).toEqual(expect.arrayContaining(["crawl4ai", "firecrawl"]));
   });
+
+  it("crawl4ai <200 chars → fallback do firecrawl", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockResolvedValue({ url: "https://a.example.com", markdown: "too short", title: "T" }),
+    };
+    const firecrawl = mkFirecrawl();
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    const result = await handler.execute(mkCtx(["https://a.example.com"]));
+
+    const out = result.output as any;
+    expect(out.pages[0].source).toBe("firecrawl");
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({
+      tool: "crawl4ai",
+      error: { reason: "short_content" },
+    }));
+  });
 });
