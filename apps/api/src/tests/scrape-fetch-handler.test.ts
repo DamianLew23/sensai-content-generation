@@ -217,4 +217,22 @@ describe("ScrapeFetchHandler", () => {
     expect(out.failures[0].reason).toBe("http_500");
     expect(firecrawl.scrape).not.toHaveBeenCalled();
   });
+
+  it("truncates markdown >15k chars i ustawia truncated=true", async () => {
+    const big = "x".repeat(20_000);
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockResolvedValue({ url: "https://a.example.com", markdown: big, title: "T" }),
+    };
+    const firecrawl = mkFirecrawl();
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    const result = await handler.execute(mkCtx(["https://a.example.com"]));
+    const out = result.output as any;
+    expect(out.pages[0].markdown.length).toBe(15_000);
+    expect(out.pages[0].rawLength).toBe(20_000);
+    expect(out.pages[0].truncated).toBe(true);
+    expect(out.pages[0].source).toBe("crawl4ai");
+  });
 });
