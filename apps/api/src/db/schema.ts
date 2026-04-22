@@ -123,6 +123,7 @@ export const toolCalls = pgTable(
     fromCache: boolean("from_cache").notNull().default(false),
     costUsd: text("cost_usd").notNull().default("0"),
     latencyMs: integer("latency_ms").notNull().default(0),
+    error: jsonb("error"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({
