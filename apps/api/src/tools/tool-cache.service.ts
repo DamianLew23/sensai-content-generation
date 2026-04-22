@@ -5,7 +5,8 @@ import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { toolCache } from "../db/schema";
 import { stableStringify } from "./stable-stringify";
-import { ToolCallRecorder } from "./tool-call-recorder.service";
+import { ToolCallRecorder, type ToolCallError } from "./tool-call-recorder.service";
+import { HttpError } from "./http-error";
 
 export interface GetOrSetOpts<T> {
   tool: string;
@@ -47,7 +48,20 @@ export class ToolCacheService {
       return hit.result as T;
     }
 
-    const fresh = await opts.fetcher();
+    let fresh: { result: T; costUsd: string; latencyMs: number };
+    try {
+      fresh = await opts.fetcher();
+    } catch (err) {
+      const error = errorToRecord(err);
+      await this.recorder.record({
+        runId: opts.runId, stepId: opts.stepId,
+        tool: opts.tool, method: opts.method, paramsHash,
+        fromCache: false, costUsd: "0", latencyMs: 0,
+        error,
+      });
+      throw err;
+    }
+
     const expiresAt = new Date(now.getTime() + opts.ttlSeconds * 1000);
 
     await this.db.insert(toolCache).values({
@@ -69,4 +83,14 @@ export class ToolCacheService {
 
     return fresh.result;
   }
+}
+
+function errorToRecord(err: unknown): ToolCallError {
+  if (err instanceof HttpError) {
+    return { reason: err.code, httpStatus: err.status };
+  }
+  const msg = String((err as any)?.message ?? err);
+  if (/abort|timeout/i.test(msg)) return { reason: "timeout" };
+  if (/fetch failed|ENOTFOUND|ECONN/i.test(msg)) return { reason: "network" };
+  return { reason: "error" };
 }

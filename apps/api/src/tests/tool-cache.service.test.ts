@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import type { ToolCallRecorder } from "../tools/tool-call-recorder.service";
+import { HttpError } from "../tools/http-error";
 
 function buildDb(opts: { hit?: { result: unknown; expiresAt: Date } | null } = {}) {
   const insert = vi.fn().mockReturnValue({
@@ -105,5 +106,37 @@ describe("ToolCacheService", () => {
 
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(select).toHaveBeenCalled();
+  });
+
+  it("MISS with fetcher throwing: records failure with error + re-throws", async () => {
+    const { db } = buildDb({ hit: null });
+    const svc = new ToolCacheService(db, recorder as any);
+
+    const boom = new Error("fetch failed");
+    const fetcher = vi.fn().mockRejectedValue(boom);
+
+    await expect(svc.getOrSet({ ...baseOpts, fetcher })).rejects.toBe(boom);
+
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({
+      fromCache: false,
+      costUsd: "0",
+      tool: "dataforseo",
+      method: "serp.organic.live",
+      error: expect.objectContaining({ reason: expect.any(String) }),
+    }));
+  });
+
+  it("MISS with HttpError: records failure with httpStatus + re-throws", async () => {
+    const { db } = buildDb({ hit: null });
+    const svc = new ToolCacheService(db, recorder as any);
+
+    const httpErr = new HttpError(500, "internal error");
+    const fetcher = vi.fn().mockRejectedValue(httpErr);
+
+    await expect(svc.getOrSet({ ...baseOpts, fetcher })).rejects.toBe(httpErr);
+
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({
+      error: { reason: "http_500", httpStatus: 500 },
+    }));
   });
 });
