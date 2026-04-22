@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { YoucomApiError } from "./youcom.errors";
-import type { YoucomEnv, YoucomResearchRequest, YoucomResearchResponse } from "./youcom.types";
+import type { YoucomClientEnv, YoucomResearchRequest, YoucomResearchResponse } from "./youcom.types";
 
 @Injectable()
 export class YoucomClient {
@@ -8,7 +8,7 @@ export class YoucomClient {
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
 
-  constructor(env: YoucomEnv) {
+  constructor(env: YoucomClientEnv) {
     if (!env.YOUCOM_API_KEY) {
       throw new Error("YOUCOM_API_KEY is required to use YoucomClient");
     }

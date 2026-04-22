@@ -22,18 +22,17 @@ export interface YoucomResearchResponse {
   };
 }
 
-export type YoucomEnv = Pick<
+export type YoucomClientEnv = Pick<
   Env,
-  | "YOUCOM_API_KEY"
-  | "YOUCOM_BASE_URL"
-  | "YOUCOM_TIMEOUT_MS"
-  | "YOUCOM_COST_LITE"
-  | "YOUCOM_COST_STANDARD"
-  | "YOUCOM_COST_DEEP"
-  | "YOUCOM_COST_EXHAUSTIVE"
+  "YOUCOM_API_KEY" | "YOUCOM_BASE_URL" | "YOUCOM_TIMEOUT_MS"
 >;
 
-export function youcomCostUsd(env: YoucomEnv, effort: ResearchEffort): string {
+export type YoucomCostEnv = Pick<
+  Env,
+  "YOUCOM_COST_LITE" | "YOUCOM_COST_STANDARD" | "YOUCOM_COST_DEEP" | "YOUCOM_COST_EXHAUSTIVE"
+>;
+
+export function youcomCostUsd(env: YoucomCostEnv, effort: ResearchEffort): string {
   const lookup: Record<ResearchEffort, number> = {
     lite: env.YOUCOM_COST_LITE,
     standard: env.YOUCOM_COST_STANDARD,
