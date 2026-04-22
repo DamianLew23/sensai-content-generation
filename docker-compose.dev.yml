@@ -32,7 +32,7 @@ services:
       retries: 10
 
   crawl4ai:
-    image: unclecode/crawl4ai:latest
+    image: unclecode/crawl4ai:0.8.6
     container_name: sensai-crawl4ai-dev
     restart: unless-stopped
     ports:
