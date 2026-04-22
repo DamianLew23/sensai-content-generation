@@ -14,6 +14,8 @@ const EnvSchema = z.object({
   DATAFORSEO_PASSWORD: z.string().min(1),
   FIRECRAWL_API_KEY: z.string().min(1),
   FIRECRAWL_BASE_URL: z.string().url().default("https://api.firecrawl.dev"),
+  CRAWL4AI_BASE_URL: z.string().url(),
+  CRAWL4AI_TIMEOUT_MS: z.coerce.number().int().positive().default(20_000),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 
