@@ -70,15 +70,23 @@ export const ScrapePage = z.object({
   markdown: z.string(),
   rawLength: z.number().int().nonnegative(),
   truncated: z.boolean(),
-  source: z.literal("firecrawl"),
+  source: z.enum(["crawl4ai", "firecrawl"]),
   fetchedAt: z.string().datetime(),
 });
 export type ScrapePage = z.infer<typeof ScrapePage>;
+
+export const ScrapeAttempt = z.object({
+  source: z.enum(["crawl4ai", "firecrawl"]),
+  reason: z.string(),
+  httpStatus: z.number().int().optional(),
+});
+export type ScrapeAttempt = z.infer<typeof ScrapeAttempt>;
 
 export const ScrapeFailure = z.object({
   url: z.string().url(),
   reason: z.string(),
   httpStatus: z.number().int().optional(),
+  attempts: ScrapeAttempt.array().optional(),
 });
 export type ScrapeFailure = z.infer<typeof ScrapeFailure>;
 
