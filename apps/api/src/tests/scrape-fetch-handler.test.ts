@@ -100,4 +100,27 @@ describe("ScrapeFetchHandler", () => {
       error: { reason: "short_content" },
     }));
   });
+
+  it("crawl4ai Cloudflare challenge → fallback do firecrawl", async () => {
+    const cache = mkCache();
+    const recorder = mkRecorder();
+    const crawl4ai = {
+      scrape: vi.fn().mockResolvedValue({
+        url: "https://linkedin.example.com",
+        markdown: ("Just a moment...\n<div class='cf-chl-body'></div>\n" + "x".repeat(260)).padEnd(320, "x"),
+        title: "LI",
+      }),
+    };
+    const firecrawl = mkFirecrawl();
+
+    const handler = new ScrapeFetchHandler(crawl4ai as any, firecrawl as any, cache as any, recorder as any);
+    const result = await handler.execute(mkCtx(["https://linkedin.example.com"]));
+
+    const out = result.output as any;
+    expect(out.pages[0].source).toBe("firecrawl");
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({
+      tool: "crawl4ai",
+      error: { reason: "cf_challenge" },
+    }));
+  });
 });
