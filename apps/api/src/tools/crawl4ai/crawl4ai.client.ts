@@ -1,11 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import type { Env } from "../../config/env";
 import { HttpError } from "../http-error";
 import { Crawl4aiApiError } from "./crawl4ai.errors";
-
-export interface Crawl4aiClientEnv {
-  CRAWL4AI_BASE_URL: string;
-  CRAWL4AI_TIMEOUT_MS: number;
-}
 
 export interface ScrapeRequestParams {
   url: string;
@@ -30,7 +26,7 @@ export class Crawl4aiClient {
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
 
-  constructor(env: Crawl4aiClientEnv) {
+  constructor(env: Pick<Env, "CRAWL4AI_BASE_URL" | "CRAWL4AI_TIMEOUT_MS">) {
     this.baseUrl = env.CRAWL4AI_BASE_URL;
     this.timeoutMs = env.CRAWL4AI_TIMEOUT_MS;
   }
