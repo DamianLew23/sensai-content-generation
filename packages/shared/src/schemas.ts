@@ -143,7 +143,7 @@ export const DroppedPage = z.object({
   url: z.string().url(),
   reason: DroppedPageReason,
   similarToUrl: z.string().url().optional(),
-  similarity: z.number().optional(),
+  similarity: z.number().min(-1).max(1).optional(),
 });
 export type DroppedPage = z.infer<typeof DroppedPage>;
 
@@ -152,7 +152,7 @@ export const CleaningStats = z.object({
   keptPages: z.number().int().nonnegative(),
   inputChars: z.number().int().nonnegative(),
   outputChars: z.number().int().nonnegative(),
-  reductionPct: z.number(),
+  reductionPct: z.number().min(0).max(100),
   blacklistedRemoved: z.number().int().nonnegative(),
   keywordFilteredRemoved: z.number().int().nonnegative(),
   crossPageDupesRemoved: z.number().int().nonnegative(),

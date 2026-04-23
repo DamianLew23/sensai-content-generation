@@ -111,14 +111,14 @@ exports.DroppedPage = zod_1.z.object({
     url: zod_1.z.string().url(),
     reason: exports.DroppedPageReason,
     similarToUrl: zod_1.z.string().url().optional(),
-    similarity: zod_1.z.number().optional(),
+    similarity: zod_1.z.number().min(-1).max(1).optional(),
 });
 exports.CleaningStats = zod_1.z.object({
     inputPages: zod_1.z.number().int().nonnegative(),
     keptPages: zod_1.z.number().int().nonnegative(),
     inputChars: zod_1.z.number().int().nonnegative(),
     outputChars: zod_1.z.number().int().nonnegative(),
-    reductionPct: zod_1.z.number(),
+    reductionPct: zod_1.z.number().min(0).max(100),
     blacklistedRemoved: zod_1.z.number().int().nonnegative(),
     keywordFilteredRemoved: zod_1.z.number().int().nonnegative(),
     crossPageDupesRemoved: zod_1.z.number().int().nonnegative(),
