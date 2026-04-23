@@ -6,10 +6,11 @@ import { DataForSeoModule } from "./dataforseo/dataforseo.module";
 import { FirecrawlModule } from "./firecrawl/firecrawl.module";
 import { Crawl4aiModule } from "./crawl4ai/crawl4ai.module";
 import { YoucomModule } from "./youcom/youcom.module";
+import { ContentCleanerModule } from "./content-cleaner/content-cleaner.module";
 
 @Module({
-  imports: [DbModule, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule],
+  imports: [DbModule, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule, ContentCleanerModule],
   providers: [ToolCallRecorder, ToolCacheService],
-  exports: [ToolCacheService, ToolCallRecorder, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule],
+  exports: [ToolCacheService, ToolCallRecorder, DataForSeoModule, FirecrawlModule, Crawl4aiModule, YoucomModule, ContentCleanerModule],
 })
 export class ToolsModule {}
