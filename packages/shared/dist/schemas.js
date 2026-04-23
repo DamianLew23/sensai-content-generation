@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -91,4 +91,40 @@ exports.ResumeStepDto = zod_1.z.object({
     input: zod_1.z.object({
         urls: zod_1.z.string().url().array().min(1).max(5),
     }),
+});
+exports.CleanedPage = zod_1.z.object({
+    url: zod_1.z.string().url(),
+    title: zod_1.z.string(),
+    fetchedAt: zod_1.z.string().datetime(),
+    markdown: zod_1.z.string(),
+    paragraphs: zod_1.z.string().array(),
+    originalChars: zod_1.z.number().int().nonnegative(),
+    cleanedChars: zod_1.z.number().int().nonnegative(),
+    removedParagraphs: zod_1.z.number().int().nonnegative(),
+});
+exports.DroppedPageReason = zod_1.z.enum([
+    "similar_to_kept",
+    "all_paragraphs_filtered",
+    "empty_after_cleanup",
+]);
+exports.DroppedPage = zod_1.z.object({
+    url: zod_1.z.string().url(),
+    reason: exports.DroppedPageReason,
+    similarToUrl: zod_1.z.string().url().optional(),
+    similarity: zod_1.z.number().optional(),
+});
+exports.CleaningStats = zod_1.z.object({
+    inputPages: zod_1.z.number().int().nonnegative(),
+    keptPages: zod_1.z.number().int().nonnegative(),
+    inputChars: zod_1.z.number().int().nonnegative(),
+    outputChars: zod_1.z.number().int().nonnegative(),
+    reductionPct: zod_1.z.number(),
+    blacklistedRemoved: zod_1.z.number().int().nonnegative(),
+    keywordFilteredRemoved: zod_1.z.number().int().nonnegative(),
+    crossPageDupesRemoved: zod_1.z.number().int().nonnegative(),
+});
+exports.CleanedScrapeResult = zod_1.z.object({
+    pages: exports.CleanedPage.array(),
+    droppedPages: exports.DroppedPage.array(),
+    stats: exports.CleaningStats,
 });
