@@ -59,6 +59,11 @@ describe("LlmClient.embedMany", () => {
     expect(res.latencyMs).toBeGreaterThanOrEqual(0);
     expect(Number.isInteger(res.latencyMs)).toBe(true);
     expect(mockOpenAIEmbedding).toHaveBeenCalledWith("text-embedding-3-small");
+    expect(mockEmbedMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        values: ["hello", "world"],
+      }),
+    );
   });
 
   it("handles missing usage.tokens gracefully", async () => {
