@@ -437,21 +437,21 @@ export declare const CleanedPage: z.ZodObject<{
     removedParagraphs: number;
 }>;
 export type CleanedPage = z.infer<typeof CleanedPage>;
-export declare const DroppedPageReason: z.ZodEnum<["similar_to_kept", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+export declare const DroppedPageReason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
 export type DroppedPageReason = z.infer<typeof DroppedPageReason>;
 export declare const DroppedPage: z.ZodObject<{
     url: z.ZodString;
-    reason: z.ZodEnum<["similar_to_kept", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+    reason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
     similarToUrl: z.ZodOptional<z.ZodString>;
     similarity: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     url: string;
-    reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+    reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
     similarToUrl?: string | undefined;
     similarity?: number | undefined;
 }, {
     url: string;
-    reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+    reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
     similarToUrl?: string | undefined;
     similarity?: number | undefined;
 }>;
@@ -516,17 +516,17 @@ export declare const CleanedScrapeResult: z.ZodObject<{
     }>, "many">;
     droppedPages: z.ZodArray<z.ZodObject<{
         url: z.ZodString;
-        reason: z.ZodEnum<["similar_to_kept", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+        reason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
         similarToUrl: z.ZodOptional<z.ZodString>;
         similarity: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         url: string;
-        reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
         similarToUrl?: string | undefined;
         similarity?: number | undefined;
     }, {
         url: string;
-        reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
         similarToUrl?: string | undefined;
         similarity?: number | undefined;
     }>, "many">;
@@ -571,7 +571,7 @@ export declare const CleanedScrapeResult: z.ZodObject<{
     }[];
     droppedPages: {
         url: string;
-        reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
         similarToUrl?: string | undefined;
         similarity?: number | undefined;
     }[];
@@ -598,7 +598,7 @@ export declare const CleanedScrapeResult: z.ZodObject<{
     }[];
     droppedPages: {
         url: string;
-        reason: "similar_to_kept" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
         similarToUrl?: string | undefined;
         similarity?: number | undefined;
     }[];

@@ -104,6 +104,7 @@ exports.CleanedPage = zod_1.z.object({
 });
 exports.DroppedPageReason = zod_1.z.enum([
     "similar_to_kept",
+    "char_limit_reached",
     "all_paragraphs_filtered",
     "empty_after_cleanup",
 ]);

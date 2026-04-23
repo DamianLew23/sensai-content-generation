@@ -134,6 +134,7 @@ export type CleanedPage = z.infer<typeof CleanedPage>;
 
 export const DroppedPageReason = z.enum([
   "similar_to_kept",
+  "char_limit_reached",
   "all_paragraphs_filtered",
   "empty_after_cleanup",
 ]);

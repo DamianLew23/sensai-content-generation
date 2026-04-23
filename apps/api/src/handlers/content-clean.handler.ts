@@ -252,8 +252,16 @@ export class ContentCleanHandler implements StepHandler {
     for (const r of dedupResults) {
       if (r.status === "kept") {
         keptIdx.add(r.idx);
+        continue;
+      }
+      const page = survivingAfterX[r.idx];
+      if (r.reason.startsWith("Char limit")) {
+        droppedPages.push({
+          url: page.url,
+          reason: "char_limit_reached",
+        });
       } else {
-        const page = survivingAfterX[r.idx];
+        // Similarity-based discard
         const similarToUrl = r.similarToIdx !== undefined
           ? survivingAfterX[r.similarToIdx]?.url
           : undefined;
