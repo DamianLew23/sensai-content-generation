@@ -1,0 +1,32 @@
+{
+  "pages": [
+    {
+      "url": "https://example1.test/kortyzol",
+      "title": "Jak obniżyć kortyzol po 40",
+      "markdown": "Kortyzol to hormon stresu produkowany przez nadnercza. Jego podwyższony poziom po 40 roku życia wiąże się z gorszym snem, przyrostem masy ciała oraz problemami metabolicznymi u wielu osób dojrzałych.\n\nDieta bogata w błonnik, białko oraz zdrowe tłuszcze roślinne sprzyja obniżeniu kortyzolu. Istotne są też regularne posiłki i unikanie długich okresów głodu, które nasilają stres metaboliczny organizmu.\n\nSen trwający 7-8 godzin jest kluczowy dla regulacji osi HPA odpowiedzialnej za produkcję kortyzolu. Osoby śpiące mniej niż 6 godzin mają znacząco wyższe stężenia kortyzolu porannego w badaniach laboratoryjnych.\n\nAkceptuję cookies aby kontynuować przeglądanie naszej strony internetowej sklepu medycznego online sensownego.\n\nPrzeczytaj także: 10 najlepszych suplementów na energię po 40 roku życia które zmienią twoje codzienne funkcjonowanie w pracy.",
+      "rawLength": 1200,
+      "truncated": false,
+      "source": "crawl4ai",
+      "fetchedAt": "2026-04-23T10:00:00.000Z"
+    },
+    {
+      "url": "https://example2.test/stres-kortyzol",
+      "title": "Kortyzol i stres - przewodnik",
+      "markdown": "Kortyzol to hormon stresu produkowany przez nadnercza. Jego podwyższony poziom po 40 roku życia wiąże się z gorszym snem, przyrostem masy ciała oraz problemami metabolicznymi u wielu osób dojrzałych.\n\nRegularna aktywność fizyczna umiarkowanej intensywności, szczególnie spacerowanie i joga, pomaga regulować oś HPA i obniżać poziomy kortyzolu w długim terminie u dorosłych.\n\nSuplementacja adaptogenami jak ashwagandha czy różeniec górski ma udokumentowane działanie obniżające kortyzol w badaniach klinicznych przeprowadzonych w ostatniej dekadzie.\n\nDodaj do koszyka nasz zestaw adaptogenów premium z darmową dostawą dla zamówień powyżej 200 złotych brutto.",
+      "rawLength": 1100,
+      "truncated": false,
+      "source": "crawl4ai",
+      "fetchedAt": "2026-04-23T10:01:00.000Z"
+    },
+    {
+      "url": "https://example3.test/recipes",
+      "title": "Przepisy kulinarne - baza",
+      "markdown": "Nasze najlepsze przepisy na domowe obiady znajdziesz w dziale kuchnia polska z tysiącami sprawdzonych dań zebranych przez naszych czytelników na przestrzeni lat działalności portalu.\n\nZaloguj się aby zapisać ulubione przepisy i subskrybuj newsletter by otrzymywać cotygodniowe propozycje menu prosto na skrzynkę email.\n\nPolityka prywatności i zgoda na pliki cookie zgodnie z RODO - akceptuję wszystkie kategorie plików oraz analitykę ruchu na stronie internetowej.",
+      "rawLength": 800,
+      "truncated": false,
+      "source": "firecrawl",
+      "fetchedAt": "2026-04-23T10:02:00.000Z"
+    }
+  ],
+  "failures": []
+}
