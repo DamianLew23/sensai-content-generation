@@ -408,3 +408,209 @@ export declare const ResumeStepDto: z.ZodObject<{
     };
 }>;
 export type ResumeStepDto = z.infer<typeof ResumeStepDto>;
+export declare const CleanedPage: z.ZodObject<{
+    url: z.ZodString;
+    title: z.ZodString;
+    fetchedAt: z.ZodString;
+    markdown: z.ZodString;
+    paragraphs: z.ZodArray<z.ZodString, "many">;
+    originalChars: z.ZodNumber;
+    cleanedChars: z.ZodNumber;
+    removedParagraphs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    url: string;
+    title: string;
+    markdown: string;
+    fetchedAt: string;
+    paragraphs: string[];
+    originalChars: number;
+    cleanedChars: number;
+    removedParagraphs: number;
+}, {
+    url: string;
+    title: string;
+    markdown: string;
+    fetchedAt: string;
+    paragraphs: string[];
+    originalChars: number;
+    cleanedChars: number;
+    removedParagraphs: number;
+}>;
+export type CleanedPage = z.infer<typeof CleanedPage>;
+export declare const DroppedPageReason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+export type DroppedPageReason = z.infer<typeof DroppedPageReason>;
+export declare const DroppedPage: z.ZodObject<{
+    url: z.ZodString;
+    reason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+    similarToUrl: z.ZodOptional<z.ZodString>;
+    similarity: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    url: string;
+    reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+    similarToUrl?: string | undefined;
+    similarity?: number | undefined;
+}, {
+    url: string;
+    reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+    similarToUrl?: string | undefined;
+    similarity?: number | undefined;
+}>;
+export type DroppedPage = z.infer<typeof DroppedPage>;
+export declare const CleaningStats: z.ZodObject<{
+    inputPages: z.ZodNumber;
+    keptPages: z.ZodNumber;
+    inputChars: z.ZodNumber;
+    outputChars: z.ZodNumber;
+    reductionPct: z.ZodNumber;
+    blacklistedRemoved: z.ZodNumber;
+    keywordFilteredRemoved: z.ZodNumber;
+    crossPageDupesRemoved: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    inputPages: number;
+    keptPages: number;
+    inputChars: number;
+    outputChars: number;
+    reductionPct: number;
+    blacklistedRemoved: number;
+    keywordFilteredRemoved: number;
+    crossPageDupesRemoved: number;
+}, {
+    inputPages: number;
+    keptPages: number;
+    inputChars: number;
+    outputChars: number;
+    reductionPct: number;
+    blacklistedRemoved: number;
+    keywordFilteredRemoved: number;
+    crossPageDupesRemoved: number;
+}>;
+export type CleaningStats = z.infer<typeof CleaningStats>;
+export declare const CleanedScrapeResult: z.ZodObject<{
+    pages: z.ZodArray<z.ZodObject<{
+        url: z.ZodString;
+        title: z.ZodString;
+        fetchedAt: z.ZodString;
+        markdown: z.ZodString;
+        paragraphs: z.ZodArray<z.ZodString, "many">;
+        originalChars: z.ZodNumber;
+        cleanedChars: z.ZodNumber;
+        removedParagraphs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        url: string;
+        title: string;
+        markdown: string;
+        fetchedAt: string;
+        paragraphs: string[];
+        originalChars: number;
+        cleanedChars: number;
+        removedParagraphs: number;
+    }, {
+        url: string;
+        title: string;
+        markdown: string;
+        fetchedAt: string;
+        paragraphs: string[];
+        originalChars: number;
+        cleanedChars: number;
+        removedParagraphs: number;
+    }>, "many">;
+    droppedPages: z.ZodArray<z.ZodObject<{
+        url: z.ZodString;
+        reason: z.ZodEnum<["similar_to_kept", "char_limit_reached", "all_paragraphs_filtered", "empty_after_cleanup"]>;
+        similarToUrl: z.ZodOptional<z.ZodString>;
+        similarity: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        url: string;
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        similarToUrl?: string | undefined;
+        similarity?: number | undefined;
+    }, {
+        url: string;
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        similarToUrl?: string | undefined;
+        similarity?: number | undefined;
+    }>, "many">;
+    stats: z.ZodObject<{
+        inputPages: z.ZodNumber;
+        keptPages: z.ZodNumber;
+        inputChars: z.ZodNumber;
+        outputChars: z.ZodNumber;
+        reductionPct: z.ZodNumber;
+        blacklistedRemoved: z.ZodNumber;
+        keywordFilteredRemoved: z.ZodNumber;
+        crossPageDupesRemoved: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        inputPages: number;
+        keptPages: number;
+        inputChars: number;
+        outputChars: number;
+        reductionPct: number;
+        blacklistedRemoved: number;
+        keywordFilteredRemoved: number;
+        crossPageDupesRemoved: number;
+    }, {
+        inputPages: number;
+        keptPages: number;
+        inputChars: number;
+        outputChars: number;
+        reductionPct: number;
+        blacklistedRemoved: number;
+        keywordFilteredRemoved: number;
+        crossPageDupesRemoved: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    pages: {
+        url: string;
+        title: string;
+        markdown: string;
+        fetchedAt: string;
+        paragraphs: string[];
+        originalChars: number;
+        cleanedChars: number;
+        removedParagraphs: number;
+    }[];
+    droppedPages: {
+        url: string;
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        similarToUrl?: string | undefined;
+        similarity?: number | undefined;
+    }[];
+    stats: {
+        inputPages: number;
+        keptPages: number;
+        inputChars: number;
+        outputChars: number;
+        reductionPct: number;
+        blacklistedRemoved: number;
+        keywordFilteredRemoved: number;
+        crossPageDupesRemoved: number;
+    };
+}, {
+    pages: {
+        url: string;
+        title: string;
+        markdown: string;
+        fetchedAt: string;
+        paragraphs: string[];
+        originalChars: number;
+        cleanedChars: number;
+        removedParagraphs: number;
+    }[];
+    droppedPages: {
+        url: string;
+        reason: "similar_to_kept" | "char_limit_reached" | "all_paragraphs_filtered" | "empty_after_cleanup";
+        similarToUrl?: string | undefined;
+        similarity?: number | undefined;
+    }[];
+    stats: {
+        inputPages: number;
+        keptPages: number;
+        inputChars: number;
+        outputChars: number;
+        reductionPct: number;
+        blacklistedRemoved: number;
+        keywordFilteredRemoved: number;
+        crossPageDupesRemoved: number;
+    };
+}>;
+export type CleanedScrapeResult = z.infer<typeof CleanedScrapeResult>;

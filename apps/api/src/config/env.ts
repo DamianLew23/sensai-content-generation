@@ -24,6 +24,14 @@ const EnvSchema = z.object({
   YOUCOM_COST_STANDARD: z.coerce.number().nonnegative().default(0.05),
   YOUCOM_COST_DEEP: z.coerce.number().nonnegative().default(0.15),
   YOUCOM_COST_EXHAUSTIVE: z.coerce.number().nonnegative().default(0.40),
+  OPENAI_API_KEY: z.string().min(1),
+  CLEANING_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
+  CLEANING_BLOCK_SIMILARITY_THRESHOLD: z.coerce.number().min(0).max(1).default(0.85),
+  CLEANING_PARAGRAPH_KEYWORD_THRESHOLD: z.coerce.number().min(0).max(1).default(0.4),
+  CLEANING_LENGTH_DIFF_THRESHOLD: z.coerce.number().min(0).max(1).default(0.3),
+  CLEANING_TARGET_CHAR_LIMIT: z.coerce.number().int().positive().default(50_000),
+  CLEANING_MIN_PARAGRAPH_LENGTH: z.coerce.number().int().positive().default(60),
+  CLEANING_COST_PER_1M_TOKENS: z.coerce.number().nonnegative().default(0.02),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 

@@ -119,3 +119,50 @@ export const ResumeStepDto = z.object({
   }),
 });
 export type ResumeStepDto = z.infer<typeof ResumeStepDto>;
+
+export const CleanedPage = z.object({
+  url: z.string().url(),
+  title: z.string(),
+  fetchedAt: z.string().datetime(),
+  markdown: z.string(),
+  paragraphs: z.string().array(),
+  originalChars: z.number().int().nonnegative(),
+  cleanedChars: z.number().int().nonnegative(),
+  removedParagraphs: z.number().int().nonnegative(),
+});
+export type CleanedPage = z.infer<typeof CleanedPage>;
+
+export const DroppedPageReason = z.enum([
+  "similar_to_kept",
+  "char_limit_reached",
+  "all_paragraphs_filtered",
+  "empty_after_cleanup",
+]);
+export type DroppedPageReason = z.infer<typeof DroppedPageReason>;
+
+export const DroppedPage = z.object({
+  url: z.string().url(),
+  reason: DroppedPageReason,
+  similarToUrl: z.string().url().optional(),
+  similarity: z.number().min(-1).max(1).optional(),
+});
+export type DroppedPage = z.infer<typeof DroppedPage>;
+
+export const CleaningStats = z.object({
+  inputPages: z.number().int().nonnegative(),
+  keptPages: z.number().int().nonnegative(),
+  inputChars: z.number().int().nonnegative(),
+  outputChars: z.number().int().nonnegative(),
+  reductionPct: z.number().min(0).max(100),
+  blacklistedRemoved: z.number().int().nonnegative(),
+  keywordFilteredRemoved: z.number().int().nonnegative(),
+  crossPageDupesRemoved: z.number().int().nonnegative(),
+});
+export type CleaningStats = z.infer<typeof CleaningStats>;
+
+export const CleanedScrapeResult = z.object({
+  pages: CleanedPage.array(),
+  droppedPages: DroppedPage.array(),
+  stats: CleaningStats,
+});
+export type CleanedScrapeResult = z.infer<typeof CleanedScrapeResult>;

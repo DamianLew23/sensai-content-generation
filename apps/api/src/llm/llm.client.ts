@@ -1,8 +1,10 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { createOpenAI } from "@ai-sdk/openai";
 import {
   generateObject as aiGenerateObject,
   generateText as aiGenerateText,
+  embedMany as aiEmbedMany,
 } from "ai";
 import { ZodSchema } from "zod";
 import { loadEnv } from "../config/env";
@@ -33,6 +35,7 @@ export interface LlmObjectResult<T> extends Omit<LlmTextResult, "text"> {
 export class LlmClient {
   private readonly logger = new Logger(LlmClient.name);
   private readonly provider;
+  private readonly openai;
   private readonly defaultModel: string;
 
   constructor(private readonly costTracker: CostTrackerService) {
@@ -43,6 +46,7 @@ export class LlmClient {
       baseURL: env.OPENROUTER_BASE_URL,
       supportsStructuredOutputs: true,
     });
+    this.openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
     this.defaultModel = env.DEFAULT_MODEL;
   }
 
@@ -118,6 +122,25 @@ export class LlmClient {
       promptTokens,
       completionTokens,
       costUsd,
+      latencyMs,
+    };
+  }
+
+  async embedMany(args: {
+    ctx: { runId: string; stepId: string };
+    model: string;
+    values: string[];
+  }): Promise<{ embeddings: number[][]; tokensUsed: number; latencyMs: number }> {
+    const started = Date.now();
+    const res = await aiEmbedMany({
+      model: this.openai.embedding(args.model),
+      values: args.values,
+    });
+    const latencyMs = Date.now() - started;
+    const tokensUsed = res.usage?.tokens ?? 0;
+    return {
+      embeddings: res.embeddings,
+      tokensUsed,
       latencyMs,
     };
   }
