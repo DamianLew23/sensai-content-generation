@@ -1,5 +1,3 @@
-export interface ExtractCallContext {
-  runId: string;
-  stepId: string;
-  attempt: number;
-}
+import type { LlmCallContext } from "../../llm/llm.client";
+
+export type ExtractCallContext = Omit<LlmCallContext, "model">;
