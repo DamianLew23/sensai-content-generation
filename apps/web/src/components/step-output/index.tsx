@@ -1,5 +1,6 @@
 import { CleanedOutput } from "./cleaned";
 import { DeepResearchOutput } from "./deep-research";
+import { ExtractionOutput } from "./extraction";
 import { JsonFallback } from "./json-fallback";
 import { ScrapeOutput } from "./scrape";
 import { SerpOutput } from "./serp";
@@ -25,6 +26,8 @@ export function StepOutput({
       return <ScrapeOutput value={value} />;
     case "tool.content.clean":
       return <CleanedOutput value={value} />;
+    case "tool.content.extract":
+      return <ExtractionOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -35,6 +38,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.youcom.research" ||
     type === "tool.serp.fetch" ||
     type === "tool.scrape" ||
-    type === "tool.content.clean"
+    type === "tool.content.clean" ||
+    type === "tool.content.extract"
   );
 }
