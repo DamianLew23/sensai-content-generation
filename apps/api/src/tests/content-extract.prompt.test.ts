@@ -11,6 +11,16 @@ describe("contentExtractPrompt.system", () => {
   it("declares the Definicja – Wartość – Jednostka format for data points", () => {
     expect(contentExtractPrompt.system).toMatch(/Definition.*Value.*Unit/);
   });
+
+  it("signals exhaustive extraction (floor not ceiling, process per source)", () => {
+    expect(contentExtractPrompt.system).toMatch(/completeness/i);
+    expect(contentExtractPrompt.system).toMatch(/floor/i);
+    expect(contentExtractPrompt.system).toMatch(/each SOURCE block/);
+  });
+
+  it("requires sourceUrls for priority high/medium", () => {
+    expect(contentExtractPrompt.system).toMatch(/priority.*high.*medium.*source\s*URL/i);
+  });
 });
 
 describe("contentExtractPrompt.user", () => {
@@ -32,9 +42,10 @@ describe("contentExtractPrompt.user", () => {
 
     expect(out).toMatch(/Central keyword:\s*kortyzol/);
     expect(out).toMatch(/Output language:\s*pl/);
-    expect(out).toMatch(/minimum 5 facts/i);
-    expect(out).toMatch(/minimum 3 data points/i);
-    expect(out).toMatch(/minimum 3 ideations/i);
+    expect(out).toMatch(/at least 5 facts/i);
+    expect(out).toMatch(/at least 3 data points/i);
+    expect(out).toMatch(/at least 3 ideations/i);
+    expect(out).toMatch(/FLOORS/);
     expect(out).toContain("---");
     expect(out).toContain("https://a.example.com/a");
     expect(out).toContain("https://b.example.com/b");
