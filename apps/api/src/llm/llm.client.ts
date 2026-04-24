@@ -5,7 +5,6 @@ import {
   generateObject as aiGenerateObject,
   generateText as aiGenerateText,
   embedMany as aiEmbedMany,
-  type EmbeddingModel,
 } from "ai";
 import { ZodSchema } from "zod";
 import { loadEnv } from "../config/env";
@@ -134,9 +133,7 @@ export class LlmClient {
   }): Promise<{ embeddings: number[][]; tokensUsed: number; latencyMs: number }> {
     const started = Date.now();
     const res = await aiEmbedMany({
-      // @ai-sdk/openai@3 returns EmbeddingModelV3; ai@5 embedMany types the
-      // model param as EmbeddingModelV2. Cast through unknown until SDK versions align.
-      model: this.openai.embedding(args.model) as unknown as EmbeddingModel<string>,
+      model: this.openai.embedding(args.model),
       values: args.values,
     });
     const latencyMs = Date.now() - started;
