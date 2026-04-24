@@ -89,7 +89,7 @@ exports.ScrapeResult = zod_1.z.object({
 });
 exports.ResumeStepDto = zod_1.z.object({
     input: zod_1.z.object({
-        urls: zod_1.z.string().url().array().min(1).max(5),
+        urls: zod_1.z.string().url().array().min(1).max(10),
     }),
 });
 exports.CleanedPage = zod_1.z.object({

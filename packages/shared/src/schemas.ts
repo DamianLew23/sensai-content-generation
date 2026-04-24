@@ -115,7 +115,7 @@ export type ScrapeResult = z.infer<typeof ScrapeResult>;
 
 export const ResumeStepDto = z.object({
   input: z.object({
-    urls: z.string().url().array().min(1).max(5),
+    urls: z.string().url().array().min(1).max(10),
   }),
 });
 export type ResumeStepDto = z.infer<typeof ResumeStepDto>;

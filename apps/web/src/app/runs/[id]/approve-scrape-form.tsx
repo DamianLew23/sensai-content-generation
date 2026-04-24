@@ -17,7 +17,7 @@ interface Props {
   serpItems: SerpItem[];
 }
 
-const MAX_URLS = 5;
+const MAX_URLS = 10;
 const DEFAULT_CHECKED = 3;
 
 const ERROR_MESSAGES: Record<string, string> = {
