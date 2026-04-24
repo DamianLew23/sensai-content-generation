@@ -58,7 +58,7 @@ export class ContentExtractorClient {
     );
 
     return {
-      result: res.object,
+      result: res.object as ExtractionResult,
       model: res.model,
       promptTokens: res.promptTokens,
       completionTokens: res.completionTokens,
