@@ -166,3 +166,59 @@ export const CleanedScrapeResult = z.object({
   stats: CleaningStats,
 });
 export type CleanedScrapeResult = z.infer<typeof CleanedScrapeResult>;
+
+export const ExtractionMetadata = z.object({
+  keyword: z.string().min(1),
+  language: z.string().min(2).max(10),
+  sourceUrlCount: z.number().int().nonnegative(),
+  createdAt: z.string().datetime(),
+});
+export type ExtractionMetadata = z.infer<typeof ExtractionMetadata>;
+
+export const FactCategory = z.enum(["definition", "causal", "general"]);
+export type FactCategory = z.infer<typeof FactCategory>;
+
+export const Priority = z.enum(["high", "medium", "low"]);
+export type Priority = z.infer<typeof Priority>;
+
+export const Fact = z.object({
+  id: z.string().regex(/^F\d+$/, "id must be F<number>"),
+  text: z.string().min(1).max(400),
+  category: FactCategory,
+  priority: Priority,
+  confidence: z.number().min(0).max(1),
+  sourceUrls: z.string().url().array().default([]),
+});
+export type Fact = z.infer<typeof Fact>;
+
+export const DataPoint = z.object({
+  id: z.string().regex(/^D\d+$/, "id must be D<number>"),
+  definition: z.string().min(1).max(200),
+  value: z.string().min(1).max(60),
+  unit: z.string().max(40).nullable(),
+  sourceUrls: z.string().url().array().default([]),
+});
+export type DataPoint = z.infer<typeof DataPoint>;
+
+export const IdeationType = z.enum(["checklist", "mini_course", "info_box", "habit"]);
+export type IdeationType = z.infer<typeof IdeationType>;
+
+export const Ideation = z.object({
+  id: z.string().regex(/^I\d+$/, "id must be I<number>"),
+  type: IdeationType,
+  title: z.string().min(1).max(120),
+  description: z.string().min(1).max(400),
+  audience: z.string().max(200).default(""),
+  channels: z.string().array().default([]),
+  keywords: z.string().array().default([]),
+  priority: Priority,
+});
+export type Ideation = z.infer<typeof Ideation>;
+
+export const ExtractionResult = z.object({
+  metadata: ExtractionMetadata,
+  facts: Fact.array().min(5),
+  data: DataPoint.array().min(3),
+  ideations: Ideation.array().min(3),
+});
+export type ExtractionResult = z.infer<typeof ExtractionResult>;
