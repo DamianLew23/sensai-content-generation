@@ -107,6 +107,7 @@ sensai-content-generation/
 ## Task 1: Init monorepo — root + pnpm workspaces
 
 **Files:**
+
 - Create: `package.json`
 - Create: `pnpm-workspace.yaml`
 - Create: `.gitignore`
@@ -179,7 +180,7 @@ REDIS_PORT=6379
 
 - [ ] **Step 5: Create minimal README.md**
 
-```markdown
+````markdown
 # Sens.ai Content Generation
 
 Internal content generation app (Plan 1: Foundation).
@@ -198,10 +199,12 @@ pnpm db:seed                # seed project + template
 pnpm dev:api                # in terminal 1
 pnpm dev:web                # in terminal 2
 ```
+````
 
 Frontend: http://localhost:3000
-API:      http://localhost:4000
-```
+API: http://localhost:4000
+
+````
 
 - [ ] **Step 6: Init git, first commit**
 
@@ -209,13 +212,14 @@ API:      http://localhost:4000
 git init
 git add .
 git commit -m "chore: init monorepo scaffolding"
-```
+````
 
 ---
 
 ## Task 2: Docker Compose for dev infra
 
 **Files:**
+
 - Create: `docker-compose.dev.yml`
 
 - [x] **Step 1: Write docker-compose.dev.yml**
@@ -280,6 +284,7 @@ git commit -m "chore(infra): add docker compose for dev postgres + redis"
 ## Task 3: Bootstrap shared package (`@sensai/shared`)
 
 **Files:**
+
 - Create: `packages/shared/package.json`
 - Create: `packages/shared/tsconfig.json`
 - Create: `packages/shared/src/index.ts`
@@ -424,6 +429,7 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 ## Task 4: Bootstrap NestJS backend (`apps/api`)
 
 **Files:**
+
 - Create: `apps/api/package.json`
 - Create: `apps/api/tsconfig.json`
 - Create: `apps/api/tsconfig.build.json`
@@ -518,7 +524,13 @@ git commit -m "feat(shared): add Zod schemas for run/step/project types"
 ```json
 {
   "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "test", "dist", "**/*.spec.ts", "**/*.e2e-spec.ts"]
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.e2e-spec.ts"
+  ]
 }
 ```
 
@@ -565,7 +577,9 @@ API_BEARER_TOKEN=dev-token-change-me
 import { z } from "zod";
 
 const EnvSchema = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
   PORT: z.coerce.number().default(4000),
   WEB_ORIGIN: z.string().default("http://localhost:3000"),
   DATABASE_URL: z.string().url(),
@@ -606,7 +620,10 @@ import { LoggerModule } from "nestjs-pino";
       pinoHttp: {
         transport:
           process.env.NODE_ENV === "development"
-            ? { target: "pino-pretty", options: { colorize: true, singleLine: true } }
+            ? {
+                target: "pino-pretty",
+                options: { colorize: true, singleLine: true },
+              }
             : undefined,
         level: process.env.LOG_LEVEL ?? "info",
       },
@@ -652,12 +669,14 @@ Expected: clean typecheck and build.
 - [x] **Step 10: Smoke-run the API**
 
 Prepare env:
+
 ```bash
 cp apps/api/.env.example apps/api/.env
 # Set OPENROUTER_API_KEY to any non-empty value for now (not used in this task)
 ```
 
 Run:
+
 ```bash
 pnpm --filter @sensai/api start:dev
 ```
@@ -676,6 +695,7 @@ git commit -m "feat(api): bootstrap nest app with env validation and pino logger
 ## Task 5: Drizzle setup + database schema
 
 **Files:**
+
 - Create: `apps/api/drizzle.config.ts`
 - Create: `apps/api/src/db/schema.ts`
 - Create: `apps/api/src/db/client.ts`
@@ -703,6 +723,7 @@ export default defineConfig({
 ```
 
 Install dotenv as dev dep:
+
 ```bash
 pnpm --filter @sensai/api add -D dotenv
 ```
@@ -727,8 +748,12 @@ export const projects = pgTable("projects", {
   id: uuid("id").defaultRandom().primaryKey(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
-  config: jsonb("config").notNull().default(sql`'{}'::jsonb`),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  config: jsonb("config")
+    .notNull()
+    .default(sql`'{}'::jsonb`),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const pipelineTemplates = pgTable(
@@ -738,10 +763,15 @@ export const pipelineTemplates = pgTable(
     name: text("name").notNull(),
     version: integer("version").notNull().default(1),
     stepsDef: jsonb("steps_def").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (t) => ({
-    nameVersionUnique: uniqueIndex("pipeline_templates_name_version_unique").on(t.name, t.version),
+    nameVersionUnique: uniqueIndex("pipeline_templates_name_version_unique").on(
+      t.name,
+      t.version,
+    ),
   }),
 );
 
@@ -759,7 +789,9 @@ export const pipelineRuns = pgTable(
     input: jsonb("input").notNull(),
     status: text("status").notNull().default("pending"),
     currentStepOrder: integer("current_step_order").notNull().default(0),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
     finishedAt: timestamp("finished_at", { withTimezone: true }),
   },
   (t) => ({
@@ -788,7 +820,10 @@ export const pipelineSteps = pgTable(
     finishedAt: timestamp("finished_at", { withTimezone: true }),
   },
   (t) => ({
-    byRunOrder: uniqueIndex("pipeline_steps_run_order_unique").on(t.runId, t.stepOrder),
+    byRunOrder: uniqueIndex("pipeline_steps_run_order_unique").on(
+      t.runId,
+      t.stepOrder,
+    ),
     byStatus: index("pipeline_steps_status_idx").on(t.status),
   }),
 );
@@ -810,7 +845,9 @@ export const llmCalls = pgTable(
     completionTokens: integer("completion_tokens").notNull().default(0),
     costUsd: text("cost_usd").notNull().default("0"),
     latencyMs: integer("latency_ms").notNull().default(0),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (t) => ({
     byRun: index("llm_calls_run_idx").on(t.runId),
@@ -835,7 +872,9 @@ export const toolCalls = pgTable(
     fromCache: boolean("from_cache").notNull().default(false),
     costUsd: text("cost_usd").notNull().default("0"),
     latencyMs: integer("latency_ms").notNull().default(0),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (t) => ({
     byRun: index("tool_calls_run_idx").on(t.runId),
@@ -850,17 +889,23 @@ export const toolCache = pgTable(
     method: text("method").notNull(),
     paramsHash: text("params_hash").notNull(),
     result: jsonb("result").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   },
   (t) => ({
-    byKey: uniqueIndex("tool_cache_key_unique").on(t.tool, t.method, t.paramsHash),
+    byKey: uniqueIndex("tool_cache_key_unique").on(
+      t.tool,
+      t.method,
+      t.paramsHash,
+    ),
     byExpiry: index("tool_cache_expiry_idx").on(t.expiresAt),
   }),
 );
 ```
 
-*Note: `cost_usd` stored as `text` (rendered from string) to preserve decimal precision without importing a decimal lib. Convert to `numeric(18,8)` in Plan 4 if precise aggregation needed.*
+_Note: `cost_usd` stored as `text` (rendered from string) to preserve decimal precision without importing a decimal lib. Convert to `numeric(18,8)` in Plan 4 if precise aggregation needed._
 
 - [x] **Step 3: Create apps/api/src/db/client.ts**
 
@@ -941,7 +986,10 @@ import { DbModule } from "./db/db.module";
       pinoHttp: {
         transport:
           process.env.NODE_ENV === "development"
-            ? { target: "pino-pretty", options: { colorize: true, singleLine: true } }
+            ? {
+                target: "pino-pretty",
+                options: { colorize: true, singleLine: true },
+              }
             : undefined,
         level: process.env.LOG_LEVEL ?? "info",
       },
@@ -960,9 +1008,11 @@ pnpm --filter @sensai/api db:migrate
 ```
 
 Expected: `drizzle/0000_*.sql` created, migration applied. Verify:
+
 ```bash
 docker exec -it sensai-postgres-dev psql -U sensai -d sensai -c "\dt"
 ```
+
 Expected: lists `projects`, `pipeline_templates`, `pipeline_runs`, `pipeline_steps`, `llm_calls`, `tool_calls`, `tool_cache`.
 
 - [x] **Step 8: Commit**
@@ -977,6 +1027,7 @@ git commit -m "feat(api): add drizzle schema for all tables + migration runner"
 ## Task 6: Projects module (CRUD minimal — just list + get)
 
 **Files:**
+
 - Create: `apps/api/src/projects/projects.module.ts`
 - Create: `apps/api/src/projects/projects.service.ts`
 - Create: `apps/api/src/projects/projects.controller.ts`
@@ -999,7 +1050,10 @@ export class ProjectsService {
   }
 
   async findById(id: string) {
-    const [row] = await this.db.select().from(projects).where(eq(projects.id, id));
+    const [row] = await this.db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, id));
     if (!row) throw new NotFoundException(`Project ${id} not found`);
     return row;
   }
@@ -1063,6 +1117,7 @@ git commit -m "feat(api): add projects module (list + get)"
 ## Task 7: Pipeline templates module
 
 **Files:**
+
 - Create: `apps/api/src/templates/templates.module.ts`
 - Create: `apps/api/src/templates/templates.service.ts`
 - Create: `apps/api/src/templates/templates.controller.ts`
@@ -1155,6 +1210,7 @@ git commit -m "feat(api): add templates module (list + get)"
 ## Task 8: LLM module — client, pricing, cost tracker
 
 **Files:**
+
 - Create: `apps/api/src/llm/pricing.ts`
 - Create: `apps/api/src/llm/cost-tracker.service.ts`
 - Create: `apps/api/src/llm/llm.client.ts`
@@ -1172,7 +1228,7 @@ export interface ModelPricing {
 
 export const MODEL_PRICING: Record<string, ModelPricing> = {
   "openai/gpt-5-mini": { inputPer1M: 0.25, outputPer1M: 2.0 },
-  "openai/gpt-5": { inputPer1M: 2.5, outputPer1M: 10.0 },
+  "openai/gpt-5.4": { inputPer1M: 2.5, outputPer1M: 10.0 },
   "anthropic/claude-sonnet-4.6": { inputPer1M: 3.0, outputPer1M: 15.0 },
   "anthropic/claude-haiku-4.5": { inputPer1M: 0.25, outputPer1M: 1.25 },
   "google/gemini-2.5-flash": { inputPer1M: 0.075, outputPer1M: 0.3 },
@@ -1299,7 +1355,14 @@ export class LlmClient {
       costUsd,
       latencyMs,
     });
-    return { text: res.text, model, promptTokens, completionTokens, costUsd, latencyMs };
+    return {
+      text: res.text,
+      model,
+      promptTokens,
+      completionTokens,
+      costUsd,
+      latencyMs,
+    };
   }
 
   async generateObject<T>(args: {
@@ -1378,6 +1441,7 @@ git commit -m "feat(api): add llm module with openrouter client and cost trackin
 ## Task 9: Orchestrator — StepHandler contract + registry
 
 **Files:**
+
 - Create: `apps/api/src/orchestrator/step-handler.ts`
 - Create: `apps/api/src/orchestrator/step-registry.ts`
 
@@ -1427,7 +1491,10 @@ export class StepRegistry {
 
   resolve(type: string): StepHandler {
     const h = this.byType.get(type);
-    if (!h) throw new NotFoundException(`No step handler registered for type: ${type}`);
+    if (!h)
+      throw new NotFoundException(
+        `No step handler registered for type: ${type}`,
+      );
     return h;
   }
 }
@@ -1453,6 +1520,7 @@ git commit -m "feat(api): define StepHandler contract and registry"
 ## Task 10: First handler — `llm.brief`
 
 **Files:**
+
 - Create: `apps/api/src/prompts/brief.prompt.ts`
 - Create: `apps/api/src/handlers/brief.handler.ts`
 - Create: `apps/api/src/handlers/handlers.module.ts`
@@ -1512,7 +1580,11 @@ export const briefPrompt = {
 import { Injectable } from "@nestjs/common";
 import { LlmClient } from "../llm/llm.client";
 import { briefPrompt } from "../prompts/brief.prompt";
-import type { StepContext, StepHandler, StepResult } from "../orchestrator/step-handler";
+import type {
+  StepContext,
+  StepHandler,
+  StepResult,
+} from "../orchestrator/step-handler";
 import type { ProjectConfig, RunInput } from "@sensai/shared";
 
 @Injectable()
@@ -1580,6 +1652,7 @@ git commit -m "feat(api): add brief step handler (llm.brief) + prompt"
 ## Task 11: Orchestrator — queue setup + worker + service
 
 **Files:**
+
 - Create: `apps/api/src/orchestrator/orchestrator.service.ts`
 - Create: `apps/api/src/orchestrator/pipeline.worker.ts`
 - Create: `apps/api/src/orchestrator/reconcile.service.ts`
@@ -1637,7 +1710,11 @@ export class OrchestratorService {
     if (!nextStep) {
       await this.db
         .update(pipelineRuns)
-        .set({ status: "completed", finishedAt: new Date(), currentStepOrder: completedStepOrder })
+        .set({
+          status: "completed",
+          finishedAt: new Date(),
+          currentStepOrder: completedStepOrder,
+        })
         .where(eq(pipelineRuns.id, runId));
       this.logger.log({ runId }, "run completed");
       return;
@@ -1646,7 +1723,10 @@ export class OrchestratorService {
     if (nextStep.requiresApproval) {
       await this.db
         .update(pipelineRuns)
-        .set({ status: "awaiting_approval", currentStepOrder: nextStep.stepOrder })
+        .set({
+          status: "awaiting_approval",
+          currentStepOrder: nextStep.stepOrder,
+        })
         .where(eq(pipelineRuns.id, runId));
       this.logger.log({ runId, nextStepId: nextStep.id }, "awaiting approval");
       return;
@@ -1676,7 +1756,13 @@ export interface StepJobData {
 - [x] **Step 3: Create apps/api/src/orchestrator/pipeline.worker.ts**
 
 ```ts
-import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from "@nestjs/common";
 import { Job, Worker } from "bullmq";
 import { Redis } from "ioredis";
 import { eq } from "drizzle-orm";
@@ -1725,11 +1811,20 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
     const { runId, stepId } = job.data;
     const attempt = (job.attemptsMade ?? 0) + 1;
 
-    const [step] = await this.db.select().from(pipelineSteps).where(eq(pipelineSteps.id, stepId));
+    const [step] = await this.db
+      .select()
+      .from(pipelineSteps)
+      .where(eq(pipelineSteps.id, stepId));
     if (!step) throw new Error(`step ${stepId} not found`);
-    const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
+    const [run] = await this.db
+      .select()
+      .from(pipelineRuns)
+      .where(eq(pipelineRuns.id, runId));
     if (!run) throw new Error(`run ${runId} not found`);
-    const [project] = await this.db.select().from(projects).where(eq(projects.id, run.projectId));
+    const [project] = await this.db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, run.projectId));
     if (!project) throw new Error(`project ${run.projectId} not found`);
 
     // Mark step running (first attempt only)
@@ -1811,7 +1906,12 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
 - [x] **Step 4: Create apps/api/src/orchestrator/reconcile.service.ts**
 
 ```ts
-import { Inject, Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnApplicationBootstrap,
+} from "@nestjs/common";
 import { and, eq, inArray } from "drizzle-orm";
 import { Queue } from "bullmq";
 import { DB_TOKEN } from "../db/db.module";
@@ -1845,7 +1945,10 @@ export class ReconcileService implements OnApplicationBootstrap {
         .select()
         .from(pipelineSteps)
         .where(
-          and(eq(pipelineSteps.runId, run.id), inArray(pipelineSteps.status, ["pending", "running"])),
+          and(
+            eq(pipelineSteps.runId, run.id),
+            inArray(pipelineSteps.status, ["pending", "running"]),
+          ),
         )
         .orderBy(pipelineSteps.stepOrder);
 
@@ -1861,7 +1964,10 @@ export class ReconcileService implements OnApplicationBootstrap {
       }
 
       await this.orchestrator.enqueueStep(run.id, next.id);
-      this.logger.log({ runId: run.id, stepId: next.id }, "reconciled: re-enqueued step");
+      this.logger.log(
+        { runId: run.id, stepId: next.id },
+        "reconciled: re-enqueued step",
+      );
     }
   }
 }
@@ -1927,6 +2033,7 @@ git commit -m "feat(api): add orchestrator with bullmq worker and reconcile"
 ## Task 12: Runs module (start + get + list)
 
 **Files:**
+
 - Create: `apps/api/src/runs/runs.service.ts`
 - Create: `apps/api/src/runs/runs.controller.ts`
 - Create: `apps/api/src/runs/runs.module.ts`
@@ -1954,11 +2061,18 @@ export class RunsService {
   ) {}
 
   async list() {
-    return this.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(50);
+    return this.db
+      .select()
+      .from(pipelineRuns)
+      .orderBy(desc(pipelineRuns.createdAt))
+      .limit(50);
   }
 
   async get(id: string) {
-    const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id));
+    const [run] = await this.db
+      .select()
+      .from(pipelineRuns)
+      .where(eq(pipelineRuns.id, id));
     if (!run) throw new NotFoundException(`Run ${id} not found`);
     const steps = await this.db
       .select()
@@ -1994,7 +2108,10 @@ export class RunsService {
       requiresApproval: !s.auto,
       status: "pending" as const,
     }));
-    const insertedSteps = await this.db.insert(pipelineSteps).values(stepRows).returning();
+    const insertedSteps = await this.db
+      .insert(pipelineSteps)
+      .values(stepRows)
+      .returning();
 
     const firstStep = insertedSteps.find((s) => s.stepOrder === 1);
     if (!firstStep) throw new Error("no first step created");
@@ -2008,7 +2125,14 @@ export class RunsService {
 - [x] **Step 2: Create apps/api/src/runs/runs.controller.ts**
 
 ```ts
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from "@nestjs/common";
 import { RunsService } from "./runs.service";
 import { StartRunDto } from "@sensai/shared";
 
@@ -2055,6 +2179,7 @@ export class RunsModule {}
 - [x] **Step 4: Wire RunsModule into AppModule**
 
 Final `AppModule` should import (in addition to ConfigModule, LoggerModule, DbModule, LlmModule):
+
 - `ProjectsModule`
 - `TemplatesModule`
 - `OrchestratorModule`
@@ -2079,13 +2204,19 @@ git commit -m "feat(api): add runs module (list, get, start)"
 ## Task 13: Auth guard — bearer token
 
 **Files:**
+
 - Create: `apps/api/src/config/bearer.guard.ts`
 - Modify: `apps/api/src/main.ts` — apply guard globally
 
 - [ ] **Step 1: Create apps/api/src/config/bearer.guard.ts**
 
 ```ts
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { loadEnv } from "./env";
 
 @Injectable()
@@ -2096,7 +2227,9 @@ export class BearerGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest<{ headers: Record<string, string> }>();
+    const req = context
+      .switchToHttp()
+      .getRequest<{ headers: Record<string, string> }>();
     const auth = req.headers.authorization ?? "";
     const [scheme, value] = auth.split(" ");
     if (scheme !== "Bearer" || value !== this.token) {
@@ -2147,6 +2280,7 @@ git commit -m "feat(api): enforce bearer token on all endpoints"
 ## Task 14: Seed script — one project + one template
 
 **Files:**
+
 - Create: `apps/api/src/seed/seed.ts`
 
 - [ ] **Step 1: Create apps/api/src/seed/seed.ts**
@@ -2162,8 +2296,10 @@ async function main() {
 
   const config: ProjectConfig = {
     toneOfVoice: "profesjonalny, konkretny, bez żargonu",
-    targetAudience: "małe i średnie polskie firmy prowadzące działalność online",
-    guidelines: "Cytuj konkretne liczby tylko gdy masz pewność. Unikaj clickbaitowych nagłówków.",
+    targetAudience:
+      "małe i średnie polskie firmy prowadzące działalność online",
+    guidelines:
+      "Cytuj konkretne liczby tylko gdy masz pewność. Unikaj clickbaitowych nagłówków.",
     defaultModels: {
       brief: "openai/gpt-5-mini",
     },
@@ -2191,7 +2327,9 @@ async function main() {
       version: 1,
       stepsDef,
     })
-    .onConflictDoNothing({ target: [pipelineTemplates.name, pipelineTemplates.version] })
+    .onConflictDoNothing({
+      target: [pipelineTemplates.name, pipelineTemplates.version],
+    })
     .returning();
 
   console.log("Seeded:", {
@@ -2241,6 +2379,7 @@ Expected: log `API listening on http://localhost:4000` and `no active runs to re
 - [ ] **Step 2: List projects**
 
 In another terminal:
+
 ```bash
 TOKEN=$(grep API_BEARER_TOKEN apps/api/.env | cut -d= -f2)
 curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4000/projects | jq .
@@ -2273,6 +2412,7 @@ curl -s -H "Authorization: Bearer $TOKEN" http://localhost:4000/runs/<RUN_ID> | 
 ```
 
 Expected (within ~30 seconds):
+
 - `run.status: "completed"`
 - `steps[0].status: "completed"`
 - `steps[0].output` contains a JSON brief with `headline`, `angle`, `pillars`, `audiencePainPoints`, `successCriteria`
@@ -2298,6 +2438,7 @@ Start a fresh run (repeat steps four and five above). While it's still `pending`
 ## Task 16: Bootstrap Next.js frontend (`apps/web`)
 
 **Files:**
+
 - Create: `apps/web/package.json`
 - Create: `apps/web/tsconfig.json`
 - Create: `apps/web/next.config.mjs`
@@ -2372,7 +2513,12 @@ Start a fresh run (repeat steps four and five above). While it's still `pending`
     },
     "plugins": [{ "name": "next" }]
   },
-  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }
 ```
@@ -2474,7 +2620,8 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 ```
 
@@ -2552,6 +2699,7 @@ git commit -m "feat(web): bootstrap next.js app with tailwind and tanstack query
 ## Task 17: Frontend — API client + hooks
 
 **Files:**
+
 - Create: `apps/web/src/lib/api.ts`
 - Create: `apps/web/src/lib/hooks.ts`
 
@@ -2648,15 +2796,25 @@ import { api } from "./api";
 import type { StartRunDto } from "@sensai/shared";
 
 export function useProjects() {
-  return useQuery({ queryKey: ["projects"], queryFn: () => api.projects.list() });
+  return useQuery({
+    queryKey: ["projects"],
+    queryFn: () => api.projects.list(),
+  });
 }
 
 export function useTemplates() {
-  return useQuery({ queryKey: ["templates"], queryFn: () => api.templates.list() });
+  return useQuery({
+    queryKey: ["templates"],
+    queryFn: () => api.templates.list(),
+  });
 }
 
 export function useRuns() {
-  return useQuery({ queryKey: ["runs"], queryFn: () => api.runs.list(), refetchInterval: 3000 });
+  return useQuery({
+    queryKey: ["runs"],
+    queryFn: () => api.runs.list(),
+    refetchInterval: 3000,
+  });
 }
 
 export function useRun(id: string | undefined) {
@@ -2667,7 +2825,9 @@ export function useRun(id: string | undefined) {
     refetchInterval: (q) => {
       const d = q.state.data;
       if (!d) return 2000;
-      return d.status === "completed" || d.status === "failed" || d.status === "cancelled"
+      return d.status === "completed" ||
+        d.status === "failed" ||
+        d.status === "cancelled"
         ? false
         : 2000;
     },
@@ -2698,6 +2858,7 @@ git commit -m "feat(web): add api client and query hooks"
 ## Task 18: Frontend views — home (runs list) + new run form + run detail
 
 **Files:**
+
 - Create: `apps/web/src/app/page.tsx`
 - Create: `apps/web/src/app/runs/new/page.tsx`
 - Create: `apps/web/src/app/runs/[id]/page.tsx`
@@ -2800,7 +2961,9 @@ export default function HomePage() {
                   className="block rounded border px-3 py-2 hover:bg-muted/50"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs">{r.id.slice(0, 8)}</span>
+                    <span className="font-mono text-xs">
+                      {r.id.slice(0, 8)}
+                    </span>
                     <span className="text-sm">{r.status}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -2905,7 +3068,9 @@ export default function NewRunPage() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-medium">Główne słowo kluczowe (opcjonalnie)</label>
+          <label className="text-sm font-medium">
+            Główne słowo kluczowe (opcjonalnie)
+          </label>
           <input
             value={mainKeyword}
             onChange={(e) => setMainKeyword(e.target.value)}
@@ -2915,12 +3080,16 @@ export default function NewRunPage() {
 
         <button
           type="submit"
-          disabled={!projectId || !templateId || topic.length < 3 || start.isPending}
+          disabled={
+            !projectId || !templateId || topic.length < 3 || start.isPending
+          }
           className="rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
         >
           {start.isPending ? "Startuję…" : "Start"}
         </button>
-        {start.error && <p className="text-red-500">Błąd: {String(start.error)}</p>}
+        {start.error && (
+          <p className="text-red-500">Błąd: {String(start.error)}</p>
+        )}
       </form>
     </div>
   );
@@ -2942,7 +3111,8 @@ export default function RunDetailPage() {
   const run = useRun(params?.id);
   const [selectedStepId, setSelectedStepId] = useState<string | undefined>();
 
-  const selectedStep = run.data?.steps.find((s) => s.id === selectedStepId) ?? run.data?.steps[0];
+  const selectedStep =
+    run.data?.steps.find((s) => s.id === selectedStepId) ?? run.data?.steps[0];
 
   return (
     <div className="space-y-6">
@@ -2956,7 +3126,9 @@ export default function RunDetailPage() {
       {run.data && (
         <>
           <header>
-            <h1 className="text-2xl font-semibold">Run {run.data.id.slice(0, 8)}</h1>
+            <h1 className="text-2xl font-semibold">
+              Run {run.data.id.slice(0, 8)}
+            </h1>
             <p className="text-sm text-muted-foreground">
               status: <span className="font-mono">{run.data.status}</span>
             </p>
@@ -2964,7 +3136,9 @@ export default function RunDetailPage() {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr]">
             <aside>
-              <h2 className="mb-2 text-sm font-medium text-muted-foreground">Kroki</h2>
+              <h2 className="mb-2 text-sm font-medium text-muted-foreground">
+                Kroki
+              </h2>
               <RunTimeline
                 steps={run.data.steps}
                 selectedStepId={selectedStep?.id}
@@ -2977,10 +3151,14 @@ export default function RunDetailPage() {
                 <div className="space-y-4">
                   <h2 className="text-lg font-medium">
                     {selectedStep.stepKey}{" "}
-                    <span className="text-sm text-muted-foreground">({selectedStep.type})</span>
+                    <span className="text-sm text-muted-foreground">
+                      ({selectedStep.type})
+                    </span>
                   </h2>
                   <div className="space-y-2">
-                    <h3 className="text-sm font-medium text-muted-foreground">Output</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Output
+                    </h3>
                     <pre className="overflow-x-auto rounded bg-muted p-3 text-xs">
                       {selectedStep.output
                         ? JSON.stringify(selectedStep.output, null, 2)
@@ -2989,7 +3167,9 @@ export default function RunDetailPage() {
                   </div>
                   {selectedStep.error && (
                     <div className="space-y-2">
-                      <h3 className="text-sm font-medium text-red-600">Error</h3>
+                      <h3 className="text-sm font-medium text-red-600">
+                        Error
+                      </h3>
                       <pre className="overflow-x-auto rounded bg-red-50 p-3 text-xs">
                         {JSON.stringify(selectedStep.error, null, 2)}
                       </pre>
@@ -3034,10 +3214,13 @@ cp apps/web/.env.example apps/web/.env.local
 - [ ] **Step 2: Start backend and frontend in parallel**
 
 Terminal 1:
+
 ```bash
 pnpm dev:api
 ```
+
 Terminal 2:
+
 ```bash
 pnpm dev:web
 ```
@@ -3074,6 +3257,7 @@ Expected: row(s) with non-zero values.
 - [ ] **Step 6: Update README with "Works end-to-end" section**
 
 Append to `README.md`:
+
 ```markdown
 ## Verified end-to-end (Plan 1)
 

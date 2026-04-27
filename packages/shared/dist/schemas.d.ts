@@ -1610,8 +1610,8 @@ export declare const FanOutClassifyCall: z.ZodObject<{
     classifications: z.ZodArray<z.ZodObject<{
         areaId: z.ZodString;
         classification: z.ZodEnum<["MICRO", "MACRO"]>;
-        evergreenTopic: z.ZodDefault<z.ZodString>;
-        evergreenQuestion: z.ZodDefault<z.ZodString>;
+        evergreenTopic: z.ZodString;
+        evergreenQuestion: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         classification: "MICRO" | "MACRO";
         evergreenTopic: string;
@@ -1619,9 +1619,9 @@ export declare const FanOutClassifyCall: z.ZodObject<{
         areaId: string;
     }, {
         classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
         areaId: string;
-        evergreenTopic?: string | undefined;
-        evergreenQuestion?: string | undefined;
     }>, "many">;
     dominantIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
 }, "strip", z.ZodTypeAny, {
@@ -1636,9 +1636,9 @@ export declare const FanOutClassifyCall: z.ZodObject<{
     dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
     classifications: {
         classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
         areaId: string;
-        evergreenTopic?: string | undefined;
-        evergreenQuestion?: string | undefined;
     }[];
 }>;
 export type FanOutClassifyCall = z.infer<typeof FanOutClassifyCall>;

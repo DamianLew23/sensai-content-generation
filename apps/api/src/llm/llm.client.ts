@@ -11,6 +11,9 @@ import { loadEnv } from "../config/env";
 import { calculateCostUsd } from "./pricing";
 import { CostTrackerService } from "./cost-tracker.service";
 
+const LLM_CALL_TIMEOUT_MS = 5 * 60_000;
+const LLM_MAX_OUTPUT_TOKENS = 32_768;
+
 export interface LlmCallContext {
   runId: string;
   stepId: string;
@@ -61,10 +64,23 @@ export class LlmClient {
   }): Promise<LlmTextResult> {
     const model = args.ctx.model ?? this.defaultModel;
     const started = Date.now();
+    this.logger.log(
+      {
+        kind: "generateText",
+        model,
+        runId: args.ctx.runId,
+        stepId: args.ctx.stepId,
+        attempt: args.ctx.attempt,
+      },
+      "LLM call started",
+    );
     const res = await aiGenerateText({
       model: this.modelFor(model),
       system: args.system,
       prompt: args.prompt,
+      maxOutputTokens: LLM_MAX_OUTPUT_TOKENS,
+      abortSignal: AbortSignal.timeout(LLM_CALL_TIMEOUT_MS),
+      maxRetries: 1,
     });
     const latencyMs = Date.now() - started;
     const promptTokens = res.usage?.inputTokens ?? 0;
@@ -93,6 +109,16 @@ export class LlmClient {
   }): Promise<LlmObjectResult<T>> {
     const model = args.ctx.model ?? this.defaultModel;
     const started = Date.now();
+    this.logger.log(
+      {
+        kind: "generateObject",
+        model,
+        runId: args.ctx.runId,
+        stepId: args.ctx.stepId,
+        attempt: args.ctx.attempt,
+      },
+      "LLM call started",
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const schema = args.schema as any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,6 +127,9 @@ export class LlmClient {
       system: args.system,
       prompt: args.prompt,
       schema,
+      maxOutputTokens: LLM_MAX_OUTPUT_TOKENS,
+      abortSignal: AbortSignal.timeout(LLM_CALL_TIMEOUT_MS),
+      maxRetries: 1,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...(args.providerOptions ? { providerOptions: args.providerOptions as any } : {}),
     });

@@ -1,9 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryFanOutClient } from "../tools/query-fanout/query-fanout.client";
-import { FanOutClassifyCall, FanOutIntentsCall, FanOutPaaCall } from "@sensai/shared";
+import {
+  FanOutClassifyCall,
+  FanOutIntentsCall,
+  FanOutPaaCall,
+} from "@sensai/shared";
 
 const env = {
-  QUERY_FANOUT_MODEL: "openai/gpt-5",
+  QUERY_FANOUT_MODEL: "openai/gpt-5.4",
   QUERY_FANOUT_LANGUAGE: "pl",
   QUERY_FANOUT_MAX_AREAS_PER_INTENT: 5,
   QUERY_FANOUT_REASONING_INTENTS: "medium",
@@ -14,7 +18,11 @@ const env = {
 const ctx = { runId: "run-1", stepId: "step-1", attempt: 1 };
 
 const sampleIntents: FanOutIntentsCall = {
-  normalization: { mainEntity: "kortyzol", category: "zdrowie", ymylRisk: true },
+  normalization: {
+    mainEntity: "kortyzol",
+    category: "zdrowie",
+    ymylRisk: true,
+  },
   intents: [
     {
       name: "Instrukcyjna",
@@ -28,8 +36,18 @@ const sampleIntents: FanOutIntentsCall = {
 
 const sampleClassify: FanOutClassifyCall = {
   classifications: [
-    { areaId: "A1", classification: "MICRO", evergreenTopic: "", evergreenQuestion: "" },
-    { areaId: "A2", classification: "MICRO", evergreenTopic: "", evergreenQuestion: "" },
+    {
+      areaId: "A1",
+      classification: "MICRO",
+      evergreenTopic: "",
+      evergreenQuestion: "",
+    },
+    {
+      areaId: "A2",
+      classification: "MICRO",
+      evergreenTopic: "",
+      evergreenQuestion: "",
+    },
   ],
   dominantIntent: "Instrukcyjna",
 };
@@ -61,13 +79,16 @@ describe("QueryFanOutClient", () => {
 
   describe("generateIntents", () => {
     it("forwards model, schema, language, maxAreas, and reasoning effort=medium", async () => {
-      llm.generateObject.mockResolvedValueOnce({ object: sampleIntents, ...stats() });
+      llm.generateObject.mockResolvedValueOnce({
+        object: sampleIntents,
+        ...stats(),
+      });
 
       const out = await client.generateIntents({ ctx, keyword: "kortyzol" });
 
       expect(llm.generateObject).toHaveBeenCalledTimes(1);
       const call = llm.generateObject.mock.calls[0][0];
-      expect(call.ctx.model).toBe("openai/gpt-5");
+      expect(call.ctx.model).toBe("openai/gpt-5.4");
       expect(call.schema).toBe(FanOutIntentsCall);
       expect(call.system).toContain("maks. 5 obszarów");
       expect(call.prompt).toContain('"kortyzol"');
@@ -82,7 +103,10 @@ describe("QueryFanOutClient", () => {
 
   describe("classify", () => {
     it("uses reasoning effort=high and embeds intentsJson in user prompt", async () => {
-      llm.generateObject.mockResolvedValueOnce({ object: sampleClassify, ...stats() });
+      llm.generateObject.mockResolvedValueOnce({
+        object: sampleClassify,
+        ...stats(),
+      });
 
       const out = await client.classify({
         ctx,
@@ -96,7 +120,9 @@ describe("QueryFanOutClient", () => {
       expect(call.providerOptions).toEqual({
         openrouter: { reasoning: { effort: "high" } },
       });
-      expect(call.prompt).toContain('Główne zapytanie: "Jak obniżyć kortyzol po 40tce?"');
+      expect(call.prompt).toContain(
+        'Główne zapytanie: "Jak obniżyć kortyzol po 40tce?"',
+      );
       expect(call.prompt).toContain('"id": "A1"');
       expect(call.prompt).toContain('"id": "A2"');
       expect(out.result).toEqual(sampleClassify);
@@ -105,7 +131,10 @@ describe("QueryFanOutClient", () => {
 
   describe("assignPaa", () => {
     it("uses reasoning effort=medium, numbers PAA, and embeds areasJson", async () => {
-      llm.generateObject.mockResolvedValueOnce({ object: samplePaa, ...stats() });
+      llm.generateObject.mockResolvedValueOnce({
+        object: samplePaa,
+        ...stats(),
+      });
 
       const out = await client.assignPaa({
         ctx,
@@ -131,11 +160,19 @@ describe("QueryFanOutClient", () => {
   });
 
   it("propagates ctx fields (runId, stepId, attempt) to LlmClient unchanged", async () => {
-    llm.generateObject.mockResolvedValueOnce({ object: sampleIntents, ...stats() });
+    llm.generateObject.mockResolvedValueOnce({
+      object: sampleIntents,
+      ...stats(),
+    });
 
     await client.generateIntents({ ctx, keyword: "x" });
 
     const call = llm.generateObject.mock.calls[0][0];
-    expect(call.ctx).toMatchObject({ runId: "run-1", stepId: "step-1", attempt: 1, model: "openai/gpt-5" });
+    expect(call.ctx).toMatchObject({
+      runId: "run-1",
+      stepId: "step-1",
+      attempt: 1,
+      model: "openai/gpt-5.4",
+    });
   });
 });

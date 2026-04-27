@@ -6,6 +6,11 @@ import type { Db } from "../db/client";
 import { pipelineRuns, pipelineSteps } from "../db/schema";
 import { QUEUE_NAME, type StepJobData } from "./queue.constants";
 
+const DEFAULT_ATTEMPTS = 3;
+const ATTEMPTS_BY_STEP_TYPE: Record<string, number> = {
+  "tool.youcom.research": 1,
+};
+
 @Injectable()
 export class OrchestratorService {
   private readonly logger = new Logger(OrchestratorService.name);
@@ -20,17 +25,26 @@ export class OrchestratorService {
     stepId: string,
     opts?: { forceRefresh?: boolean },
   ): Promise<void> {
+    const [step] = await this.db
+      .select({ type: pipelineSteps.type })
+      .from(pipelineSteps)
+      .where(eq(pipelineSteps.id, stepId))
+      .limit(1);
+    const attempts = (step && ATTEMPTS_BY_STEP_TYPE[step.type]) ?? DEFAULT_ATTEMPTS;
     await this.queue.add(
       "execute-step",
       { runId, stepId, forceRefresh: opts?.forceRefresh },
       {
-        attempts: 3,
+        attempts,
         backoff: { type: "exponential", delay: 5000 },
         removeOnComplete: 100,
         removeOnFail: 100,
       },
     );
-    this.logger.log({ runId, stepId, forceRefresh: opts?.forceRefresh }, "step enqueued");
+    this.logger.log(
+      { runId, stepId, type: step?.type, attempts, forceRefresh: opts?.forceRefresh },
+      "step enqueued",
+    );
   }
 
   /**

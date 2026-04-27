@@ -542,8 +542,8 @@ export const FanOutClassifyCall = z.object({
     .object({
       areaId: z.string().regex(/^A\d+$/),
       classification: FanOutClassification,
-      evergreenTopic: z.string().max(120).default(""),
-      evergreenQuestion: z.string().max(300).default(""),
+      evergreenTopic: z.string().max(120),
+      evergreenQuestion: z.string().max(300),
     })
     .array()
     .min(1),

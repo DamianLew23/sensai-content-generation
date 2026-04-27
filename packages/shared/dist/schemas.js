@@ -449,8 +449,8 @@ exports.FanOutClassifyCall = zod_1.z.object({
         .object({
         areaId: zod_1.z.string().regex(/^A\d+$/),
         classification: exports.FanOutClassification,
-        evergreenTopic: zod_1.z.string().max(120).default(""),
-        evergreenQuestion: zod_1.z.string().max(300).default(""),
+        evergreenTopic: zod_1.z.string().max(120),
+        evergreenQuestion: zod_1.z.string().max(300),
     })
         .array()
         .min(1),

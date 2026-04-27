@@ -19,6 +19,12 @@ import { RunsModule } from "./runs/runs.module";
             ? { target: "pino-pretty", options: { colorize: true, singleLine: true } }
             : undefined,
         level: process.env.LOG_LEVEL ?? "info",
+        autoLogging: {
+          ignore: (req) => {
+            const url = req.url ?? "";
+            return req.method === "GET" && /^\/runs\/[^/]+$/.test(url.split("?")[0]);
+          },
+        },
       },
     }),
     DbModule,

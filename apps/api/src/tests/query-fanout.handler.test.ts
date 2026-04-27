@@ -1,11 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryFanOutHandler } from "../handlers/query-fanout.handler";
 import type { StepContext } from "../orchestrator/step-handler";
-import type { FanOutClassifyCall, FanOutIntentsCall, FanOutPaaCall } from "@sensai/shared";
+import type {
+  FanOutClassifyCall,
+  FanOutIntentsCall,
+  FanOutPaaCall,
+} from "@sensai/shared";
 
 const env = {
   QUERY_FANOUT_LANGUAGE: "pl",
-  QUERY_FANOUT_MODEL: "openai/gpt-5",
+  QUERY_FANOUT_MODEL: "openai/gpt-5.4",
   QUERY_FANOUT_PAA_DEPTH: 2,
   QUERY_FANOUT_PAA_MAX_QUESTIONS: 20,
   QUERY_FANOUT_PAA_ENABLED: true,
@@ -21,7 +25,13 @@ function makeCtx(overrides: Partial<StepContext> = {}): StepContext {
     project: {
       id: "proj-1",
       name: "Demo",
-      config: { toneOfVoice: "", targetAudience: "", guidelines: "", defaultModels: {}, promptOverrides: {} },
+      config: {
+        toneOfVoice: "",
+        targetAudience: "",
+        guidelines: "",
+        defaultModels: {},
+        promptOverrides: {},
+      },
     } as any,
     previousOutputs: {},
     attempt: 1,
@@ -30,20 +40,34 @@ function makeCtx(overrides: Partial<StepContext> = {}): StepContext {
 }
 
 const intentsResult: FanOutIntentsCall = {
-  normalization: { mainEntity: "kortyzol", category: "zdrowie", ymylRisk: true },
+  normalization: {
+    mainEntity: "kortyzol",
+    category: "zdrowie",
+    ymylRisk: true,
+  },
   intents: [
     {
       name: "Instrukcyjna",
       areas: [
         { id: "A1", topic: "Dieta", question: "Co jeść?", ymyl: true },
         { id: "A2", topic: "Sen", question: "Jak spać?", ymyl: true },
-        { id: "A3", topic: "Stres", question: "Jak redukować stres?", ymyl: true },
+        {
+          id: "A3",
+          topic: "Stres",
+          question: "Jak redukować stres?",
+          ymyl: true,
+        },
       ],
     },
     {
       name: "Diagnostyczna",
       areas: [
-        { id: "A4", topic: "Badania", question: "Jak zbadać kortyzol?", ymyl: true },
+        {
+          id: "A4",
+          topic: "Badania",
+          question: "Jak zbadać kortyzol?",
+          ymyl: true,
+        },
       ],
     },
   ],
@@ -51,9 +75,24 @@ const intentsResult: FanOutIntentsCall = {
 
 const classifyResult: FanOutClassifyCall = {
   classifications: [
-    { areaId: "A1", classification: "MICRO", evergreenTopic: "", evergreenQuestion: "" },
-    { areaId: "A2", classification: "MICRO", evergreenTopic: "", evergreenQuestion: "" },
-    { areaId: "A3", classification: "MICRO", evergreenTopic: "", evergreenQuestion: "" },
+    {
+      areaId: "A1",
+      classification: "MICRO",
+      evergreenTopic: "",
+      evergreenQuestion: "",
+    },
+    {
+      areaId: "A2",
+      classification: "MICRO",
+      evergreenTopic: "",
+      evergreenQuestion: "",
+    },
+    {
+      areaId: "A3",
+      classification: "MICRO",
+      evergreenTopic: "",
+      evergreenQuestion: "",
+    },
     {
       areaId: "A4",
       classification: "MACRO",
@@ -99,14 +138,23 @@ describe("QueryFanOutHandler", () => {
     };
     dfs = { paaFetch: vi.fn() };
     cache = { getOrSet: vi.fn() };
-    handler = new QueryFanOutHandler(fanout as any, dfs as any, cache as any, env);
+    handler = new QueryFanOutHandler(
+      fanout as any,
+      dfs as any,
+      cache as any,
+      env,
+    );
   });
 
   function passThroughCache() {
     // outer cache for fanout
-    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
+    cache.getOrSet.mockImplementationOnce(
+      async (opts: any) => (await opts.fetcher()).result,
+    );
     // inner cache for PAA
-    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
+    cache.getOrSet.mockImplementationOnce(
+      async (opts: any) => (await opts.fetcher()).result,
+    );
   }
 
   it("reports type 'tool.query.fanout'", () => {
@@ -122,7 +170,10 @@ describe("QueryFanOutHandler", () => {
       { title: "Czy kawa podnosi kortyzol?" },
       { title: "Jak najszybciej zbić kortyzol?" },
     ]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
     fanout.assignPaa.mockResolvedValueOnce({ result: paaResult, ...stats });
 
@@ -148,14 +199,17 @@ describe("QueryFanOutHandler", () => {
   });
 
   it("PAA disabled: skips DataForSEO and skips LLM #3 entirely", async () => {
-    handler = new QueryFanOutHandler(
-      fanout as any,
-      dfs as any,
-      cache as any,
-      { ...env, QUERY_FANOUT_PAA_ENABLED: false },
+    handler = new QueryFanOutHandler(fanout as any, dfs as any, cache as any, {
+      ...env,
+      QUERY_FANOUT_PAA_ENABLED: false,
+    });
+    cache.getOrSet.mockImplementationOnce(
+      async (opts: any) => (await opts.fetcher()).result,
     );
-    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
 
     const out = await handler.execute(makeCtx());
@@ -172,7 +226,10 @@ describe("QueryFanOutHandler", () => {
   it("empty PAA result: skips LLM #3 even when PAA enabled", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
 
     const out = await handler.execute(makeCtx());
@@ -186,22 +243,32 @@ describe("QueryFanOutHandler", () => {
   it("throws when classify result lacks an area's id", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({
       result: {
         ...classifyResult,
-        classifications: classifyResult.classifications.filter((c) => c.areaId !== "A2"),
+        classifications: classifyResult.classifications.filter(
+          (c) => c.areaId !== "A2",
+        ),
       },
       ...stats,
     });
 
-    await expect(handler.execute(makeCtx())).rejects.toThrow(/classification missing for area A2/);
+    await expect(handler.execute(makeCtx())).rejects.toThrow(
+      /classification missing for area A2/,
+    );
   });
 
   it("superRefine: rejects when LLM emits dominantIntent not in intents[]", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({
       result: { ...classifyResult, dominantIntent: "Porównawcza" },
       ...stats,
@@ -219,7 +286,11 @@ describe("QueryFanOutHandler", () => {
         paaUsed: false,
         createdAt: "2026-04-27T00:00:00.000Z",
       },
-      normalization: { mainEntity: "kortyzol", category: "zdrowie", ymylRisk: true },
+      normalization: {
+        mainEntity: "kortyzol",
+        category: "zdrowie",
+        ymylRisk: true,
+      },
       intents: intentsResult.intents.map((i) => ({
         name: i.name,
         areas: i.areas.map((a) => ({
@@ -244,7 +315,10 @@ describe("QueryFanOutHandler", () => {
   it("forceRefresh: passed through to outer and inner cache calls", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
 
     await handler.execute(makeCtx({ forceRefresh: true }));
@@ -256,10 +330,15 @@ describe("QueryFanOutHandler", () => {
   it("composeKeyword: topic only", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
 
-    const ctx = makeCtx({ run: { id: "run-1", input: { topic: "kortyzol" } } as any });
+    const ctx = makeCtx({
+      run: { id: "run-1", input: { topic: "kortyzol" } } as any,
+    });
     const out = await handler.execute(ctx);
     expect((out.output as any).metadata.keyword).toBe("kortyzol");
     expect(fanout.generateIntents.mock.calls[0][0].keyword).toBe("kortyzol");
@@ -268,26 +347,33 @@ describe("QueryFanOutHandler", () => {
   it("composeKeyword: topic + mainKeyword + intent", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
 
     const ctx = makeCtx({
       run: {
         id: "run-1",
-        input: { topic: "kortyzol", mainKeyword: "kortyzol po 40", intent: "instructional" },
+        input: {
+          topic: "kortyzol",
+          mainKeyword: "kortyzol po 40",
+          intent: "instructional",
+        },
       } as any,
     });
     const out = await handler.execute(ctx);
-    expect((out.output as any).metadata.keyword).toBe("kortyzol (kortyzol po 40) — instructional");
+    expect((out.output as any).metadata.keyword).toBe(
+      "kortyzol (kortyzol po 40) — instructional",
+    );
   });
 
   it("PAA fetched questions are sliced to QUERY_FANOUT_PAA_MAX_QUESTIONS", async () => {
-    handler = new QueryFanOutHandler(
-      fanout as any,
-      dfs as any,
-      cache as any,
-      { ...env, QUERY_FANOUT_PAA_MAX_QUESTIONS: 2 },
-    );
+    handler = new QueryFanOutHandler(fanout as any, dfs as any, cache as any, {
+      ...env,
+      QUERY_FANOUT_PAA_MAX_QUESTIONS: 2,
+    });
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([
       { title: "q1" },
@@ -295,26 +381,46 @@ describe("QueryFanOutHandler", () => {
       { title: "q3" },
       { title: "q4" },
     ]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+    });
     fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
     fanout.assignPaa.mockResolvedValueOnce({
-      result: { assignments: [{ areaId: "A1", question: "q1" }], unmatched: ["q2"] },
+      result: {
+        assignments: [{ areaId: "A1", question: "q1" }],
+        unmatched: ["q2"],
+      },
       ...stats,
     });
 
     const out = await handler.execute(makeCtx());
     const result = out.output as any;
     expect(result.metadata.paaFetched).toBe(2);
-    expect(fanout.assignPaa.mock.calls[0][0].paaQuestions).toEqual(["q1", "q2"]);
+    expect(fanout.assignPaa.mock.calls[0][0].paaQuestions).toEqual([
+      "q1",
+      "q2",
+    ]);
   });
 
   it("totalCost is sum of 3 LLM calls (no PAA fetch cost contribution)", async () => {
     passThroughCache();
     dfs.paaFetch.mockResolvedValueOnce([{ title: "q1" }]);
-    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats, costUsd: "0.01" });
-    fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats, costUsd: "0.02" });
+    fanout.generateIntents.mockResolvedValueOnce({
+      result: intentsResult,
+      ...stats,
+      costUsd: "0.01",
+    });
+    fanout.classify.mockResolvedValueOnce({
+      result: classifyResult,
+      ...stats,
+      costUsd: "0.02",
+    });
     fanout.assignPaa.mockResolvedValueOnce({
-      result: { assignments: [{ areaId: "A1", question: "q1" }], unmatched: [] },
+      result: {
+        assignments: [{ areaId: "A1", question: "q1" }],
+        unmatched: [],
+      },
       ...stats,
       costUsd: "0.005",
     });
@@ -327,7 +433,9 @@ describe("QueryFanOutHandler", () => {
       capturedCost = fetched.costUsd;
       return fetched.result;
     });
-    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
+    cache.getOrSet.mockImplementationOnce(
+      async (opts: any) => (await opts.fetcher()).result,
+    );
 
     await handler.execute(makeCtx());
     expect(parseFloat(capturedCost!)).toBeCloseTo(0.035, 3);
