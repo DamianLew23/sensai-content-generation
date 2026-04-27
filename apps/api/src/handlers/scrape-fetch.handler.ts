@@ -91,6 +91,7 @@ export class ScrapeFetchHandler implements StepHandler {
       ttlSeconds: 86_400,
       runId: ctx.run.id,
       stepId: ctx.step.id,
+      forceRefresh: ctx.forceRefresh,
       fetcher: () => this.scrapeWithFallback(url, ctx),
     });
   }
