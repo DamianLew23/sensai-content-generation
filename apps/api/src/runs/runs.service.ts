@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { pipelineRuns, pipelineSteps, pipelineTemplates } from "../db/schema";
@@ -126,6 +126,49 @@ export class RunsService {
 
     const stepsDef = TemplateStepsDef.parse(template.stepsDef);
     return computeRerunCascade(stepsDef.steps, step.stepKey);
+  }
+
+  async rerun(runId: string, stepId: string) {
+    const { run, step } = await this.loadRunAndStep(runId, stepId);
+    this.assertRerunnable(run, step);
+
+    const [template] = await this.db
+      .select()
+      .from(pipelineTemplates)
+      .where(eq(pipelineTemplates.id, run.templateId));
+    if (!template) throw new NotFoundException(`Template for run ${runId} not found`);
+    const stepsDef = TemplateStepsDef.parse(template.stepsDef);
+
+    const { downstream } = computeRerunCascade(stepsDef.steps, step.stepKey);
+    const keysToReset = [step.stepKey, ...downstream];
+
+    await this.db.transaction(async (tx) => {
+      for (const key of keysToReset) {
+        await tx
+          .update(pipelineSteps)
+          .set({
+            status: "pending",
+            output: null,
+            error: null,
+            startedAt: null,
+            finishedAt: null,
+            retryCount: sql`${pipelineSteps.retryCount} + 1`,
+          })
+          .where(and(eq(pipelineSteps.runId, runId), eq(pipelineSteps.stepKey, key)));
+      }
+      await tx
+        .update(pipelineRuns)
+        .set({
+          status: "running",
+          currentStepOrder: step.stepOrder,
+          finishedAt: null,
+        })
+        .where(eq(pipelineRuns.id, runId));
+    });
+
+    await this.orchestrator.enqueueStep(runId, stepId, { forceRefresh: true });
+
+    return this.get(runId);
   }
 
   private async loadRunAndStep(runId: string, stepId: string) {
