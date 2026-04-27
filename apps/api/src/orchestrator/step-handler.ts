@@ -11,6 +11,7 @@ export interface StepContext {
   project: ProjectRow;
   previousOutputs: Record<string, unknown>;
   attempt: number;
+  forceRefresh?: boolean;
 }
 
 export interface StepResult {
