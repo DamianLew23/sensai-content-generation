@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -128,4 +128,44 @@ exports.CleanedScrapeResult = zod_1.z.object({
     pages: exports.CleanedPage.array(),
     droppedPages: exports.DroppedPage.array(),
     stats: exports.CleaningStats,
+});
+exports.ExtractionMetadata = zod_1.z.object({
+    keyword: zod_1.z.string().min(1),
+    language: zod_1.z.string().min(2).max(10),
+    sourceUrlCount: zod_1.z.number().int().nonnegative(),
+    createdAt: zod_1.z.string().datetime(),
+});
+exports.FactCategory = zod_1.z.enum(["definition", "causal", "general"]);
+exports.Priority = zod_1.z.enum(["high", "medium", "low"]);
+exports.Fact = zod_1.z.object({
+    id: zod_1.z.string().regex(/^F\d+$/, "id must be F<number>"),
+    text: zod_1.z.string().min(1).max(400),
+    category: exports.FactCategory,
+    priority: exports.Priority,
+    confidence: zod_1.z.number().min(0).max(1),
+    sourceUrls: zod_1.z.string().url().array().default([]),
+});
+exports.DataPoint = zod_1.z.object({
+    id: zod_1.z.string().regex(/^D\d+$/, "id must be D<number>"),
+    definition: zod_1.z.string().min(1).max(200),
+    value: zod_1.z.string().min(1).max(60),
+    unit: zod_1.z.string().max(40).nullable(),
+    sourceUrls: zod_1.z.string().url().array().default([]),
+});
+exports.IdeationType = zod_1.z.enum(["checklist", "mini_course", "info_box", "habit"]);
+exports.Ideation = zod_1.z.object({
+    id: zod_1.z.string().regex(/^I\d+$/, "id must be I<number>"),
+    type: exports.IdeationType,
+    title: zod_1.z.string().min(1).max(120),
+    description: zod_1.z.string().min(1).max(400),
+    audience: zod_1.z.string().max(200).default(""),
+    channels: zod_1.z.string().array().default([]),
+    keywords: zod_1.z.string().array().default([]),
+    priority: exports.Priority,
+});
+exports.ExtractionResult = zod_1.z.object({
+    metadata: exports.ExtractionMetadata,
+    facts: exports.Fact.array().min(5),
+    data: exports.DataPoint.array().min(3),
+    ideations: exports.Ideation.array().min(3),
 });

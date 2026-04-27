@@ -614,3 +614,250 @@ export declare const CleanedScrapeResult: z.ZodObject<{
     };
 }>;
 export type CleanedScrapeResult = z.infer<typeof CleanedScrapeResult>;
+export declare const ExtractionMetadata: z.ZodObject<{
+    keyword: z.ZodString;
+    language: z.ZodString;
+    sourceUrlCount: z.ZodNumber;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    keyword: string;
+    language: string;
+    sourceUrlCount: number;
+    createdAt: string;
+}, {
+    keyword: string;
+    language: string;
+    sourceUrlCount: number;
+    createdAt: string;
+}>;
+export type ExtractionMetadata = z.infer<typeof ExtractionMetadata>;
+export declare const FactCategory: z.ZodEnum<["definition", "causal", "general"]>;
+export type FactCategory = z.infer<typeof FactCategory>;
+export declare const Priority: z.ZodEnum<["high", "medium", "low"]>;
+export type Priority = z.infer<typeof Priority>;
+export declare const Fact: z.ZodObject<{
+    id: z.ZodString;
+    text: z.ZodString;
+    category: z.ZodEnum<["definition", "causal", "general"]>;
+    priority: z.ZodEnum<["high", "medium", "low"]>;
+    confidence: z.ZodNumber;
+    sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    text: string;
+    category: "definition" | "causal" | "general";
+    priority: "high" | "medium" | "low";
+    confidence: number;
+    sourceUrls: string[];
+}, {
+    id: string;
+    text: string;
+    category: "definition" | "causal" | "general";
+    priority: "high" | "medium" | "low";
+    confidence: number;
+    sourceUrls?: string[] | undefined;
+}>;
+export type Fact = z.infer<typeof Fact>;
+export declare const DataPoint: z.ZodObject<{
+    id: z.ZodString;
+    definition: z.ZodString;
+    value: z.ZodString;
+    unit: z.ZodNullable<z.ZodString>;
+    sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    value: string;
+    definition: string;
+    id: string;
+    sourceUrls: string[];
+    unit: string | null;
+}, {
+    value: string;
+    definition: string;
+    id: string;
+    unit: string | null;
+    sourceUrls?: string[] | undefined;
+}>;
+export type DataPoint = z.infer<typeof DataPoint>;
+export declare const IdeationType: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+export type IdeationType = z.infer<typeof IdeationType>;
+export declare const Ideation: z.ZodObject<{
+    id: z.ZodString;
+    type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+    title: z.ZodString;
+    description: z.ZodString;
+    audience: z.ZodDefault<z.ZodString>;
+    channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    priority: z.ZodEnum<["high", "medium", "low"]>;
+}, "strip", z.ZodTypeAny, {
+    type: "checklist" | "mini_course" | "info_box" | "habit";
+    title: string;
+    id: string;
+    priority: "high" | "medium" | "low";
+    description: string;
+    audience: string;
+    channels: string[];
+    keywords: string[];
+}, {
+    type: "checklist" | "mini_course" | "info_box" | "habit";
+    title: string;
+    id: string;
+    priority: "high" | "medium" | "low";
+    description: string;
+    audience?: string | undefined;
+    channels?: string[] | undefined;
+    keywords?: string[] | undefined;
+}>;
+export type Ideation = z.infer<typeof Ideation>;
+export declare const ExtractionResult: z.ZodObject<{
+    metadata: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        sourceUrlCount: z.ZodNumber;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    }, {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    }>;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    data: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+}, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    data: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+}>;
+export type ExtractionResult = z.infer<typeof ExtractionResult>;

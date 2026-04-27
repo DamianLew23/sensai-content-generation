@@ -11,6 +11,7 @@ export const MODEL_PRICING: Record<string, ModelPricing> = {
   "anthropic/claude-sonnet-4.6": { inputPer1M: 3.0, outputPer1M: 15.0 },
   "anthropic/claude-haiku-4.5": { inputPer1M: 0.25, outputPer1M: 1.25 },
   "google/gemini-2.5-flash": { inputPer1M: 0.075, outputPer1M: 0.3 },
+  "google/gemini-3-flash-preview": { inputPer1M: 0.3, outputPer1M: 2.5 },
 };
 
 export function calculateCostUsd(

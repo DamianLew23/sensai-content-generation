@@ -32,6 +32,12 @@ const EnvSchema = z.object({
   CLEANING_TARGET_CHAR_LIMIT: z.coerce.number().int().positive().default(50_000),
   CLEANING_MIN_PARAGRAPH_LENGTH: z.coerce.number().int().positive().default(60),
   CLEANING_COST_PER_1M_TOKENS: z.coerce.number().nonnegative().default(0.02),
+  CONTENT_EXTRACT_MODEL: z.string().default("google/gemini-3-flash-preview"),
+  CONTENT_EXTRACT_LANGUAGE: z.string().min(2).max(10).default("pl"),
+  CONTENT_EXTRACT_MIN_FACTS: z.coerce.number().int().positive().default(15),
+  CONTENT_EXTRACT_MIN_DATA: z.coerce.number().int().positive().default(8),
+  CONTENT_EXTRACT_MIN_IDEATIONS: z.coerce.number().int().positive().default(5),
+  CONTENT_EXTRACT_MAX_INPUT_CHARS: z.coerce.number().int().positive().default(120_000),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 
