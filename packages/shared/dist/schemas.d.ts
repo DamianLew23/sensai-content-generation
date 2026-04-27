@@ -8,34 +8,40 @@ export declare const StepDef: z.ZodObject<{
     type: z.ZodString;
     auto: z.ZodBoolean;
     model: z.ZodOptional<z.ZodString>;
+    dependsOn: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     type: string;
     key: string;
     auto: boolean;
     model?: string | undefined;
+    dependsOn?: string[] | undefined;
 }, {
     type: string;
     key: string;
     auto: boolean;
     model?: string | undefined;
+    dependsOn?: string[] | undefined;
 }>;
 export type StepDef = z.infer<typeof StepDef>;
-export declare const TemplateStepsDef: z.ZodObject<{
+export declare const TemplateStepsDef: z.ZodEffects<z.ZodObject<{
     steps: z.ZodArray<z.ZodObject<{
         key: z.ZodString;
         type: z.ZodString;
         auto: z.ZodBoolean;
         model: z.ZodOptional<z.ZodString>;
+        dependsOn: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
         type: string;
         key: string;
         auto: boolean;
         model?: string | undefined;
+        dependsOn?: string[] | undefined;
     }, {
         type: string;
         key: string;
         auto: boolean;
         model?: string | undefined;
+        dependsOn?: string[] | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     steps: {
@@ -43,6 +49,7 @@ export declare const TemplateStepsDef: z.ZodObject<{
         key: string;
         auto: boolean;
         model?: string | undefined;
+        dependsOn?: string[] | undefined;
     }[];
 }, {
     steps: {
@@ -50,6 +57,23 @@ export declare const TemplateStepsDef: z.ZodObject<{
         key: string;
         auto: boolean;
         model?: string | undefined;
+        dependsOn?: string[] | undefined;
+    }[];
+}>, {
+    steps: {
+        type: string;
+        key: string;
+        auto: boolean;
+        model?: string | undefined;
+        dependsOn?: string[] | undefined;
+    }[];
+}, {
+    steps: {
+        type: string;
+        key: string;
+        auto: boolean;
+        model?: string | undefined;
+        dependsOn?: string[] | undefined;
     }[];
 }>;
 export type TemplateStepsDef = z.infer<typeof TemplateStepsDef>;
@@ -861,3 +885,14 @@ export declare const ExtractionResult: z.ZodObject<{
     }[];
 }>;
 export type ExtractionResult = z.infer<typeof ExtractionResult>;
+export declare const RerunPreview: z.ZodObject<{
+    target: z.ZodString;
+    downstream: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    target: string;
+    downstream: string[];
+}, {
+    target: string;
+    downstream: string[];
+}>;
+export type RerunPreview = z.infer<typeof RerunPreview>;
