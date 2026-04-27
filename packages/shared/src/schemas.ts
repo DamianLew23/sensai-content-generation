@@ -261,3 +261,137 @@ export const RerunPreview = z.object({
   downstream: z.string().array(),
 });
 export type RerunPreview = z.infer<typeof RerunPreview>;
+
+export const EntityType = z.enum([
+  "PERSON",
+  "ORGANIZATION",
+  "LOCATION",
+  "PRODUCT",
+  "CONCEPT",
+  "EVENT",
+]);
+export type EntityType = z.infer<typeof EntityType>;
+
+export const RelationType = z.enum([
+  "PART_OF",
+  "LOCATED_IN",
+  "CREATED_BY",
+  "WORKS_FOR",
+  "RELATED_TO",
+  "HAS_FEATURE",
+  "SOLVES",
+  "COMPETES_WITH",
+  "CONNECTED_TO",
+  "USED_BY",
+  "REQUIRES",
+]);
+export type RelationType = z.infer<typeof RelationType>;
+
+export const ContextAnalysis = z.object({
+  mainTopicInterpretation: z.string().min(1).max(500),
+  domainSummary: z.string().min(1).max(500),
+  notes: z.string().max(500).default(""),
+});
+export type ContextAnalysis = z.infer<typeof ContextAnalysis>;
+
+export const EntityExtractionMetadata = z.object({
+  keyword: z.string().min(1),
+  language: z.string().min(2).max(10),
+  sourceUrlCount: z.number().int().nonnegative(),
+  createdAt: z.string().datetime(),
+});
+export type EntityExtractionMetadata = z.infer<typeof EntityExtractionMetadata>;
+
+export const Entity = z.object({
+  id: z.string().regex(/^E\d+$/, "id must be E<number>"),
+  originalSurface: z.string().min(1).max(200),
+  entity: z.string().min(1).max(200),
+  domainType: EntityType,
+  evidence: z.string().min(1).max(300),
+});
+export type Entity = z.infer<typeof Entity>;
+
+export const EntityRelation = z.object({
+  source: z.string().regex(/^E\d+$/, "source must be E<number>"),
+  target: z.string().regex(/^E\d+$/, "target must be E<number>"),
+  type: RelationType,
+  description: z.string().min(1).max(300),
+  evidence: z.string().min(1).max(300),
+});
+export type EntityRelation = z.infer<typeof EntityRelation>;
+
+export const RelationToMain = z.object({
+  entityId: z.string().regex(/^E\d+$/, "entityId must be E<number>"),
+  score: z.number().int().min(1).max(100),
+  rationale: z.string().min(1).max(300),
+});
+export type RelationToMain = z.infer<typeof RelationToMain>;
+
+export const EntityExtractionResult = z
+  .object({
+    metadata: EntityExtractionMetadata,
+    contextAnalysis: ContextAnalysis,
+    entities: Entity.array().min(8),
+    relationships: EntityRelation.array().min(3),
+    relationToMain: RelationToMain.array().min(8),
+  })
+  .superRefine((val, ctx) => {
+    const entityIds = new Set(val.entities.map((e) => e.id));
+
+    // unique entity ids
+    if (entityIds.size !== val.entities.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "duplicate entity ids",
+        path: ["entities"],
+      });
+    }
+
+    // every relationship must reference known entities, no self-edges
+    val.relationships.forEach((rel, i) => {
+      if (!entityIds.has(rel.source)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relationships[${i}].source references unknown entity ${rel.source}`,
+          path: ["relationships", i, "source"],
+        });
+      }
+      if (!entityIds.has(rel.target)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relationships[${i}].target references unknown entity ${rel.target}`,
+          path: ["relationships", i, "target"],
+        });
+      }
+      if (rel.source === rel.target) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relationships[${i}] is a self-edge`,
+          path: ["relationships", i],
+        });
+      }
+    });
+
+    // every entity must have a relationToMain entry
+    const relMainIds = new Set(val.relationToMain.map((r) => r.entityId));
+    for (const id of entityIds) {
+      if (!relMainIds.has(id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `entity ${id} has no relationToMain entry`,
+          path: ["relationToMain"],
+        });
+      }
+    }
+    // every relationToMain entry must reference a known entity
+    val.relationToMain.forEach((rm, i) => {
+      if (!entityIds.has(rm.entityId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `relationToMain[${i}] references unknown entity ${rm.entityId}`,
+          path: ["relationToMain", i, "entityId"],
+        });
+      }
+    });
+  });
+export type EntityExtractionResult = z.infer<typeof EntityExtractionResult>;

@@ -38,6 +38,11 @@ const EnvSchema = z.object({
   CONTENT_EXTRACT_MIN_DATA: z.coerce.number().int().positive().default(8),
   CONTENT_EXTRACT_MIN_IDEATIONS: z.coerce.number().int().positive().default(5),
   CONTENT_EXTRACT_MAX_INPUT_CHARS: z.coerce.number().int().positive().default(120_000),
+  ENTITY_EXTRACT_MODEL: z.string().default("google/gemini-3-flash-preview"),
+  ENTITY_EXTRACT_LANGUAGE: z.string().min(2).max(10).default("pl"),
+  ENTITY_EXTRACT_MIN_ENTITIES: z.coerce.number().int().positive().default(10),
+  ENTITY_EXTRACT_MIN_RELATIONS: z.coerce.number().int().positive().default(5),
+  ENTITY_EXTRACT_MAX_INPUT_CHARS: z.coerce.number().int().positive().default(120_000),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 

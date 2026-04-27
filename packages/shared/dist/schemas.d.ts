@@ -896,3 +896,299 @@ export declare const RerunPreview: z.ZodObject<{
     downstream: string[];
 }>;
 export type RerunPreview = z.infer<typeof RerunPreview>;
+export declare const EntityType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+export type EntityType = z.infer<typeof EntityType>;
+export declare const RelationType: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+export type RelationType = z.infer<typeof RelationType>;
+export declare const ContextAnalysis: z.ZodObject<{
+    mainTopicInterpretation: z.ZodString;
+    domainSummary: z.ZodString;
+    notes: z.ZodDefault<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    mainTopicInterpretation: string;
+    domainSummary: string;
+    notes: string;
+}, {
+    mainTopicInterpretation: string;
+    domainSummary: string;
+    notes?: string | undefined;
+}>;
+export type ContextAnalysis = z.infer<typeof ContextAnalysis>;
+export declare const EntityExtractionMetadata: z.ZodObject<{
+    keyword: z.ZodString;
+    language: z.ZodString;
+    sourceUrlCount: z.ZodNumber;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    keyword: string;
+    language: string;
+    sourceUrlCount: number;
+    createdAt: string;
+}, {
+    keyword: string;
+    language: string;
+    sourceUrlCount: number;
+    createdAt: string;
+}>;
+export type EntityExtractionMetadata = z.infer<typeof EntityExtractionMetadata>;
+export declare const Entity: z.ZodObject<{
+    id: z.ZodString;
+    originalSurface: z.ZodString;
+    entity: z.ZodString;
+    domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+    evidence: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    originalSurface: string;
+    entity: string;
+    domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+    evidence: string;
+}, {
+    id: string;
+    originalSurface: string;
+    entity: string;
+    domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+    evidence: string;
+}>;
+export type Entity = z.infer<typeof Entity>;
+export declare const EntityRelation: z.ZodObject<{
+    source: z.ZodString;
+    target: z.ZodString;
+    type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+    description: z.ZodString;
+    evidence: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+    source: string;
+    description: string;
+    target: string;
+    evidence: string;
+}, {
+    type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+    source: string;
+    description: string;
+    target: string;
+    evidence: string;
+}>;
+export type EntityRelation = z.infer<typeof EntityRelation>;
+export declare const RelationToMain: z.ZodObject<{
+    entityId: z.ZodString;
+    score: z.ZodNumber;
+    rationale: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    entityId: string;
+    score: number;
+    rationale: string;
+}, {
+    entityId: string;
+    score: number;
+    rationale: string;
+}>;
+export type RelationToMain = z.infer<typeof RelationToMain>;
+export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
+    metadata: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        sourceUrlCount: z.ZodNumber;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    }, {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    }>;
+    contextAnalysis: z.ZodObject<{
+        mainTopicInterpretation: z.ZodString;
+        domainSummary: z.ZodString;
+        notes: z.ZodDefault<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes: string;
+    }, {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes?: string | undefined;
+    }>;
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }>, "many">;
+    relationToMain: z.ZodArray<z.ZodObject<{
+        entityId: z.ZodString;
+        score: z.ZodNumber;
+        rationale: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }, {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    contextAnalysis: {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes: string;
+    };
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }[];
+    relationToMain: {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }[];
+}, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    contextAnalysis: {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes?: string | undefined;
+    };
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }[];
+    relationToMain: {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }[];
+}>, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    contextAnalysis: {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes: string;
+    };
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }[];
+    relationToMain: {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }[];
+}, {
+    metadata: {
+        keyword: string;
+        language: string;
+        sourceUrlCount: number;
+        createdAt: string;
+    };
+    contextAnalysis: {
+        mainTopicInterpretation: string;
+        domainSummary: string;
+        notes?: string | undefined;
+    };
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+    }[];
+    relationToMain: {
+        entityId: string;
+        score: number;
+        rationale: string;
+    }[];
+}>;
+export type EntityExtractionResult = z.infer<typeof EntityExtractionResult>;

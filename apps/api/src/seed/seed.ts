@@ -90,6 +90,23 @@ async function main() {
     },
   );
 
+  const blogSeoEntities = await upsertTemplate(
+    db,
+    "Blog SEO — deep research + clean + extract + entities",
+    1,
+    {
+      steps: [
+        { key: "deepResearch", type: "tool.youcom.research", auto: true,  dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",  auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract", auto: true, dependsOn: ["clean", "deepResearch"] },
+        { key: "entities",     type: "tool.entity.extract", auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["extract"] },
+      ],
+    },
+  );
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
@@ -99,6 +116,7 @@ async function main() {
   console.log(`    "${blogSeoDeepResearch.name}" v${blogSeoDeepResearch.version}: ${blogSeoDeepResearch.id}`);
   console.log(`    "${blogSeoDeepResearchClean.name}" v${blogSeoDeepResearchClean.version}: ${blogSeoDeepResearchClean.id}`);
   console.log(`    "${blogSeoExtract.name}" v${blogSeoExtract.version}: ${blogSeoExtract.id}`);
+  console.log(`    "${blogSeoEntities.name}" v${blogSeoEntities.version}: ${blogSeoEntities.id}`);
 
   await pool.end();
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -207,4 +207,119 @@ exports.ExtractionResult = zod_1.z.object({
 exports.RerunPreview = zod_1.z.object({
     target: zod_1.z.string(),
     downstream: zod_1.z.string().array(),
+});
+exports.EntityType = zod_1.z.enum([
+    "PERSON",
+    "ORGANIZATION",
+    "LOCATION",
+    "PRODUCT",
+    "CONCEPT",
+    "EVENT",
+]);
+exports.RelationType = zod_1.z.enum([
+    "PART_OF",
+    "LOCATED_IN",
+    "CREATED_BY",
+    "WORKS_FOR",
+    "RELATED_TO",
+    "HAS_FEATURE",
+    "SOLVES",
+    "COMPETES_WITH",
+    "CONNECTED_TO",
+    "USED_BY",
+    "REQUIRES",
+]);
+exports.ContextAnalysis = zod_1.z.object({
+    mainTopicInterpretation: zod_1.z.string().min(1).max(500),
+    domainSummary: zod_1.z.string().min(1).max(500),
+    notes: zod_1.z.string().max(500).default(""),
+});
+exports.EntityExtractionMetadata = zod_1.z.object({
+    keyword: zod_1.z.string().min(1),
+    language: zod_1.z.string().min(2).max(10),
+    sourceUrlCount: zod_1.z.number().int().nonnegative(),
+    createdAt: zod_1.z.string().datetime(),
+});
+exports.Entity = zod_1.z.object({
+    id: zod_1.z.string().regex(/^E\d+$/, "id must be E<number>"),
+    originalSurface: zod_1.z.string().min(1).max(200),
+    entity: zod_1.z.string().min(1).max(200),
+    domainType: exports.EntityType,
+    evidence: zod_1.z.string().min(1).max(300),
+});
+exports.EntityRelation = zod_1.z.object({
+    source: zod_1.z.string().regex(/^E\d+$/, "source must be E<number>"),
+    target: zod_1.z.string().regex(/^E\d+$/, "target must be E<number>"),
+    type: exports.RelationType,
+    description: zod_1.z.string().min(1).max(300),
+    evidence: zod_1.z.string().min(1).max(300),
+});
+exports.RelationToMain = zod_1.z.object({
+    entityId: zod_1.z.string().regex(/^E\d+$/, "entityId must be E<number>"),
+    score: zod_1.z.number().int().min(1).max(100),
+    rationale: zod_1.z.string().min(1).max(300),
+});
+exports.EntityExtractionResult = zod_1.z
+    .object({
+    metadata: exports.EntityExtractionMetadata,
+    contextAnalysis: exports.ContextAnalysis,
+    entities: exports.Entity.array().min(8),
+    relationships: exports.EntityRelation.array().min(3),
+    relationToMain: exports.RelationToMain.array().min(8),
+})
+    .superRefine((val, ctx) => {
+    const entityIds = new Set(val.entities.map((e) => e.id));
+    // unique entity ids
+    if (entityIds.size !== val.entities.length) {
+        ctx.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            message: "duplicate entity ids",
+            path: ["entities"],
+        });
+    }
+    // every relationship must reference known entities, no self-edges
+    val.relationships.forEach((rel, i) => {
+        if (!entityIds.has(rel.source)) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `relationships[${i}].source references unknown entity ${rel.source}`,
+                path: ["relationships", i, "source"],
+            });
+        }
+        if (!entityIds.has(rel.target)) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `relationships[${i}].target references unknown entity ${rel.target}`,
+                path: ["relationships", i, "target"],
+            });
+        }
+        if (rel.source === rel.target) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `relationships[${i}] is a self-edge`,
+                path: ["relationships", i],
+            });
+        }
+    });
+    // every entity must have a relationToMain entry
+    const relMainIds = new Set(val.relationToMain.map((r) => r.entityId));
+    for (const id of entityIds) {
+        if (!relMainIds.has(id)) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `entity ${id} has no relationToMain entry`,
+                path: ["relationToMain"],
+            });
+        }
+    }
+    // every relationToMain entry must reference a known entity
+    val.relationToMain.forEach((rm, i) => {
+        if (!entityIds.has(rm.entityId)) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `relationToMain[${i}] references unknown entity ${rm.entityId}`,
+                path: ["relationToMain", i, "entityId"],
+            });
+        }
+    });
 });

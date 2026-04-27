@@ -1,5 +1,6 @@
 import { CleanedOutput } from "./cleaned";
 import { DeepResearchOutput } from "./deep-research";
+import { EntitiesOutput } from "./entities";
 import { ExtractionOutput } from "./extraction";
 import { JsonFallback } from "./json-fallback";
 import { ScrapeOutput } from "./scrape";
@@ -28,6 +29,8 @@ export function StepOutput({
       return <CleanedOutput value={value} />;
     case "tool.content.extract":
       return <ExtractionOutput value={value} />;
+    case "tool.entity.extract":
+      return <EntitiesOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -39,6 +42,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.serp.fetch" ||
     type === "tool.scrape" ||
     type === "tool.content.clean" ||
-    type === "tool.content.extract"
+    type === "tool.content.extract" ||
+    type === "tool.entity.extract"
   );
 }
