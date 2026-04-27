@@ -89,6 +89,7 @@ export class LlmClient {
     system: string;
     prompt: string;
     schema: ZodSchema<T>;
+    providerOptions?: Record<string, Record<string, unknown>>;
   }): Promise<LlmObjectResult<T>> {
     const model = args.ctx.model ?? this.defaultModel;
     const started = Date.now();
@@ -100,6 +101,8 @@ export class LlmClient {
       system: args.system,
       prompt: args.prompt,
       schema,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(args.providerOptions ? { providerOptions: args.providerOptions as any } : {}),
     });
     const latencyMs = Date.now() - started;
     const promptTokens = res.usage?.inputTokens ?? 0;

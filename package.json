@@ -13,7 +13,8 @@
     "test": "pnpm -r --if-present test",
     "smoke:plan-06": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-06.ts",
     "smoke:plan-07": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-07.ts",
-    "smoke:plan-09": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-09.ts"
+    "smoke:plan-09": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-09.ts",
+    "smoke:plan-10": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-10.ts"
   },
   "engines": {
     "node": ">=20.11",

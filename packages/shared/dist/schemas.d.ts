@@ -1192,3 +1192,479 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
     }[];
 }>;
 export type EntityExtractionResult = z.infer<typeof EntityExtractionResult>;
+export declare const IntentName: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+export type IntentName = z.infer<typeof IntentName>;
+export declare const FanOutClassification: z.ZodEnum<["MICRO", "MACRO"]>;
+export type FanOutClassification = z.infer<typeof FanOutClassification>;
+export declare const FanOutArea: z.ZodObject<{
+    id: z.ZodString;
+    topic: z.ZodString;
+    question: z.ZodString;
+    ymyl: z.ZodBoolean;
+    classification: z.ZodEnum<["MICRO", "MACRO"]>;
+    evergreenTopic: z.ZodDefault<z.ZodString>;
+    evergreenQuestion: z.ZodDefault<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    topic: string;
+    id: string;
+    question: string;
+    ymyl: boolean;
+    classification: "MICRO" | "MACRO";
+    evergreenTopic: string;
+    evergreenQuestion: string;
+}, {
+    topic: string;
+    id: string;
+    question: string;
+    ymyl: boolean;
+    classification: "MICRO" | "MACRO";
+    evergreenTopic?: string | undefined;
+    evergreenQuestion?: string | undefined;
+}>;
+export type FanOutArea = z.infer<typeof FanOutArea>;
+export declare const FanOutIntent: z.ZodObject<{
+    name: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    areas: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        topic: z.ZodString;
+        question: z.ZodString;
+        ymyl: z.ZodBoolean;
+        classification: z.ZodEnum<["MICRO", "MACRO"]>;
+        evergreenTopic: z.ZodDefault<z.ZodString>;
+        evergreenQuestion: z.ZodDefault<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        topic: string;
+        id: string;
+        question: string;
+        ymyl: boolean;
+        classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
+    }, {
+        topic: string;
+        id: string;
+        question: string;
+        ymyl: boolean;
+        classification: "MICRO" | "MACRO";
+        evergreenTopic?: string | undefined;
+        evergreenQuestion?: string | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    areas: {
+        topic: string;
+        id: string;
+        question: string;
+        ymyl: boolean;
+        classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
+    }[];
+}, {
+    name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    areas: {
+        topic: string;
+        id: string;
+        question: string;
+        ymyl: boolean;
+        classification: "MICRO" | "MACRO";
+        evergreenTopic?: string | undefined;
+        evergreenQuestion?: string | undefined;
+    }[];
+}>;
+export type FanOutIntent = z.infer<typeof FanOutIntent>;
+export declare const PaaMapping: z.ZodObject<{
+    areaId: z.ZodString;
+    question: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    question: string;
+    areaId: string;
+}, {
+    question: string;
+    areaId: string;
+}>;
+export type PaaMapping = z.infer<typeof PaaMapping>;
+export declare const QueryFanOutMetadata: z.ZodObject<{
+    keyword: z.ZodString;
+    language: z.ZodString;
+    paaFetched: z.ZodNumber;
+    paaUsed: z.ZodBoolean;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    keyword: string;
+    language: string;
+    createdAt: string;
+    paaFetched: number;
+    paaUsed: boolean;
+}, {
+    keyword: string;
+    language: string;
+    createdAt: string;
+    paaFetched: number;
+    paaUsed: boolean;
+}>;
+export type QueryFanOutMetadata = z.infer<typeof QueryFanOutMetadata>;
+export declare const QueryFanOutResult: z.ZodEffects<z.ZodObject<{
+    metadata: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        paaFetched: z.ZodNumber;
+        paaUsed: z.ZodBoolean;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    }, {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    }>;
+    normalization: z.ZodObject<{
+        mainEntity: z.ZodString;
+        category: z.ZodString;
+        ymylRisk: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    }, {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    }>;
+    intents: z.ZodArray<z.ZodObject<{
+        name: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        areas: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            topic: z.ZodString;
+            question: z.ZodString;
+            ymyl: z.ZodBoolean;
+            classification: z.ZodEnum<["MICRO", "MACRO"]>;
+            evergreenTopic: z.ZodDefault<z.ZodString>;
+            evergreenQuestion: z.ZodDefault<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic: string;
+            evergreenQuestion: string;
+        }, {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic?: string | undefined;
+            evergreenQuestion?: string | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic: string;
+            evergreenQuestion: string;
+        }[];
+    }, {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic?: string | undefined;
+            evergreenQuestion?: string | undefined;
+        }[];
+    }>, "many">;
+    dominantIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    paaMapping: z.ZodArray<z.ZodObject<{
+        areaId: z.ZodString;
+        question: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        question: string;
+        areaId: string;
+    }, {
+        question: string;
+        areaId: string;
+    }>, "many">;
+    unmatchedPaa: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    metadata: {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    };
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic: string;
+            evergreenQuestion: string;
+        }[];
+    }[];
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    paaMapping: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatchedPaa: string[];
+}, {
+    metadata: {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    };
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic?: string | undefined;
+            evergreenQuestion?: string | undefined;
+        }[];
+    }[];
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    paaMapping: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatchedPaa: string[];
+}>, {
+    metadata: {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    };
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic: string;
+            evergreenQuestion: string;
+        }[];
+    }[];
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    paaMapping: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatchedPaa: string[];
+}, {
+    metadata: {
+        keyword: string;
+        language: string;
+        createdAt: string;
+        paaFetched: number;
+        paaUsed: boolean;
+    };
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+            classification: "MICRO" | "MACRO";
+            evergreenTopic?: string | undefined;
+            evergreenQuestion?: string | undefined;
+        }[];
+    }[];
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    paaMapping: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatchedPaa: string[];
+}>;
+export type QueryFanOutResult = z.infer<typeof QueryFanOutResult>;
+export declare const FanOutIntentsCall: z.ZodObject<{
+    normalization: z.ZodObject<{
+        mainEntity: z.ZodString;
+        category: z.ZodString;
+        ymylRisk: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    }, {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    }>;
+    intents: z.ZodArray<z.ZodObject<{
+        name: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        areas: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            topic: z.ZodString;
+            question: z.ZodString;
+            ymyl: z.ZodBoolean;
+        }, "strip", z.ZodTypeAny, {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }, {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }[];
+    }, {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }[];
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }[];
+    }[];
+}, {
+    normalization: {
+        category: string;
+        mainEntity: string;
+        ymylRisk: boolean;
+    };
+    intents: {
+        name: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        areas: {
+            topic: string;
+            id: string;
+            question: string;
+            ymyl: boolean;
+        }[];
+    }[];
+}>;
+export type FanOutIntentsCall = z.infer<typeof FanOutIntentsCall>;
+export declare const FanOutClassifyCall: z.ZodObject<{
+    classifications: z.ZodArray<z.ZodObject<{
+        areaId: z.ZodString;
+        classification: z.ZodEnum<["MICRO", "MACRO"]>;
+        evergreenTopic: z.ZodDefault<z.ZodString>;
+        evergreenQuestion: z.ZodDefault<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
+        areaId: string;
+    }, {
+        classification: "MICRO" | "MACRO";
+        areaId: string;
+        evergreenTopic?: string | undefined;
+        evergreenQuestion?: string | undefined;
+    }>, "many">;
+    dominantIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+}, "strip", z.ZodTypeAny, {
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    classifications: {
+        classification: "MICRO" | "MACRO";
+        evergreenTopic: string;
+        evergreenQuestion: string;
+        areaId: string;
+    }[];
+}, {
+    dominantIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    classifications: {
+        classification: "MICRO" | "MACRO";
+        areaId: string;
+        evergreenTopic?: string | undefined;
+        evergreenQuestion?: string | undefined;
+    }[];
+}>;
+export type FanOutClassifyCall = z.infer<typeof FanOutClassifyCall>;
+export declare const FanOutPaaCall: z.ZodObject<{
+    assignments: z.ZodArray<z.ZodObject<{
+        areaId: z.ZodString;
+        question: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        question: string;
+        areaId: string;
+    }, {
+        question: string;
+        areaId: string;
+    }>, "many">;
+    unmatched: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    assignments: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatched: string[];
+}, {
+    assignments: {
+        question: string;
+        areaId: string;
+    }[];
+    unmatched: string[];
+}>;
+export type FanOutPaaCall = z.infer<typeof FanOutPaaCall>;

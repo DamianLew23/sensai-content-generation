@@ -9,6 +9,7 @@ import { YoucomModule } from "./youcom/youcom.module";
 import { ContentCleanerModule } from "./content-cleaner/content-cleaner.module";
 import { ContentExtractorModule } from "./content-extractor/content-extractor.module";
 import { EntityExtractorModule } from "./entity-extractor/entity-extractor.module";
+import { QueryFanOutModule } from "./query-fanout/query-fanout.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EntityExtractorModule } from "./entity-extractor/entity-extractor.modul
     ContentCleanerModule,
     ContentExtractorModule,
     EntityExtractorModule,
+    QueryFanOutModule,
   ],
   providers: [ToolCallRecorder, ToolCacheService],
   exports: [
@@ -32,6 +34,7 @@ import { EntityExtractorModule } from "./entity-extractor/entity-extractor.modul
     ContentCleanerModule,
     ContentExtractorModule,
     EntityExtractorModule,
+    QueryFanOutModule,
   ],
 })
 export class ToolsModule {}

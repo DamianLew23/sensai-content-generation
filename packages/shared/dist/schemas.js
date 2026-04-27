@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -322,4 +322,146 @@ exports.EntityExtractionResult = zod_1.z
             });
         }
     });
+});
+exports.IntentName = zod_1.z.enum([
+    "Definicyjna",
+    "Problemowa",
+    "Instrukcyjna",
+    "Decyzyjna",
+    "Diagnostyczna",
+    "Porównawcza",
+]);
+exports.FanOutClassification = zod_1.z.enum(["MICRO", "MACRO"]);
+exports.FanOutArea = zod_1.z.object({
+    id: zod_1.z.string().regex(/^A\d+$/, "id must be A<number>"),
+    topic: zod_1.z.string().min(1).max(120),
+    question: zod_1.z.string().min(1).max(300),
+    ymyl: zod_1.z.boolean(),
+    classification: exports.FanOutClassification,
+    evergreenTopic: zod_1.z.string().max(120).default(""),
+    evergreenQuestion: zod_1.z.string().max(300).default(""),
+});
+exports.FanOutIntent = zod_1.z.object({
+    name: exports.IntentName,
+    areas: exports.FanOutArea.array().min(1).max(5),
+});
+exports.PaaMapping = zod_1.z.object({
+    areaId: zod_1.z.string().regex(/^A\d+$/),
+    question: zod_1.z.string().min(1).max(500),
+});
+exports.QueryFanOutMetadata = zod_1.z.object({
+    keyword: zod_1.z.string().min(1),
+    language: zod_1.z.string().min(2).max(10),
+    paaFetched: zod_1.z.number().int().nonnegative(),
+    paaUsed: zod_1.z.boolean(),
+    createdAt: zod_1.z.string().datetime(),
+});
+exports.QueryFanOutResult = zod_1.z
+    .object({
+    metadata: exports.QueryFanOutMetadata,
+    normalization: zod_1.z.object({
+        mainEntity: zod_1.z.string().min(1).max(200),
+        category: zod_1.z.string().min(1).max(120),
+        ymylRisk: zod_1.z.boolean(),
+    }),
+    intents: exports.FanOutIntent.array().min(1),
+    dominantIntent: exports.IntentName,
+    paaMapping: exports.PaaMapping.array(),
+    unmatchedPaa: zod_1.z.string().array(),
+})
+    .superRefine((val, ctx) => {
+    const areaIds = [];
+    for (const intent of val.intents) {
+        for (const area of intent.areas)
+            areaIds.push(area.id);
+    }
+    const areaIdSet = new Set(areaIds);
+    if (areaIdSet.size !== areaIds.length) {
+        ctx.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            message: "duplicate area ids across intents",
+            path: ["intents"],
+        });
+    }
+    const intentNames = new Set(val.intents.map((i) => i.name));
+    if (!intentNames.has(val.dominantIntent)) {
+        ctx.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            message: `dominantIntent "${val.dominantIntent}" is not in intents[]`,
+            path: ["dominantIntent"],
+        });
+    }
+    val.paaMapping.forEach((m, i) => {
+        if (!areaIdSet.has(m.areaId)) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: `paaMapping[${i}].areaId "${m.areaId}" is unknown`,
+                path: ["paaMapping", i, "areaId"],
+            });
+        }
+    });
+    for (const intent of val.intents) {
+        intent.areas.forEach((area) => {
+            if (area.classification === "MACRO" && area.evergreenTopic.trim() === "") {
+                ctx.addIssue({
+                    code: zod_1.z.ZodIssueCode.custom,
+                    message: `area ${area.id} is MACRO but has empty evergreenTopic`,
+                    path: ["intents"],
+                });
+            }
+        });
+    }
+    if (!val.metadata.paaUsed) {
+        if (val.paaMapping.length > 0 || val.unmatchedPaa.length > 0) {
+            ctx.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                message: "paaUsed=false but paaMapping or unmatchedPaa is non-empty",
+                path: ["metadata", "paaUsed"],
+            });
+        }
+    }
+});
+exports.FanOutIntentsCall = zod_1.z.object({
+    normalization: zod_1.z.object({
+        mainEntity: zod_1.z.string().min(1).max(200),
+        category: zod_1.z.string().min(1).max(120),
+        ymylRisk: zod_1.z.boolean(),
+    }),
+    intents: zod_1.z
+        .object({
+        name: exports.IntentName,
+        areas: zod_1.z
+            .object({
+            id: zod_1.z.string().regex(/^A\d+$/),
+            topic: zod_1.z.string().min(1).max(120),
+            question: zod_1.z.string().min(1).max(300),
+            ymyl: zod_1.z.boolean(),
+        })
+            .array()
+            .min(1)
+            .max(5),
+    })
+        .array()
+        .min(1),
+});
+exports.FanOutClassifyCall = zod_1.z.object({
+    classifications: zod_1.z
+        .object({
+        areaId: zod_1.z.string().regex(/^A\d+$/),
+        classification: exports.FanOutClassification,
+        evergreenTopic: zod_1.z.string().max(120).default(""),
+        evergreenQuestion: zod_1.z.string().max(300).default(""),
+    })
+        .array()
+        .min(1),
+    dominantIntent: exports.IntentName,
+});
+exports.FanOutPaaCall = zod_1.z.object({
+    assignments: zod_1.z
+        .object({
+        areaId: zod_1.z.string().regex(/^A\d+$/),
+        question: zod_1.z.string().min(1).max(500),
+    })
+        .array(),
+    unmatched: zod_1.z.string().array(),
 });

@@ -395,3 +395,169 @@ export const EntityExtractionResult = z
     });
   });
 export type EntityExtractionResult = z.infer<typeof EntityExtractionResult>;
+
+export const IntentName = z.enum([
+  "Definicyjna",
+  "Problemowa",
+  "Instrukcyjna",
+  "Decyzyjna",
+  "Diagnostyczna",
+  "Porównawcza",
+]);
+export type IntentName = z.infer<typeof IntentName>;
+
+export const FanOutClassification = z.enum(["MICRO", "MACRO"]);
+export type FanOutClassification = z.infer<typeof FanOutClassification>;
+
+export const FanOutArea = z.object({
+  id: z.string().regex(/^A\d+$/, "id must be A<number>"),
+  topic: z.string().min(1).max(120),
+  question: z.string().min(1).max(300),
+  ymyl: z.boolean(),
+  classification: FanOutClassification,
+  evergreenTopic: z.string().max(120).default(""),
+  evergreenQuestion: z.string().max(300).default(""),
+});
+export type FanOutArea = z.infer<typeof FanOutArea>;
+
+export const FanOutIntent = z.object({
+  name: IntentName,
+  areas: FanOutArea.array().min(1).max(5),
+});
+export type FanOutIntent = z.infer<typeof FanOutIntent>;
+
+export const PaaMapping = z.object({
+  areaId: z.string().regex(/^A\d+$/),
+  question: z.string().min(1).max(500),
+});
+export type PaaMapping = z.infer<typeof PaaMapping>;
+
+export const QueryFanOutMetadata = z.object({
+  keyword: z.string().min(1),
+  language: z.string().min(2).max(10),
+  paaFetched: z.number().int().nonnegative(),
+  paaUsed: z.boolean(),
+  createdAt: z.string().datetime(),
+});
+export type QueryFanOutMetadata = z.infer<typeof QueryFanOutMetadata>;
+
+export const QueryFanOutResult = z
+  .object({
+    metadata: QueryFanOutMetadata,
+    normalization: z.object({
+      mainEntity: z.string().min(1).max(200),
+      category: z.string().min(1).max(120),
+      ymylRisk: z.boolean(),
+    }),
+    intents: FanOutIntent.array().min(1),
+    dominantIntent: IntentName,
+    paaMapping: PaaMapping.array(),
+    unmatchedPaa: z.string().array(),
+  })
+  .superRefine((val, ctx) => {
+    const areaIds: string[] = [];
+    for (const intent of val.intents) {
+      for (const area of intent.areas) areaIds.push(area.id);
+    }
+    const areaIdSet = new Set(areaIds);
+
+    if (areaIdSet.size !== areaIds.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "duplicate area ids across intents",
+        path: ["intents"],
+      });
+    }
+
+    const intentNames = new Set(val.intents.map((i) => i.name));
+    if (!intentNames.has(val.dominantIntent)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `dominantIntent "${val.dominantIntent}" is not in intents[]`,
+        path: ["dominantIntent"],
+      });
+    }
+
+    val.paaMapping.forEach((m, i) => {
+      if (!areaIdSet.has(m.areaId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `paaMapping[${i}].areaId "${m.areaId}" is unknown`,
+          path: ["paaMapping", i, "areaId"],
+        });
+      }
+    });
+
+    for (const intent of val.intents) {
+      intent.areas.forEach((area) => {
+        if (area.classification === "MACRO" && area.evergreenTopic.trim() === "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `area ${area.id} is MACRO but has empty evergreenTopic`,
+            path: ["intents"],
+          });
+        }
+      });
+    }
+
+    if (!val.metadata.paaUsed) {
+      if (val.paaMapping.length > 0 || val.unmatchedPaa.length > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "paaUsed=false but paaMapping or unmatchedPaa is non-empty",
+          path: ["metadata", "paaUsed"],
+        });
+      }
+    }
+  });
+export type QueryFanOutResult = z.infer<typeof QueryFanOutResult>;
+
+export const FanOutIntentsCall = z.object({
+  normalization: z.object({
+    mainEntity: z.string().min(1).max(200),
+    category: z.string().min(1).max(120),
+    ymylRisk: z.boolean(),
+  }),
+  intents: z
+    .object({
+      name: IntentName,
+      areas: z
+        .object({
+          id: z.string().regex(/^A\d+$/),
+          topic: z.string().min(1).max(120),
+          question: z.string().min(1).max(300),
+          ymyl: z.boolean(),
+        })
+        .array()
+        .min(1)
+        .max(5),
+    })
+    .array()
+    .min(1),
+});
+export type FanOutIntentsCall = z.infer<typeof FanOutIntentsCall>;
+
+export const FanOutClassifyCall = z.object({
+  classifications: z
+    .object({
+      areaId: z.string().regex(/^A\d+$/),
+      classification: FanOutClassification,
+      evergreenTopic: z.string().max(120).default(""),
+      evergreenQuestion: z.string().max(300).default(""),
+    })
+    .array()
+    .min(1),
+  dominantIntent: IntentName,
+});
+export type FanOutClassifyCall = z.infer<typeof FanOutClassifyCall>;
+
+export const FanOutPaaCall = z.object({
+  assignments: z
+    .object({
+      areaId: z.string().regex(/^A\d+$/),
+      question: z.string().min(1).max(500),
+    })
+    .array(),
+  unmatched: z.string().array(),
+});
+export type FanOutPaaCall = z.infer<typeof FanOutPaaCall>;
