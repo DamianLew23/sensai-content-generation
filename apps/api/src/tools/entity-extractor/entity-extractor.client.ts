@@ -58,7 +58,7 @@ export class EntityExtractorClient {
     );
 
     return {
-      result: res.object,
+      result: res.object as EntityExtractionResult,
       model: res.model,
       promptTokens: res.promptTokens,
       completionTokens: res.completionTokens,
