@@ -8,6 +8,7 @@ import { Crawl4aiModule } from "./crawl4ai/crawl4ai.module";
 import { YoucomModule } from "./youcom/youcom.module";
 import { ContentCleanerModule } from "./content-cleaner/content-cleaner.module";
 import { ContentExtractorModule } from "./content-extractor/content-extractor.module";
+import { EntityExtractorModule } from "./entity-extractor/entity-extractor.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ContentExtractorModule } from "./content-extractor/content-extractor.mo
     YoucomModule,
     ContentCleanerModule,
     ContentExtractorModule,
+    EntityExtractorModule,
   ],
   providers: [ToolCallRecorder, ToolCacheService],
   exports: [
@@ -29,6 +31,7 @@ import { ContentExtractorModule } from "./content-extractor/content-extractor.mo
     YoucomModule,
     ContentCleanerModule,
     ContentExtractorModule,
+    EntityExtractorModule,
   ],
 })
 export class ToolsModule {}

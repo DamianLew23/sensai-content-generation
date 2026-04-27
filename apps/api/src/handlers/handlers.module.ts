@@ -5,6 +5,7 @@ import { ScrapeFetchHandler } from "./scrape-fetch.handler";
 import { YoucomResearchHandler } from "./youcom-research.handler";
 import { ContentCleanHandler } from "./content-clean.handler";
 import { ContentExtractHandler } from "./content-extract.handler";
+import { EntityExtractHandler } from "./entity-extract.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
@@ -18,6 +19,7 @@ import { loadEnv } from "../config/env";
     YoucomResearchHandler,
     ContentCleanHandler,
     ContentExtractHandler,
+    EntityExtractHandler,
     {
       provide: "YOUCOM_ENV",
       useFactory: () => loadEnv(),
@@ -31,6 +33,10 @@ import { loadEnv } from "../config/env";
       useFactory: () => loadEnv(),
     },
     {
+      provide: "ENTITY_EXTRACT_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
       provide: STEP_HANDLERS,
       useFactory: (
         brief: BriefHandler,
@@ -39,7 +45,8 @@ import { loadEnv } from "../config/env";
         youcom: YoucomResearchHandler,
         clean: ContentCleanHandler,
         extract: ContentExtractHandler,
-      ): StepHandler[] => [brief, serp, scrape, youcom, clean, extract],
+        entities: EntityExtractHandler,
+      ): StepHandler[] => [brief, serp, scrape, youcom, clean, extract, entities],
       inject: [
         BriefHandler,
         SerpFetchHandler,
@@ -47,6 +54,7 @@ import { loadEnv } from "../config/env";
         YoucomResearchHandler,
         ContentCleanHandler,
         ContentExtractHandler,
+        EntityExtractHandler,
       ],
     },
   ],
