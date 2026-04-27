@@ -34,6 +34,7 @@ export class SerpFetchHandler implements StepHandler {
       ttlSeconds: 7 * 86400,
       runId: ctx.run.id,
       stepId: ctx.step.id,
+      forceRefresh: ctx.forceRefresh,
       fetcher: async () => {
         const t0 = Date.now();
         const raw = await this.client.serpOrganicLive(params);

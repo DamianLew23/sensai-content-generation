@@ -15,10 +15,14 @@ export class OrchestratorService {
     @Inject("PIPELINE_QUEUE") private readonly queue: Queue<StepJobData>,
   ) {}
 
-  async enqueueStep(runId: string, stepId: string): Promise<void> {
+  async enqueueStep(
+    runId: string,
+    stepId: string,
+    opts?: { forceRefresh?: boolean },
+  ): Promise<void> {
     await this.queue.add(
       "execute-step",
-      { runId, stepId },
+      { runId, stepId, forceRefresh: opts?.forceRefresh },
       {
         attempts: 3,
         backoff: { type: "exponential", delay: 5000 },
@@ -26,7 +30,7 @@ export class OrchestratorService {
         removeOnFail: 100,
       },
     );
-    this.logger.log({ runId, stepId }, "step enqueued");
+    this.logger.log({ runId, stepId, forceRefresh: opts?.forceRefresh }, "step enqueued");
   }
 
   /**

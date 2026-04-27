@@ -14,6 +14,7 @@ import {
   getStepProgress,
 } from "@/lib/run-display";
 import { ApproveScrapeForm } from "./approve-scrape-form";
+import { RerunStepPanel } from "./rerun-step-panel";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-muted text-muted-foreground",
@@ -195,6 +196,14 @@ export default function RunDetailPage() {
                       raw={rawJson}
                     />
                   </div>
+                  {run.data && (
+                    <RerunStepPanel
+                      runId={run.data.id}
+                      stepId={selectedStep.id}
+                      stepKey={selectedStep.stepKey}
+                      stepStatus={selectedStep.status}
+                    />
+                  )}
                   {!!selectedStep.error && (
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium text-red-600">Błąd</h3>

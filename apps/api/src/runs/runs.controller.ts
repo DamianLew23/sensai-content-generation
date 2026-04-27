@@ -30,4 +30,20 @@ export class RunsController {
   ) {
     return this.svc.resume(id, stepId, body);
   }
+
+  @Get(":id/steps/:stepId/rerun-preview")
+  rerunPreview(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Param("stepId", new ParseUUIDPipe()) stepId: string,
+  ) {
+    return this.svc.previewRerun(id, stepId);
+  }
+
+  @Post(":id/steps/:stepId/rerun")
+  rerun(
+    @Param("id", new ParseUUIDPipe()) id: string,
+    @Param("stepId", new ParseUUIDPipe()) stepId: string,
+  ) {
+    return this.svc.rerun(id, stepId);
+  }
 }

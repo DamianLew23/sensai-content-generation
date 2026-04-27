@@ -45,7 +45,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
   }
 
   private async process(job: Job<StepJobData>): Promise<void> {
-    const { runId, stepId } = job.data;
+    const { runId, stepId, forceRefresh } = job.data;
     const attempt = (job.attemptsMade ?? 0) + 1;
 
     const [step] = await this.db.select().from(pipelineSteps).where(eq(pipelineSteps.id, stepId));
@@ -90,6 +90,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
         project,
         previousOutputs,
         attempt,
+        forceRefresh,
       });
       await this.db
         .update(pipelineSteps)

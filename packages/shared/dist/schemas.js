@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -22,9 +22,44 @@ exports.StepDef = zod_1.z.object({
     type: zod_1.z.string().min(1),
     auto: zod_1.z.boolean(),
     model: zod_1.z.string().optional(),
+    dependsOn: zod_1.z.string().array().optional(),
 });
-exports.TemplateStepsDef = zod_1.z.object({
+exports.TemplateStepsDef = zod_1.z
+    .object({
     steps: zod_1.z.array(exports.StepDef).min(1),
+})
+    .superRefine((val, ctx) => {
+    const keys = val.steps.map((s) => s.key);
+    const indexByKey = new Map(keys.map((k, i) => [k, i]));
+    const dupes = keys.filter((k, i) => keys.indexOf(k) !== i);
+    if (dupes.length > 0) {
+        ctx.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            message: `Duplicate stepKey(s): ${dupes.join(", ")}`,
+            path: ["steps"],
+        });
+    }
+    val.steps.forEach((step, i) => {
+        if (!step.dependsOn)
+            return;
+        for (const dep of step.dependsOn) {
+            const depIdx = indexByKey.get(dep);
+            if (depIdx === undefined) {
+                ctx.addIssue({
+                    code: zod_1.z.ZodIssueCode.custom,
+                    message: `Step "${step.key}" depends on unknown step "${dep}"`,
+                    path: ["steps", i, "dependsOn"],
+                });
+            }
+            else if (depIdx >= i) {
+                ctx.addIssue({
+                    code: zod_1.z.ZodIssueCode.custom,
+                    message: `Step "${step.key}" depends on "${dep}" which is not an earlier step`,
+                    path: ["steps", i, "dependsOn"],
+                });
+            }
+        }
+    });
 });
 exports.ResearchEffort = zod_1.z.enum(["lite", "standard", "deep", "exhaustive"]);
 exports.ResearchSource = zod_1.z.object({
@@ -168,4 +203,8 @@ exports.ExtractionResult = zod_1.z.object({
     facts: exports.Fact.array().min(5),
     data: exports.DataPoint.array().min(3),
     ideations: exports.Ideation.array().min(3),
+});
+exports.RerunPreview = zod_1.z.object({
+    target: zod_1.z.string(),
+    downstream: zod_1.z.string().array(),
 });

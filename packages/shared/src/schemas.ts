@@ -24,12 +24,45 @@ export const StepDef = z.object({
   type: z.string().min(1),
   auto: z.boolean(),
   model: z.string().optional(),
+  dependsOn: z.string().array().optional(),
 });
 export type StepDef = z.infer<typeof StepDef>;
 
-export const TemplateStepsDef = z.object({
-  steps: z.array(StepDef).min(1),
-});
+export const TemplateStepsDef = z
+  .object({
+    steps: z.array(StepDef).min(1),
+  })
+  .superRefine((val, ctx) => {
+    const keys = val.steps.map((s) => s.key);
+    const indexByKey = new Map(keys.map((k, i) => [k, i]));
+    const dupes = keys.filter((k, i) => keys.indexOf(k) !== i);
+    if (dupes.length > 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Duplicate stepKey(s): ${dupes.join(", ")}`,
+        path: ["steps"],
+      });
+    }
+    val.steps.forEach((step, i) => {
+      if (!step.dependsOn) return;
+      for (const dep of step.dependsOn) {
+        const depIdx = indexByKey.get(dep);
+        if (depIdx === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Step "${step.key}" depends on unknown step "${dep}"`,
+            path: ["steps", i, "dependsOn"],
+          });
+        } else if (depIdx >= i) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Step "${step.key}" depends on "${dep}" which is not an earlier step`,
+            path: ["steps", i, "dependsOn"],
+          });
+        }
+      }
+    });
+  });
 export type TemplateStepsDef = z.infer<typeof TemplateStepsDef>;
 
 export const ResearchEffort = z.enum(["lite", "standard", "deep", "exhaustive"]);
@@ -222,3 +255,9 @@ export const ExtractionResult = z.object({
   ideations: Ideation.array().min(3),
 });
 export type ExtractionResult = z.infer<typeof ExtractionResult>;
+
+export const RerunPreview = z.object({
+  target: z.string(),
+  downstream: z.string().array(),
+});
+export type RerunPreview = z.infer<typeof RerunPreview>;

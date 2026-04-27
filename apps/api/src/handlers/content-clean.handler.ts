@@ -83,6 +83,7 @@ export class ContentCleanHandler implements StepHandler {
       ttlSeconds: TTL_DAYS * 24 * 3600,
       runId: ctx.run.id,
       stepId: ctx.step.id,
+      forceRefresh: ctx.forceRefresh,
       fetcher: async () => {
         const t0 = Date.now();
         const run = await this.runCleaning(scrape.pages, keyword, thresholds, ctx);

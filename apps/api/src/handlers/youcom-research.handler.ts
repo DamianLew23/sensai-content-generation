@@ -50,6 +50,7 @@ export class YoucomResearchHandler implements StepHandler {
       ttlSeconds: TTL_DAYS * 24 * 3600,
       runId: ctx.run.id,
       stepId: ctx.step.id,
+      forceRefresh: ctx.forceRefresh,
       fetcher: async () => {
         const t0 = Date.now();
         const raw = await this.client.research({

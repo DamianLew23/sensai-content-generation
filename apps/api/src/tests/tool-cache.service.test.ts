@@ -139,4 +139,24 @@ describe("ToolCacheService", () => {
       error: { reason: "http_500", httpStatus: 500 },
     }));
   });
+
+  it("forceRefresh=true: bypasses cache lookup, runs fetcher, upserts, records fromCache=false", async () => {
+    const future = new Date(Date.now() + 60_000);
+    const { db, select, insert } = buildDb({ hit: { result: { v: "cached" }, expiresAt: future } });
+    const svc = new ToolCacheService(db, recorder as any);
+
+    const fetcher = vi.fn().mockResolvedValue({
+      result: { v: "fresh" }, costUsd: "0.002", latencyMs: 20,
+    });
+    const out = await svc.getOrSet({ ...baseOpts, forceRefresh: true, fetcher });
+
+    expect(out).toEqual({ v: "fresh" });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(select).not.toHaveBeenCalled();
+    expect(insert).toHaveBeenCalledTimes(1);
+    expect(recorder.record).toHaveBeenCalledTimes(1);
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({
+      fromCache: false, costUsd: "0.002", latencyMs: 20,
+    }));
+  });
 });
