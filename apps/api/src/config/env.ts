@@ -43,6 +43,18 @@ const EnvSchema = z.object({
   ENTITY_EXTRACT_MIN_ENTITIES: z.coerce.number().int().positive().default(10),
   ENTITY_EXTRACT_MIN_RELATIONS: z.coerce.number().int().positive().default(5),
   ENTITY_EXTRACT_MAX_INPUT_CHARS: z.coerce.number().int().positive().default(120_000),
+  QUERY_FANOUT_MODEL: z.string().default("openai/gpt-5"),
+  QUERY_FANOUT_LANGUAGE: z.string().min(2).max(10).default("pl"),
+  QUERY_FANOUT_MAX_AREAS_PER_INTENT: z.coerce.number().int().min(1).max(5).default(5),
+  QUERY_FANOUT_PAA_DEPTH: z.coerce.number().int().min(1).max(4).default(2),
+  QUERY_FANOUT_PAA_MAX_QUESTIONS: z.coerce.number().int().positive().default(20),
+  QUERY_FANOUT_PAA_ENABLED: z
+    .union([z.boolean(), z.string()])
+    .transform((v) => (typeof v === "boolean" ? v : v.toLowerCase() === "true"))
+    .default(true),
+  QUERY_FANOUT_REASONING_INTENTS: z.enum(["low", "medium", "high"]).default("medium"),
+  QUERY_FANOUT_REASONING_CLASSIFY: z.enum(["low", "medium", "high"]).default("high"),
+  QUERY_FANOUT_REASONING_PAA: z.enum(["low", "medium", "high"]).default("medium"),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 
