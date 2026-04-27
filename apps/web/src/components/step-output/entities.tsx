@@ -136,7 +136,7 @@ export function EntitiesOutput({ value }: { value: unknown }) {
                 )}
               </div>
               <div className="mt-2 text-sm font-medium">{e.entity}</div>
-              <p className="mt-1 text-xs italic text-muted-foreground">„{e.evidence}"</p>
+              <p className="mt-1 text-xs italic text-muted-foreground">„{e.evidence}”</p>
             </li>
           ))}
         </ul>
@@ -154,7 +154,7 @@ export function EntitiesOutput({ value }: { value: unknown }) {
               const src = entityById.get(r.source);
               const tgt = entityById.get(r.target);
               return (
-                <li key={idx} className="rounded-lg border bg-card p-3">
+                <li key={`${r.source}-${r.type}-${r.target}-${idx}`} className="rounded-lg border bg-card p-3">
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-medium">{src?.entity ?? r.source}</span>
                     <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
@@ -163,7 +163,7 @@ export function EntitiesOutput({ value }: { value: unknown }) {
                     <span className="font-medium">{tgt?.entity ?? r.target}</span>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{r.description}</p>
-                  <p className="mt-1 text-xs italic text-muted-foreground">„{r.evidence}"</p>
+                  <p className="mt-1 text-xs italic text-muted-foreground">„{r.evidence}”</p>
                 </li>
               );
             })}
