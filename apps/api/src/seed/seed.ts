@@ -107,6 +107,26 @@ async function main() {
     },
   );
 
+  // Plan 10 — Query Fan-Out comes FIRST (lowest stepOrder). Orchestrator schedules by stepOrder+1,
+  // not dependsOn (see orchestrator_scheduling memory). All `dependsOn: []` siblings run sequentially.
+  const blogSeoFanout = await upsertTemplate(
+    db,
+    "Blog SEO — fanout + deep research + clean + extract + entities",
+    1,
+    {
+      steps: [
+        { key: "fanout",       type: "tool.query.fanout",   auto: true,  dependsOn: [] },
+        { key: "deepResearch", type: "tool.youcom.research", auto: true, dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",  auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract", auto: true, dependsOn: ["clean", "deepResearch"] },
+        { key: "entities",     type: "tool.entity.extract", auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["extract"] },
+      ],
+    },
+  );
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
@@ -117,6 +137,7 @@ async function main() {
   console.log(`    "${blogSeoDeepResearchClean.name}" v${blogSeoDeepResearchClean.version}: ${blogSeoDeepResearchClean.id}`);
   console.log(`    "${blogSeoExtract.name}" v${blogSeoExtract.version}: ${blogSeoExtract.id}`);
   console.log(`    "${blogSeoEntities.name}" v${blogSeoEntities.version}: ${blogSeoEntities.id}`);
+  console.log(`    "${blogSeoFanout.name}" v${blogSeoFanout.version}: ${blogSeoFanout.id}`);
 
   await pool.end();
 }
