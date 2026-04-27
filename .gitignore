@@ -11,3 +11,4 @@ dist/
 coverage/
 .vercel/
 .claude/settings.local.json
+.worktrees/
