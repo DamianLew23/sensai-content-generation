@@ -8,7 +8,10 @@ async function upsertTemplate(db: ReturnType<typeof createDb>["db"], name: strin
   await db
     .insert(pipelineTemplates)
     .values({ name, version, stepsDef })
-    .onConflictDoNothing({ target: [pipelineTemplates.name, pipelineTemplates.version] });
+    .onConflictDoUpdate({
+      target: [pipelineTemplates.name, pipelineTemplates.version],
+      set: { stepsDef },
+    });
   const [row] = await db
     .select()
     .from(pipelineTemplates)
@@ -34,40 +37,40 @@ async function main() {
   const [project] = await db.select().from(projects).where(eq(projects.slug, "demo"));
 
   const briefOnly = await upsertTemplate(db, "Brief only (MVP)", 1, {
-    steps: [{ key: "brief", type: "llm.brief", auto: true }],
+    steps: [{ key: "brief", type: "llm.brief", auto: true, dependsOn: [] }],
   });
 
   const briefResearch = await upsertTemplate(db, "Brief + research", 1, {
     steps: [
-      { key: "research", type: "tool.serp.fetch", auto: true },
-      { key: "brief", type: "llm.brief", auto: true },
+      { key: "research", type: "tool.serp.fetch", auto: true, dependsOn: [] },
+      { key: "brief",    type: "llm.brief",       auto: true, dependsOn: ["research"] },
     ],
   });
 
   const briefResearchScrape = await upsertTemplate(db, "Brief + research + scrape", 1, {
     steps: [
-      { key: "research", type: "tool.serp.fetch", auto: true },
-      { key: "scrape",   type: "tool.scrape",     auto: false },
-      { key: "brief",    type: "llm.brief",       auto: true },
+      { key: "research", type: "tool.serp.fetch", auto: true,  dependsOn: [] },
+      { key: "scrape",   type: "tool.scrape",     auto: false, dependsOn: ["research"] },
+      { key: "brief",    type: "llm.brief",       auto: true,  dependsOn: ["scrape"] },
     ],
   });
 
   const blogSeoDeepResearch = await upsertTemplate(db, "Blog SEO — deep research", 1, {
     steps: [
-      { key: "deepResearch", type: "tool.youcom.research", auto: true },
-      { key: "research",     type: "tool.serp.fetch",     auto: true },
-      { key: "scrape",       type: "tool.scrape",         auto: false },
-      { key: "brief",        type: "llm.brief",           auto: true },
+      { key: "deepResearch", type: "tool.youcom.research", auto: true,  dependsOn: [] },
+      { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+      { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+      { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["scrape", "deepResearch"] },
     ],
   });
 
   const blogSeoDeepResearchClean = await upsertTemplate(db, "Blog SEO — deep research + clean", 1, {
     steps: [
-      { key: "deepResearch", type: "tool.youcom.research", auto: true },
-      { key: "research",     type: "tool.serp.fetch",     auto: true },
-      { key: "scrape",       type: "tool.scrape",         auto: false },
-      { key: "clean",        type: "tool.content.clean",  auto: true },
-      { key: "brief",        type: "llm.brief",           auto: true },
+      { key: "deepResearch", type: "tool.youcom.research", auto: true,  dependsOn: [] },
+      { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+      { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+      { key: "clean",        type: "tool.content.clean",  auto: true,  dependsOn: ["scrape"] },
+      { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["clean", "deepResearch"] },
     ],
   });
 
@@ -77,12 +80,12 @@ async function main() {
     1,
     {
       steps: [
-        { key: "deepResearch", type: "tool.youcom.research", auto: true },
-        { key: "research",     type: "tool.serp.fetch",     auto: true },
-        { key: "scrape",       type: "tool.scrape",         auto: false },
-        { key: "clean",        type: "tool.content.clean",  auto: true },
-        { key: "extract",      type: "tool.content.extract", auto: true },
-        { key: "brief",        type: "llm.brief",           auto: true },
+        { key: "deepResearch", type: "tool.youcom.research", auto: true,  dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",  auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract", auto: true, dependsOn: ["clean", "deepResearch"] },
+        { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["extract"] },
       ],
     },
   );
