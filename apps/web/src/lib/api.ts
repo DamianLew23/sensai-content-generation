@@ -30,7 +30,9 @@ export interface Template {
   id: string;
   name: string;
   version: number;
-  stepsDef: { steps: Array<{ key: string; type: string; auto: boolean }> };
+  stepsDef: {
+    steps: Array<{ key: string; type: string; auto: boolean; dependsOn?: string[] }>;
+  };
   createdAt: string;
 }
 export interface Step {
@@ -80,5 +82,14 @@ export const api = {
         method: "POST",
         body: JSON.stringify(dto),
       }),
+    rerunPreview: (runId: string, stepId: string) =>
+      apiFetch<{ target: string; downstream: string[] }>(
+        `/runs/${runId}/steps/${stepId}/rerun-preview`,
+      ),
+    rerun: (runId: string, stepId: string) =>
+      apiFetch<Run & { steps: Step[] }>(
+        `/runs/${runId}/steps/${stepId}/rerun`,
+        { method: "POST" },
+      ),
   },
 };
