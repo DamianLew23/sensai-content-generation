@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import pRetry, { AbortError } from "p-retry";
 import type { Env } from "../../config/env";
 import type { SerpFetchParams } from "./serp.types";
+import type { PaaFetchParams, PaaQuestion, PaaRawResponse } from "./paa.types";
 import { HttpError, DataForSeoApiError } from "./dataforseo.errors";
 
 export interface SerpRawItem {
@@ -44,12 +45,49 @@ export class DataForSeoClient {
     }];
 
     return pRetry(
-      () => this.post("/serp/google/organic/live/regular", body),
+      () => this.postRaw<SerpRawResponse>("/serp/google/organic/live/regular", body),
       { retries: 2, factor: 2, minTimeout: 500 },
     );
   }
 
-  private async post(path: string, body: unknown): Promise<SerpRawResponse> {
+  async paaFetch(params: PaaFetchParams): Promise<PaaQuestion[]> {
+    const body = [{
+      keyword: params.keyword,
+      location_code: params.locationCode,
+      language_code: params.languageCode,
+      device: "desktop",
+      people_also_ask_click_depth: params.depth,
+    }];
+
+    const raw = await pRetry(
+      () => this.postRaw<PaaRawResponse>("/serp/google/organic/live/advanced", body),
+      { retries: 2, factor: 2, minTimeout: 500 },
+    );
+
+    const out: PaaQuestion[] = [];
+    for (const task of raw.tasks ?? []) {
+      for (const result of task.result ?? []) {
+        for (const item of result.items ?? []) {
+          if (item.type === "people_also_ask") {
+            for (const sub of item.items ?? []) {
+              if (sub.title) out.push({ title: sub.title });
+            }
+          }
+        }
+      }
+    }
+    const seen = new Set<string>();
+    return out.filter((q) => {
+      if (seen.has(q.title)) return false;
+      seen.add(q.title);
+      return true;
+    });
+  }
+
+  private async postRaw<T extends { status_code: number; status_message?: string }>(
+    path: string,
+    body: unknown,
+  ): Promise<T> {
     const res = await fetch(DataForSeoClient.BASE + path, {
       method: "POST",
       headers: {
@@ -62,16 +100,14 @@ export class DataForSeoClient {
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       const err = new HttpError(res.status, text);
-      // 4xx non-429 → don't retry
       if (res.status >= 400 && res.status < 500 && res.status !== 429) {
         throw new AbortError(err);
       }
       throw err;
     }
 
-    const json = (await res.json()) as SerpRawResponse;
+    const json = (await res.json()) as T;
     if (json.status_code !== 20000) {
-      // API-level error → don't retry
       throw new AbortError(new DataForSeoApiError(json.status_code, json.status_message ?? ""));
     }
     return json;
