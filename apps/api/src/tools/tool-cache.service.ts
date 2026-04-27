@@ -15,6 +15,7 @@ export interface GetOrSetOpts<T> {
   ttlSeconds: number;
   runId: string;
   stepId: string;
+  forceRefresh?: boolean;
   fetcher: () => Promise<{ result: T; costUsd: string; latencyMs: number }>;
 }
 
@@ -29,23 +30,25 @@ export class ToolCacheService {
     const paramsHash = createHash("sha256").update(stableStringify(opts.params)).digest("hex");
     const now = new Date();
 
-    const rows = await this.db.select().from(toolCache).where(
-      and(
-        eq(toolCache.tool, opts.tool),
-        eq(toolCache.method, opts.method),
-        eq(toolCache.paramsHash, paramsHash),
-        gt(toolCache.expiresAt, now),
-      ),
-    );
-    const hit = rows[0];
+    if (!opts.forceRefresh) {
+      const rows = await this.db.select().from(toolCache).where(
+        and(
+          eq(toolCache.tool, opts.tool),
+          eq(toolCache.method, opts.method),
+          eq(toolCache.paramsHash, paramsHash),
+          gt(toolCache.expiresAt, now),
+        ),
+      );
+      const hit = rows[0];
 
-    if (hit) {
-      await this.recorder.record({
-        runId: opts.runId, stepId: opts.stepId,
-        tool: opts.tool, method: opts.method, paramsHash,
-        fromCache: true, costUsd: "0", latencyMs: 0,
-      });
-      return hit.result as T;
+      if (hit) {
+        await this.recorder.record({
+          runId: opts.runId, stepId: opts.stepId,
+          tool: opts.tool, method: opts.method, paramsHash,
+          fromCache: true, costUsd: "0", latencyMs: 0,
+        });
+        return hit.result as T;
+      }
     }
 
     let fresh: { result: T; costUsd: string; latencyMs: number };
