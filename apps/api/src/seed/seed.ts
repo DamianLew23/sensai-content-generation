@@ -127,6 +127,26 @@ async function main() {
     },
   );
 
+  // Plan 11 — KG assembly. Depends on entities + extract; brief now consumes kg instead of extract directly.
+  const blogSeoKg = await upsertTemplate(
+    db,
+    "Blog SEO — fanout + deep research + clean + extract + entities + KG",
+    1,
+    {
+      steps: [
+        { key: "fanout",       type: "tool.query.fanout",   auto: true,  dependsOn: [] },
+        { key: "deepResearch", type: "tool.youcom.research", auto: true, dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",     auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",         auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",  auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract", auto: true, dependsOn: ["clean", "deepResearch"] },
+        { key: "entities",     type: "tool.entity.extract", auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "kg",           type: "tool.kg.assemble",    auto: true,  dependsOn: ["extract", "entities"] },
+        { key: "brief",        type: "llm.brief",           auto: true,  dependsOn: ["kg"] },
+      ],
+    },
+  );
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
@@ -138,6 +158,7 @@ async function main() {
   console.log(`    "${blogSeoExtract.name}" v${blogSeoExtract.version}: ${blogSeoExtract.id}`);
   console.log(`    "${blogSeoEntities.name}" v${blogSeoEntities.version}: ${blogSeoEntities.id}`);
   console.log(`    "${blogSeoFanout.name}" v${blogSeoFanout.version}: ${blogSeoFanout.id}`);
+  console.log(`    "${blogSeoKg.name}" v${blogSeoKg.version}: ${blogSeoKg.id}`);
 
   await pool.end();
 }
