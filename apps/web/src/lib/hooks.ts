@@ -39,3 +39,14 @@ export function useStartRun() {
     },
   });
 }
+
+export function useCancelRun() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.runs.cancel(id),
+    onSuccess: (_data, id) => {
+      qc.invalidateQueries({ queryKey: ["run", id] });
+      qc.invalidateQueries({ queryKey: ["runs"] });
+    },
+  });
+}

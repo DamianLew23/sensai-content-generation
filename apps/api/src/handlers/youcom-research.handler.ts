@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import type { StepContext, StepHandler, StepResult } from "../orchestrator/step-handler";
 import { YoucomClient } from "../tools/youcom/youcom.client";
 import { ToolCacheService } from "../tools/tool-cache.service";
@@ -22,6 +22,7 @@ type YoucomHandlerEnv = Pick<
 @Injectable()
 export class YoucomResearchHandler implements StepHandler {
   readonly type = "tool.youcom.research";
+  private readonly logger = new Logger(YoucomResearchHandler.name);
 
   constructor(
     private readonly client: YoucomClient,
@@ -37,12 +38,26 @@ export class YoucomResearchHandler implements StepHandler {
     const override = cfg.promptOverrides?.[this.type];
     const promptString = youcomResearchPrompt.user(runInput, override);
 
+    this.logger.log(
+      {
+        runId: ctx.run.id,
+        stepId: ctx.step.id,
+        attempt: ctx.attempt,
+        effort,
+        promptLength: promptString.length,
+        hasOverride: Boolean(override),
+        forceRefresh: Boolean(ctx.forceRefresh),
+      },
+      "youcom-research start",
+    );
+
     if (promptString.length > MAX_INPUT_CHARS) {
       throw new Error(
         `youcom input exceeds ${MAX_INPUT_CHARS} chars (got ${promptString.length})`,
       );
     }
 
+    const tStart = Date.now();
     const briefing = await this.cache.getOrSet({
       tool: "youcom",
       method: "research",
@@ -52,12 +67,26 @@ export class YoucomResearchHandler implements StepHandler {
       stepId: ctx.step.id,
       forceRefresh: ctx.forceRefresh,
       fetcher: async () => {
+        this.logger.log(
+          { runId: ctx.run.id, stepId: ctx.step.id, effort },
+          "youcom-research cache miss, calling you.com API",
+        );
         const t0 = Date.now();
         const raw = await this.client.research({
           input: promptString,
           research_effort: effort,
         });
         const latencyMs = Date.now() - t0;
+        this.logger.log(
+          {
+            runId: ctx.run.id,
+            stepId: ctx.step.id,
+            latencyMs,
+            contentLength: raw.output.content?.length ?? 0,
+            sourcesCount: raw.output.sources?.length ?? 0,
+          },
+          "youcom-research API responded",
+        );
         const result = ResearchBriefing.parse({
           content: raw.output.content,
           sources: raw.output.sources,
@@ -69,6 +98,17 @@ export class YoucomResearchHandler implements StepHandler {
         };
       },
     });
+
+    this.logger.log(
+      {
+        runId: ctx.run.id,
+        stepId: ctx.step.id,
+        totalMs: Date.now() - tStart,
+        contentLength: briefing.content?.length ?? 0,
+        sourcesCount: briefing.sources?.length ?? 0,
+      },
+      "youcom-research done",
+    );
 
     return { output: briefing };
   }

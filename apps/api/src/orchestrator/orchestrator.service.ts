@@ -54,6 +54,16 @@ export class OrchestratorService {
    * - otherwise enqueue next step
    */
   async advance(runId: string, completedStepOrder: number): Promise<void> {
+    const [run] = await this.db
+      .select({ status: pipelineRuns.status })
+      .from(pipelineRuns)
+      .where(eq(pipelineRuns.id, runId))
+      .limit(1);
+    if (run?.status === "cancelled") {
+      this.logger.log({ runId }, "advance skipped: run cancelled");
+      return;
+    }
+
     const steps = await this.db
       .select()
       .from(pipelineSteps)

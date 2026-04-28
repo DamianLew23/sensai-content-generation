@@ -22,6 +22,11 @@ export class RunsController {
     return this.svc.start(dto);
   }
 
+  @Post(":id/cancel")
+  cancel(@Param("id", new ParseUUIDPipe()) id: string) {
+    return this.svc.cancel(id);
+  }
+
   @Post(":id/steps/:stepId/resume")
   resume(
     @Param("id", new ParseUUIDPipe()) id: string,

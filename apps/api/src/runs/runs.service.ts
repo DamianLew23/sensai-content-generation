@@ -10,6 +10,7 @@ import { ResumeStepDto, StartRunDto, TemplateStepsDef, type RerunPreview } from 
 import { validateResumeRequest, ResumeValidationError } from "./resume-validation";
 import { computeRerunCascade } from "./rerun-cascade";
 import { validateRerunRequest, RerunValidationError } from "./rerun-validation";
+import { validateCancelRequest, CancelValidationError } from "./cancel-validation";
 
 @Injectable()
 export class RunsService {
@@ -110,6 +111,27 @@ export class RunsService {
     });
 
     await this.orchestrator.enqueueStep(runId, stepId);
+
+    return this.get(runId);
+  }
+
+  async cancel(runId: string) {
+    const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
+    if (!run) throw new NotFoundException(`Run ${runId} not found`);
+
+    try {
+      validateCancelRequest(run);
+    } catch (err) {
+      if (err instanceof CancelValidationError) {
+        throw new ConflictException({ code: err.code, message: err.message });
+      }
+      throw err;
+    }
+
+    await this.db
+      .update(pipelineRuns)
+      .set({ status: "cancelled", finishedAt: new Date() })
+      .where(eq(pipelineRuns.id, runId));
 
     return this.get(runId);
   }

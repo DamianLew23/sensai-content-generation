@@ -91,5 +91,7 @@ export const api = {
         `/runs/${runId}/steps/${stepId}/rerun`,
         { method: "POST" },
       ),
+    cancel: (id: string) =>
+      apiFetch<Run & { steps: Step[] }>(`/runs/${id}/cancel`, { method: "POST" }),
   },
 };

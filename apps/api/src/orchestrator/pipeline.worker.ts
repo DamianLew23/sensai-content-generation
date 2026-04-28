@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { Job, Worker, UnrecoverableError } from "bullmq";
 import { Redis } from "ioredis";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { pipelineRuns, pipelineSteps, projects } from "../db/schema";
@@ -31,11 +31,33 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
       async (job) => this.process(job),
       { connection: this.connection, concurrency: 3 },
     );
+    this.logger.log({ queue: QUEUE_NAME, concurrency: 3 }, "pipeline worker initialized");
     this.worker.on("failed", (job, err) => {
-      this.logger.error({ jobId: job?.id, err: err.message }, "job failed");
+      this.logger.error(
+        {
+          jobId: job?.id,
+          name: job?.name,
+          data: job?.data,
+          attemptsMade: job?.attemptsMade,
+          err: err.message,
+        },
+        "job failed",
+      );
     });
     this.worker.on("completed", (job) => {
-      this.logger.debug({ jobId: job.id }, "job completed");
+      this.logger.debug({ jobId: job.id, data: job.data }, "job completed");
+    });
+    this.worker.on("active", (job) => {
+      this.logger.log(
+        { jobId: job.id, name: job.name, data: job.data, attemptsMade: job.attemptsMade },
+        "job active (picked up from queue)",
+      );
+    });
+    this.worker.on("stalled", (jobId) => {
+      this.logger.warn({ jobId }, "job stalled (redelivered by stalled-check)");
+    });
+    this.worker.on("error", (err) => {
+      this.logger.error({ err: err.message, stack: err.stack }, "worker error");
     });
   }
 
@@ -48,12 +70,29 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
     const { runId, stepId, forceRefresh } = job.data;
     const attempt = (job.attemptsMade ?? 0) + 1;
 
+    this.logger.log(
+      { jobId: job.id, runId, stepId, attempt, forceRefresh },
+      "process() entered",
+    );
+
     const [step] = await this.db.select().from(pipelineSteps).where(eq(pipelineSteps.id, stepId));
     if (!step) throw new Error(`step ${stepId} not found`);
     const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
     if (!run) throw new Error(`run ${runId} not found`);
     const [project] = await this.db.select().from(projects).where(eq(projects.id, run.projectId));
     if (!project) throw new Error(`project ${run.projectId} not found`);
+
+    // Run was cancelled — skip without executing the handler.
+    if (run.status === "cancelled") {
+      if (step.status === "pending" || step.status === "running") {
+        await this.db
+          .update(pipelineSteps)
+          .set({ status: "skipped", finishedAt: new Date() })
+          .where(eq(pipelineSteps.id, stepId));
+      }
+      this.logger.log({ runId, stepId }, "step skipped: run cancelled");
+      return;
+    }
 
     // Mark step running (first attempt only)
     if (step.status === "pending") {
@@ -84,6 +123,11 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
     try {
       await this.checkCostCap(runId);
 
+      this.logger.log(
+        { runId, stepId, type: step.type, attempt, forceRefresh },
+        "step handler invoking",
+      );
+      const handlerStart = Date.now();
       const result = await handler.execute({
         run,
         step,
@@ -92,6 +136,10 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
         attempt,
         forceRefresh,
       });
+      this.logger.log(
+        { runId, stepId, type: step.type, handlerMs: Date.now() - handlerStart },
+        "step handler done",
+      );
       await this.db
         .update(pipelineSteps)
         .set({
@@ -130,10 +178,11 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
         })
         .where(eq(pipelineSteps.id, stepId));
       if (isFinal) {
+        // Don't overwrite a cancelled run with failed status.
         await this.db
           .update(pipelineRuns)
           .set({ status: "failed", finishedAt: new Date() })
-          .where(eq(pipelineRuns.id, runId));
+          .where(and(eq(pipelineRuns.id, runId), ne(pipelineRuns.status, "cancelled")));
       }
       if (isCostCap || isHttp4xx) {
         throw new UnrecoverableError(err.message);

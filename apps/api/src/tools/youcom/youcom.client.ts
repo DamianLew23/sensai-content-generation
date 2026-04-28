@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { YoucomApiError, YoucomTimeoutError } from "./youcom.errors";
 import type { YoucomClientEnv, YoucomResearchRequest, YoucomResearchResponse } from "./youcom.types";
 
@@ -6,6 +6,7 @@ const HARD_TIMEOUT_GRACE_MS = 5_000;
 
 @Injectable()
 export class YoucomClient {
+  private readonly logger = new Logger(YoucomClient.name);
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
@@ -29,20 +30,74 @@ export class YoucomClient {
     endpoint: string,
     body: YoucomResearchRequest,
   ): Promise<YoucomResearchResponse> {
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "POST",
-      headers: {
-        "X-API-Key": this.apiKey,
-        "Content-Type": "application/json",
+    const url = `${this.baseUrl}${endpoint}`;
+    const serialized = JSON.stringify(body);
+    this.logger.log(
+      {
+        url,
+        effort: body.research_effort,
+        bodyBytes: serialized.length,
+        timeoutMs: this.timeoutMs,
+        hardTimeoutMs: this.timeoutMs + HARD_TIMEOUT_GRACE_MS,
       },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(this.timeoutMs),
-    });
+      "youcom POST start",
+    );
+    const t0 = Date.now();
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-API-Key": this.apiKey,
+          "Content-Type": "application/json",
+        },
+        body: serialized,
+        signal: AbortSignal.timeout(this.timeoutMs),
+      });
+    } catch (err: any) {
+      const latencyMs = Date.now() - t0;
+      this.logger.error(
+        {
+          endpoint,
+          latencyMs,
+          name: err?.name,
+          message: err?.message,
+          code: err?.code,
+        },
+        "youcom POST fetch failed",
+      );
+      throw err;
+    }
+    const latencyMs = Date.now() - t0;
+    this.logger.log(
+      {
+        endpoint,
+        status: res.status,
+        ok: res.ok,
+        latencyMs,
+      },
+      "youcom POST response received",
+    );
     if (!res.ok) {
       const text = await res.text().catch(() => "");
+      this.logger.warn(
+        { endpoint, status: res.status, bodyPreview: text.slice(0, 200) },
+        "youcom POST non-2xx response",
+      );
       throw new YoucomApiError(res.status, text, endpoint);
     }
-    return (await res.json()) as YoucomResearchResponse;
+    const parseStart = Date.now();
+    const json = (await res.json()) as YoucomResearchResponse;
+    this.logger.log(
+      {
+        endpoint,
+        parseMs: Date.now() - parseStart,
+        contentLength: json.output?.content?.length ?? 0,
+        sourcesCount: json.output?.sources?.length ?? 0,
+      },
+      "youcom POST body parsed",
+    );
+    return json;
   }
 
   private withHardTimeout<T>(
@@ -52,10 +107,13 @@ export class YoucomClient {
   ): Promise<T> {
     let timer: NodeJS.Timeout | undefined;
     const guard = new Promise<never>((_, reject) => {
-      timer = setTimeout(
-        () => reject(new YoucomTimeoutError(endpoint, ms)),
-        ms,
-      );
+      timer = setTimeout(() => {
+        this.logger.error(
+          { endpoint, hardTimeoutMs: ms },
+          "youcom hard timeout fired",
+        );
+        reject(new YoucomTimeoutError(endpoint, ms));
+      }, ms);
     });
     return Promise.race([work, guard]).finally(() => {
       if (timer) clearTimeout(timer);

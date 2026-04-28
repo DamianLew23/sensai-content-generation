@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { useProjects, useRun, useTemplates } from "@/lib/hooks";
+import { useCancelRun, useProjects, useRun, useTemplates } from "@/lib/hooks";
 import { RunTimeline } from "@/components/run-timeline";
 import { hasRichRenderer, StepOutput } from "@/components/step-output";
 import {
@@ -32,6 +32,18 @@ export default function RunDetailPage() {
   const templates = useTemplates();
   const [selectedStepId, setSelectedStepId] = useState<string | undefined>();
   const [rawJson, setRawJson] = useState(false);
+  const cancelRun = useCancelRun();
+
+  const isCancellable =
+    run.data?.status === "pending" ||
+    run.data?.status === "running" ||
+    run.data?.status === "awaiting_approval";
+
+  const handleCancel = () => {
+    if (!run.data) return;
+    if (!confirm("Zatrzymać tego runa? Aktualnie wykonywany krok dokończy się, ale kolejne nie wystartują.")) return;
+    cancelRun.mutate(run.data.id);
+  };
 
   const project = useMemo(
     () => projects.data?.find((p) => p.id === run.data?.projectId),
@@ -84,14 +96,29 @@ export default function RunDetailPage() {
                   ) : null;
                 })()}
               </div>
-              <span
-                className={`shrink-0 rounded px-2 py-1 text-xs font-medium ${
-                  STATUS_STYLES[run.data.status] ?? "bg-muted text-muted-foreground"
-                }`}
-              >
-                {run.data.status}
-              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                <span
+                  className={`rounded px-2 py-1 text-xs font-medium ${
+                    STATUS_STYLES[run.data.status] ?? "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {run.data.status}
+                </span>
+                {isCancellable && (
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={cancelRun.isPending}
+                    className="rounded border border-red-200 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+                  >
+                    {cancelRun.isPending ? "Zatrzymywanie…" : "Zatrzymaj"}
+                  </button>
+                )}
+              </div>
             </div>
+            {cancelRun.error && (
+              <p className="text-xs text-red-600">Błąd zatrzymania: {String(cancelRun.error)}</p>
+            )}
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm md:grid-cols-4">
               {project && (
                 <div>
