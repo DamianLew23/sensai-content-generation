@@ -1668,3 +1668,451 @@ export declare const FanOutPaaCall: z.ZodObject<{
     unmatched: string[];
 }>;
 export type FanOutPaaCall = z.infer<typeof FanOutPaaCall>;
+export declare const KGCounts: z.ZodObject<{
+    entities: z.ZodNumber;
+    relationships: z.ZodNumber;
+    facts: z.ZodNumber;
+    measurables: z.ZodNumber;
+    ideations: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    facts: number;
+    ideations: number;
+    entities: number;
+    relationships: number;
+    measurables: number;
+}, {
+    facts: number;
+    ideations: number;
+    entities: number;
+    relationships: number;
+    measurables: number;
+}>;
+export type KGCounts = z.infer<typeof KGCounts>;
+export declare const KGMeta: z.ZodObject<{
+    mainKeyword: z.ZodString;
+    mainEntity: z.ZodString;
+    category: z.ZodString;
+    language: z.ZodString;
+    generatedAt: z.ZodString;
+    counts: z.ZodObject<{
+        entities: z.ZodNumber;
+        relationships: z.ZodNumber;
+        facts: z.ZodNumber;
+        measurables: z.ZodNumber;
+        ideations: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        facts: number;
+        ideations: number;
+        entities: number;
+        relationships: number;
+        measurables: number;
+    }, {
+        facts: number;
+        ideations: number;
+        entities: number;
+        relationships: number;
+        measurables: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    mainKeyword: string;
+    language: string;
+    category: string;
+    mainEntity: string;
+    generatedAt: string;
+    counts: {
+        facts: number;
+        ideations: number;
+        entities: number;
+        relationships: number;
+        measurables: number;
+    };
+}, {
+    mainKeyword: string;
+    language: string;
+    category: string;
+    mainEntity: string;
+    generatedAt: string;
+    counts: {
+        facts: number;
+        ideations: number;
+        entities: number;
+        relationships: number;
+        measurables: number;
+    };
+}>;
+export type KGMeta = z.infer<typeof KGMeta>;
+export declare const KGRelationship: z.ZodObject<{
+    source: z.ZodString;
+    target: z.ZodString;
+    type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+    description: z.ZodString;
+    evidence: z.ZodString;
+} & {
+    sourceName: z.ZodString;
+    targetName: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+    source: string;
+    description: string;
+    target: string;
+    evidence: string;
+    sourceName: string;
+    targetName: string;
+}, {
+    type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+    source: string;
+    description: string;
+    target: string;
+    evidence: string;
+    sourceName: string;
+    targetName: string;
+}>;
+export type KGRelationship = z.infer<typeof KGRelationship>;
+export declare const KGMeasurable: z.ZodObject<{
+    id: z.ZodString;
+    definition: z.ZodString;
+    value: z.ZodString;
+    unit: z.ZodNullable<z.ZodString>;
+    sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+} & {
+    formatted: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    value: string;
+    definition: string;
+    id: string;
+    sourceUrls: string[];
+    unit: string | null;
+    formatted: string;
+}, {
+    value: string;
+    definition: string;
+    id: string;
+    unit: string | null;
+    formatted: string;
+    sourceUrls?: string[] | undefined;
+}>;
+export type KGMeasurable = z.infer<typeof KGMeasurable>;
+export declare const KGAssemblyWarning: z.ZodObject<{
+    kind: z.ZodEnum<["relationship_unknown_source", "relationship_unknown_target", "relationship_self_edge", "duplicate_entity_id"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+    context?: Record<string, string> | undefined;
+}>;
+export type KGAssemblyWarning = z.infer<typeof KGAssemblyWarning>;
+export declare const KnowledgeGraph: z.ZodObject<{
+    meta: z.ZodObject<{
+        mainKeyword: z.ZodString;
+        mainEntity: z.ZodString;
+        category: z.ZodString;
+        language: z.ZodString;
+        generatedAt: z.ZodString;
+        counts: z.ZodObject<{
+            entities: z.ZodNumber;
+            relationships: z.ZodNumber;
+            facts: z.ZodNumber;
+            measurables: z.ZodNumber;
+            ideations: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        }, {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        }>;
+    }, "strip", z.ZodTypeAny, {
+        mainKeyword: string;
+        language: string;
+        category: string;
+        mainEntity: string;
+        generatedAt: string;
+        counts: {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        };
+    }, {
+        mainKeyword: string;
+        language: string;
+        category: string;
+        mainEntity: string;
+        generatedAt: string;
+        counts: {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        };
+    }>;
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["relationship_unknown_source", "relationship_unknown_target", "relationship_self_edge", "duplicate_entity_id"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    meta: {
+        mainKeyword: string;
+        language: string;
+        category: string;
+        mainEntity: string;
+        generatedAt: string;
+        counts: {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        };
+    };
+    warnings: {
+        message: string;
+        kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+        context: Record<string, string>;
+    }[];
+}, {
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    meta: {
+        mainKeyword: string;
+        language: string;
+        category: string;
+        mainEntity: string;
+        generatedAt: string;
+        counts: {
+            facts: number;
+            ideations: number;
+            entities: number;
+            relationships: number;
+            measurables: number;
+        };
+    };
+    warnings: {
+        message: string;
+        kind: "relationship_unknown_source" | "relationship_unknown_target" | "relationship_self_edge" | "duplicate_entity_id";
+        context?: Record<string, string> | undefined;
+    }[];
+}>;
+export type KnowledgeGraph = z.infer<typeof KnowledgeGraph>;

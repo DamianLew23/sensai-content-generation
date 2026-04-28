@@ -561,3 +561,58 @@ export const FanOutPaaCall = z.object({
   unmatched: z.string().array(),
 });
 export type FanOutPaaCall = z.infer<typeof FanOutPaaCall>;
+
+// ===== Plan 11 — Knowledge Graph Assembly =====
+
+export const KGCounts = z.object({
+  entities: z.number().int().nonnegative(),
+  relationships: z.number().int().nonnegative(),
+  facts: z.number().int().nonnegative(),
+  measurables: z.number().int().nonnegative(),
+  ideations: z.number().int().nonnegative(),
+});
+export type KGCounts = z.infer<typeof KGCounts>;
+
+export const KGMeta = z.object({
+  mainKeyword: z.string().min(1),
+  mainEntity: z.string(),
+  category: z.string(),
+  language: z.string().min(2).max(10),
+  generatedAt: z.string().datetime(),
+  counts: KGCounts,
+});
+export type KGMeta = z.infer<typeof KGMeta>;
+
+export const KGRelationship = EntityRelation.extend({
+  sourceName: z.string().min(1),
+  targetName: z.string().min(1),
+});
+export type KGRelationship = z.infer<typeof KGRelationship>;
+
+export const KGMeasurable = DataPoint.extend({
+  formatted: z.string().min(1),
+});
+export type KGMeasurable = z.infer<typeof KGMeasurable>;
+
+export const KGAssemblyWarning = z.object({
+  kind: z.enum([
+    "relationship_unknown_source",
+    "relationship_unknown_target",
+    "relationship_self_edge",
+    "duplicate_entity_id",
+  ]),
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type KGAssemblyWarning = z.infer<typeof KGAssemblyWarning>;
+
+export const KnowledgeGraph = z.object({
+  meta: KGMeta,
+  entities: Entity.array(),
+  relationships: KGRelationship.array(),
+  facts: Fact.array(),
+  measurables: KGMeasurable.array(),
+  ideations: Ideation.array(),
+  warnings: KGAssemblyWarning.array(),
+});
+export type KnowledgeGraph = z.infer<typeof KnowledgeGraph>;
