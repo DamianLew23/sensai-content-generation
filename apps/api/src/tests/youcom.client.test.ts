@@ -28,6 +28,7 @@ describe("YoucomClient", () => {
 
   afterEach(() => {
     fetchSpy.mockRestore();
+    vi.useRealTimers();
   });
 
   it("POSTs to /v1/research with X-API-Key and JSON body", async () => {
@@ -89,5 +90,22 @@ describe("YoucomClient", () => {
     const envNoKey = { ...fakeEnv, YOUCOM_API_KEY: undefined };
     expect(() => new YoucomClient(envNoKey))
       .toThrow(/YOUCOM_API_KEY/);
+  });
+
+  it("throws YoucomTimeoutError when fetch hangs past the hard timeout", async () => {
+    vi.useFakeTimers();
+    fetchSpy.mockImplementationOnce(() => new Promise(() => {}));
+
+    const env = { ...fakeEnv, YOUCOM_TIMEOUT_MS: 1000 };
+    const client = new YoucomClient(env);
+    const promise = client.research({ input: "x", research_effort: "lite" });
+    const assertion = expect(promise).rejects.toMatchObject({
+      name: "YoucomTimeoutError",
+      code: "youcom_timeout",
+      endpoint: "/v1/research",
+    });
+
+    await vi.advanceTimersByTimeAsync(1000 + 5000 + 1);
+    await assertion;
   });
 });

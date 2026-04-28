@@ -9,3 +9,14 @@ export class YoucomApiError extends Error {
     this.name = "YoucomApiError";
   }
 }
+
+export class YoucomTimeoutError extends Error {
+  public readonly code = "youcom_timeout";
+  constructor(
+    public readonly endpoint: string,
+    public readonly timeoutMs: number,
+  ) {
+    super(`youcom ${endpoint} hard timeout after ${timeoutMs}ms`);
+    this.name = "YoucomTimeoutError";
+  }
+}

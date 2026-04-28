@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { YoucomApiError } from "./youcom.errors";
+import { YoucomApiError, YoucomTimeoutError } from "./youcom.errors";
 import type { YoucomClientEnv, YoucomResearchRequest, YoucomResearchResponse } from "./youcom.types";
+
+const HARD_TIMEOUT_GRACE_MS = 5_000;
 
 @Injectable()
 export class YoucomClient {
@@ -19,6 +21,14 @@ export class YoucomClient {
 
   async research(body: YoucomResearchRequest): Promise<YoucomResearchResponse> {
     const endpoint = "/v1/research";
+    const hardTimeoutMs = this.timeoutMs + HARD_TIMEOUT_GRACE_MS;
+    return this.withHardTimeout(this.doResearch(endpoint, body), hardTimeoutMs, endpoint);
+  }
+
+  private async doResearch(
+    endpoint: string,
+    body: YoucomResearchRequest,
+  ): Promise<YoucomResearchResponse> {
     const res = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
       headers: {
@@ -33,5 +43,22 @@ export class YoucomClient {
       throw new YoucomApiError(res.status, text, endpoint);
     }
     return (await res.json()) as YoucomResearchResponse;
+  }
+
+  private withHardTimeout<T>(
+    work: Promise<T>,
+    ms: number,
+    endpoint: string,
+  ): Promise<T> {
+    let timer: NodeJS.Timeout | undefined;
+    const guard = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new YoucomTimeoutError(endpoint, ms)),
+        ms,
+      );
+    });
+    return Promise.race([work, guard]).finally(() => {
+      if (timer) clearTimeout(timer);
+    });
   }
 }
