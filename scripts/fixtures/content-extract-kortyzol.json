@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "keyword": "jak obniżyć kortyzol po 40 (kortyzol) — informational",
+    "language": "pl",
+    "sourceUrlCount": 3,
+    "createdAt": "2026-04-28T10:00:00.000Z"
+  },
+  "facts": [
+    { "id": "F1", "text": "Kortyzol jest produkowany przez korę nadnerczy.", "category": "definition", "priority": "high", "confidence": 0.95, "sourceUrls": [] },
+    { "id": "F2", "text": "Stres podnosi poziom kortyzolu.", "category": "causal", "priority": "high", "confidence": 0.92, "sourceUrls": [] },
+    { "id": "F3", "text": "Sen reguluje rytm dobowy kortyzolu.", "category": "general", "priority": "high", "confidence": 0.9, "sourceUrls": [] },
+    { "id": "F4", "text": "Magnez wspiera obniżanie kortyzolu.", "category": "general", "priority": "medium", "confidence": 0.8, "sourceUrls": [] },
+    { "id": "F5", "text": "Aktywność fizyczna poprawia regulację kortyzolu.", "category": "causal", "priority": "medium", "confidence": 0.85, "sourceUrls": [] }
+  ],
+  "data": [
+    { "id": "D1", "definition": "Norma kortyzolu rano", "value": "10-20", "unit": "µg/dL", "sourceUrls": [] },
+    { "id": "D2", "definition": "Zalecana ilość snu", "value": "7-9", "unit": "h", "sourceUrls": [] },
+    { "id": "D3", "definition": "Zalecana aktywność fizyczna", "value": "150", "unit": "min/tydz", "sourceUrls": [] }
+  ],
+  "ideations": [
+    { "id": "I1", "type": "checklist", "title": "Tygodniowy plan obniżania kortyzolu", "description": "Lista rytuałów na każdy dzień", "audience": "", "channels": [], "keywords": [], "priority": "high" },
+    { "id": "I2", "type": "info_box", "title": "Sen a kortyzol", "description": "Krótki info-box o roli snu", "audience": "", "channels": [], "keywords": [], "priority": "medium" },
+    { "id": "I3", "type": "habit", "title": "Poranna rutyna", "description": "5 minut oddechu przed śniadaniem", "audience": "", "channels": [], "keywords": [], "priority": "medium" }
+  ]
+}

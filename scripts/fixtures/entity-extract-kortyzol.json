@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "keyword": "jak obniżyć kortyzol po 40 (kortyzol) — informational",
+    "language": "pl",
+    "sourceUrlCount": 3,
+    "createdAt": "2026-04-28T10:00:00.000Z"
+  },
+  "contextAnalysis": {
+    "mainTopicInterpretation": "Strategie obniżania kortyzolu u osób po 40 roku życia",
+    "domainSummary": "Endokrynologia, lifestyle, sen, stres",
+    "notes": ""
+  },
+  "entities": [
+    { "id": "E1", "originalSurface": "kortyzol", "entity": "kortyzol", "domainType": "CONCEPT", "evidence": "Hormon stresu wytwarzany przez nadnercza" },
+    { "id": "E2", "originalSurface": "nadnercza", "entity": "nadnercza", "domainType": "CONCEPT", "evidence": "Gruczoły wydzielania wewnętrznego" },
+    { "id": "E3", "originalSurface": "stres", "entity": "stres", "domainType": "CONCEPT", "evidence": "Stan napięcia psychofizycznego" },
+    { "id": "E4", "originalSurface": "sen", "entity": "sen", "domainType": "CONCEPT", "evidence": "Stan regeneracji organizmu" },
+    { "id": "E5", "originalSurface": "magnez", "entity": "magnez", "domainType": "CONCEPT", "evidence": "Pierwiastek wspomagający układ nerwowy" },
+    { "id": "E6", "originalSurface": "ashwagandha", "entity": "ashwagandha", "domainType": "PRODUCT", "evidence": "Adaptogen ziołowy" },
+    { "id": "E7", "originalSurface": "aktywność fizyczna", "entity": "aktywność fizyczna", "domainType": "CONCEPT", "evidence": "Ruch i ćwiczenia" },
+    { "id": "E8", "originalSurface": "medytacja", "entity": "medytacja", "domainType": "CONCEPT", "evidence": "Praktyka mentalna obniżająca napięcie" }
+  ],
+  "relationships": [
+    { "source": "E2", "target": "E1", "type": "CREATED_BY", "description": "nadnercza produkują kortyzol", "evidence": "kora nadnerczy wytwarza kortyzol" },
+    { "source": "E3", "target": "E1", "type": "REQUIRES", "description": "stres podnosi poziom kortyzolu", "evidence": "reakcja stresowa zwiększa kortyzol" },
+    { "source": "E4", "target": "E1", "type": "RELATED_TO", "description": "sen reguluje poziom kortyzolu", "evidence": "niedobór snu zaburza rytm dobowy kortyzolu" },
+    { "source": "E5", "target": "E1", "type": "SOLVES", "description": "magnez wspiera obniżenie kortyzolu", "evidence": "suplementacja magnezu" },
+    { "source": "E6", "target": "E1", "type": "SOLVES", "description": "ashwagandha obniża kortyzol", "evidence": "badania kliniczne nad adaptogenami" }
+  ],
+  "relationToMain": [
+    { "entityId": "E1", "score": 100, "rationale": "główny temat artykułu" },
+    { "entityId": "E2", "score": 85, "rationale": "źródło hormonu" },
+    { "entityId": "E3", "score": 90, "rationale": "główna przyczyna podwyższenia" },
+    { "entityId": "E4", "score": 80, "rationale": "kluczowy modulator" },
+    { "entityId": "E5", "score": 60, "rationale": "wspierająca suplementacja" },
+    { "entityId": "E6", "score": 65, "rationale": "popularny adaptogen" },
+    { "entityId": "E7", "score": 70, "rationale": "regulator stresu" },
+    { "entityId": "E8", "score": 75, "rationale": "praktyka redukcji stresu" }
+  ]
+}
