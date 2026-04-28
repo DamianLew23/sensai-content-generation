@@ -7,6 +7,7 @@ import { ContentCleanHandler } from "./content-clean.handler";
 import { ContentExtractHandler } from "./content-extract.handler";
 import { EntityExtractHandler } from "./entity-extract.handler";
 import { QueryFanOutHandler } from "./query-fanout.handler";
+import { KGAssemblyHandler } from "./kg-assembly.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
@@ -22,6 +23,7 @@ import { loadEnv } from "../config/env";
     ContentExtractHandler,
     EntityExtractHandler,
     QueryFanOutHandler,
+    KGAssemblyHandler,
     {
       provide: "YOUCOM_ENV",
       useFactory: () => loadEnv(),
@@ -53,7 +55,8 @@ import { loadEnv } from "../config/env";
         extract: ContentExtractHandler,
         entities: EntityExtractHandler,
         fanout: QueryFanOutHandler,
-      ): StepHandler[] => [brief, serp, scrape, youcom, clean, extract, entities, fanout],
+        kg: KGAssemblyHandler,
+      ): StepHandler[] => [brief, serp, scrape, youcom, clean, extract, entities, fanout, kg],
       inject: [
         BriefHandler,
         SerpFetchHandler,
@@ -63,6 +66,7 @@ import { loadEnv } from "../config/env";
         ContentExtractHandler,
         EntityExtractHandler,
         QueryFanOutHandler,
+        KGAssemblyHandler,
       ],
     },
   ],
