@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "main_keyword": "string",
+    "main_entity": "string",
+    "category": "string",
+    "language": "string"
+  },
+  "entities": [
+    { "entity_id": "string", "entity_name": "string", "description": "string" }
+  ],
+  "entities_relationships": [
+    {
+      "relationship_id": "string",
+      "predicate": "string",
+      "entity_id2text": ["entity_name1", "entity_name2"],
+      "source_entity_id": "string", #Opcjonalnie
+      "target_entity_id": "string", #Opjonalnie
+      "description": "string" # kontekst w jakim encje lączą się miedzy sobą, opis ich powiązania
+    }
+  ],
+  "facts": [ { "fact_id": "string", "fact": "string" } ],
+  "measurables": [ { "measurable_id": "string", "measurable": "string" } ],
+  "ideations": [ { "ideation_id": "string", "ideation": "string" } ]
+}
