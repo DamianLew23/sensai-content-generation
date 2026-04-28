@@ -5,6 +5,7 @@ import { ExtractionOutput } from "./extraction";
 import { JsonFallback } from "./json-fallback";
 import { QueryFanOutOutput } from "./query-fanout";
 import { ScrapeOutput } from "./scrape";
+import { KGOutput } from "./kg";
 import { SerpOutput } from "./serp";
 
 export function StepOutput({
@@ -34,6 +35,8 @@ export function StepOutput({
       return <EntitiesOutput value={value} />;
     case "tool.query.fanout":
       return <QueryFanOutOutput value={value} />;
+    case "tool.kg.assemble":
+      return <KGOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -47,6 +50,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.content.clean" ||
     type === "tool.content.extract" ||
     type === "tool.entity.extract" ||
-    type === "tool.query.fanout"
+    type === "tool.query.fanout" ||
+    type === "tool.kg.assemble"
   );
 }
