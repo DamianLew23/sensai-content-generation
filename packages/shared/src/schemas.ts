@@ -104,6 +104,7 @@ export const RunInput = z.object({
   mainKeyword: z.string().optional(),
   intent: z.string().optional(),
   contentType: z.string().optional(),
+  h1Title: z.string().min(3).max(300).optional(),
 });
 export type RunInput = z.infer<typeof RunInput>;
 
@@ -616,3 +617,197 @@ export const KnowledgeGraph = z.object({
   warnings: KGAssemblyWarning.array(),
 });
 export type KnowledgeGraph = z.infer<typeof KnowledgeGraph>;
+
+// ===== Plan 12 — Outline & Distribution =====
+
+// --- Outline shared primitives ---
+
+export const SectionType = z.enum(["intro", "h2"]);
+export type SectionType = z.infer<typeof SectionType>;
+
+export const SectionVariant = z.enum(["full", "context"]);
+export type SectionVariant = z.infer<typeof SectionVariant>;
+
+export const H3Format = z.enum(["question", "context"]);
+export type H3Format = z.infer<typeof H3Format>;
+
+export const OutlineH3 = z.object({
+  header: z.string().min(1).max(200),
+  format: H3Format,
+  sourcePaa: z.string().min(1),
+});
+export type OutlineH3 = z.infer<typeof OutlineH3>;
+
+// --- Section variants ---
+
+export const IntroSection = z.object({
+  type: z.literal("intro"),
+  order: z.literal(0),
+  header: z.null(),
+  sectionVariant: z.null(),
+  h3s: z.tuple([]),
+});
+export type IntroSection = z.infer<typeof IntroSection>;
+
+export const FullSection = z.object({
+  type: z.literal("h2"),
+  order: z.number().int().positive(),
+  sectionVariant: z.literal("full"),
+  header: z.string().min(1).max(200),
+  sourceArea: z.string().min(1),
+  sourceIntent: IntentName,
+  h3s: OutlineH3.array(),
+});
+export type FullSection = z.infer<typeof FullSection>;
+
+export const ContextSection = z.object({
+  type: z.literal("h2"),
+  order: z.number().int().positive(),
+  sectionVariant: z.literal("context"),
+  header: z.string().min(1).max(200),
+  sourceIntent: IntentName,
+  groupedAreas: z.string().array().min(1),
+  contextNote: z.string().min(1).max(500),
+  h3s: z.tuple([]),
+});
+export type ContextSection = z.infer<typeof ContextSection>;
+
+// z.union (NOT discriminatedUnion) — Zod requires the discriminator literal at the
+// top level of every branch, but Full/Context share `type: "h2"` and only differ on
+// `sectionVariant`. Plain z.union parses correctly.
+export const OutlineSection = z.union([
+  IntroSection,
+  FullSection,
+  ContextSection,
+]);
+export type OutlineSection = z.infer<typeof OutlineSection>;
+
+// --- outline.generate output ---
+
+export const OutlineGenWarningKind = z.enum([
+  "outline_missing_primary_intent_areas",
+  "outline_h3_count_mismatch",
+  "outline_unused_area",
+  "outline_intent_override_no_match",
+]);
+export type OutlineGenWarningKind = z.infer<typeof OutlineGenWarningKind>;
+
+export const OutlineGenWarning = z.object({
+  kind: OutlineGenWarningKind,
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type OutlineGenWarning = z.infer<typeof OutlineGenWarning>;
+
+export const OutlineGenerationResult = z.object({
+  meta: z.object({
+    keyword: z.string().min(1),
+    h1Title: z.string().min(1).max(300),
+    h1Source: z.enum(["user", "llm"]),
+    language: z.string().min(2).max(10),
+    primaryIntent: IntentName,
+    primaryIntentSource: z.enum(["user", "fanout"]),
+    fullSectionsCount: z.number().int().nonnegative(),
+    contextSectionsCount: z.number().int().nonnegative(),
+    generatedAt: z.string().datetime(),
+    model: z.string().min(1),
+  }),
+  outline: OutlineSection.array().min(1),
+  warnings: OutlineGenWarning.array(),
+});
+export type OutlineGenerationResult = z.infer<typeof OutlineGenerationResult>;
+
+// --- distribute output ---
+
+const KGFieldsBlock = z.object({
+  entities: Entity.array(),
+  facts: Fact.array(),
+  relationships: KGRelationship.array(),
+  ideations: Ideation.array(),
+  measurables: KGMeasurable.array(),
+});
+
+export const IntroSectionWithKG = IntroSection.merge(KGFieldsBlock);
+export type IntroSectionWithKG = z.infer<typeof IntroSectionWithKG>;
+
+export const FullSectionWithKG = FullSection.merge(KGFieldsBlock);
+export type FullSectionWithKG = z.infer<typeof FullSectionWithKG>;
+
+export const ContextSectionWithKG = ContextSection.merge(KGFieldsBlock);
+export type ContextSectionWithKG = z.infer<typeof ContextSectionWithKG>;
+
+export const SectionWithKG = z.union([
+  IntroSectionWithKG,
+  FullSectionWithKG,
+  ContextSectionWithKG,
+]);
+export type SectionWithKG = z.infer<typeof SectionWithKG>;
+
+export const DistributionWarningKind = z.enum([
+  "distribution_duplicate_entity",
+  "distribution_duplicate_fact",
+  "distribution_duplicate_ideation",
+  "distribution_duplicate_relationship",
+  "distribution_duplicate_measurable",
+  "distribution_intro_overload",
+  "distribution_low_coverage",
+  "distribution_high_coverage",
+  "distribution_unknown_entity_id",
+  "distribution_unknown_fact_id",
+  "distribution_unknown_ideation_id",
+  "distribution_unknown_relationship_id",
+  "distribution_unknown_measurable_id",
+  "distribution_empty_full_section",
+]);
+export type DistributionWarningKind = z.infer<typeof DistributionWarningKind>;
+
+export const DistributionWarning = z.object({
+  kind: DistributionWarningKind,
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type DistributionWarning = z.infer<typeof DistributionWarning>;
+
+export const CoverageBlock = z.object({
+  used: z.number().int().nonnegative(),
+  total: z.number().int().nonnegative(),
+  percent: z.number().min(0).max(100),
+});
+export type CoverageBlock = z.infer<typeof CoverageBlock>;
+
+export const DistributionStats = z.object({
+  coverage: z.object({
+    entities: CoverageBlock,
+    facts: CoverageBlock,
+    relationships: CoverageBlock,
+    ideations: CoverageBlock,
+    measurables: CoverageBlock,
+    overallPercent: z.number().min(0).max(100),
+  }),
+});
+export type DistributionStats = z.infer<typeof DistributionStats>;
+
+export const UnusedKGItems = z.object({
+  entityIds: z.string().array(),
+  factIds: z.string().array(),
+  relationshipIds: z.string().array(),
+  ideationIds: z.string().array(),
+  measurableIds: z.string().array(),
+});
+export type UnusedKGItems = z.infer<typeof UnusedKGItems>;
+
+export const DistributionResult = z.object({
+  meta: z.object({
+    keyword: z.string().min(1),
+    h1Title: z.string().min(1),
+    language: z.string().min(2).max(10),
+    primaryIntent: IntentName,
+    generatedAt: z.string().datetime(),
+    model: z.string().min(1),
+  }),
+  sections: SectionWithKG.array().min(1),
+  unused: UnusedKGItems,
+  stats: DistributionStats,
+  warnings: DistributionWarning.array(),
+});
+export type DistributionResult = z.infer<typeof DistributionResult>;

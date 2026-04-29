@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
-exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
+exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -93,6 +93,7 @@ exports.RunInput = zod_1.z.object({
     mainKeyword: zod_1.z.string().optional(),
     intent: zod_1.z.string().optional(),
     contentType: zod_1.z.string().optional(),
+    h1Title: zod_1.z.string().min(3).max(300).optional(),
 });
 exports.StartRunDto = zod_1.z.object({
     projectId: zod_1.z.string().uuid(),
@@ -507,4 +508,150 @@ exports.KnowledgeGraph = zod_1.z.object({
     measurables: exports.KGMeasurable.array(),
     ideations: exports.Ideation.array(),
     warnings: exports.KGAssemblyWarning.array(),
+});
+// ===== Plan 12 — Outline & Distribution =====
+// --- Outline shared primitives ---
+exports.SectionType = zod_1.z.enum(["intro", "h2"]);
+exports.SectionVariant = zod_1.z.enum(["full", "context"]);
+exports.H3Format = zod_1.z.enum(["question", "context"]);
+exports.OutlineH3 = zod_1.z.object({
+    header: zod_1.z.string().min(1).max(200),
+    format: exports.H3Format,
+    sourcePaa: zod_1.z.string().min(1),
+});
+// --- Section variants ---
+exports.IntroSection = zod_1.z.object({
+    type: zod_1.z.literal("intro"),
+    order: zod_1.z.literal(0),
+    header: zod_1.z.null(),
+    sectionVariant: zod_1.z.null(),
+    h3s: zod_1.z.tuple([]),
+});
+exports.FullSection = zod_1.z.object({
+    type: zod_1.z.literal("h2"),
+    order: zod_1.z.number().int().positive(),
+    sectionVariant: zod_1.z.literal("full"),
+    header: zod_1.z.string().min(1).max(200),
+    sourceArea: zod_1.z.string().min(1),
+    sourceIntent: exports.IntentName,
+    h3s: exports.OutlineH3.array(),
+});
+exports.ContextSection = zod_1.z.object({
+    type: zod_1.z.literal("h2"),
+    order: zod_1.z.number().int().positive(),
+    sectionVariant: zod_1.z.literal("context"),
+    header: zod_1.z.string().min(1).max(200),
+    sourceIntent: exports.IntentName,
+    groupedAreas: zod_1.z.string().array().min(1),
+    contextNote: zod_1.z.string().min(1).max(500),
+    h3s: zod_1.z.tuple([]),
+});
+// z.union (NOT discriminatedUnion) — Zod requires the discriminator literal at the
+// top level of every branch, but Full/Context share `type: "h2"` and only differ on
+// `sectionVariant`. Plain z.union parses correctly.
+exports.OutlineSection = zod_1.z.union([
+    exports.IntroSection,
+    exports.FullSection,
+    exports.ContextSection,
+]);
+// --- outline.generate output ---
+exports.OutlineGenWarningKind = zod_1.z.enum([
+    "outline_missing_primary_intent_areas",
+    "outline_h3_count_mismatch",
+    "outline_unused_area",
+    "outline_intent_override_no_match",
+]);
+exports.OutlineGenWarning = zod_1.z.object({
+    kind: exports.OutlineGenWarningKind,
+    message: zod_1.z.string().min(1),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.OutlineGenerationResult = zod_1.z.object({
+    meta: zod_1.z.object({
+        keyword: zod_1.z.string().min(1),
+        h1Title: zod_1.z.string().min(1).max(300),
+        h1Source: zod_1.z.enum(["user", "llm"]),
+        language: zod_1.z.string().min(2).max(10),
+        primaryIntent: exports.IntentName,
+        primaryIntentSource: zod_1.z.enum(["user", "fanout"]),
+        fullSectionsCount: zod_1.z.number().int().nonnegative(),
+        contextSectionsCount: zod_1.z.number().int().nonnegative(),
+        generatedAt: zod_1.z.string().datetime(),
+        model: zod_1.z.string().min(1),
+    }),
+    outline: exports.OutlineSection.array().min(1),
+    warnings: exports.OutlineGenWarning.array(),
+});
+// --- distribute output ---
+const KGFieldsBlock = zod_1.z.object({
+    entities: exports.Entity.array(),
+    facts: exports.Fact.array(),
+    relationships: exports.KGRelationship.array(),
+    ideations: exports.Ideation.array(),
+    measurables: exports.KGMeasurable.array(),
+});
+exports.IntroSectionWithKG = exports.IntroSection.merge(KGFieldsBlock);
+exports.FullSectionWithKG = exports.FullSection.merge(KGFieldsBlock);
+exports.ContextSectionWithKG = exports.ContextSection.merge(KGFieldsBlock);
+exports.SectionWithKG = zod_1.z.union([
+    exports.IntroSectionWithKG,
+    exports.FullSectionWithKG,
+    exports.ContextSectionWithKG,
+]);
+exports.DistributionWarningKind = zod_1.z.enum([
+    "distribution_duplicate_entity",
+    "distribution_duplicate_fact",
+    "distribution_duplicate_ideation",
+    "distribution_duplicate_relationship",
+    "distribution_duplicate_measurable",
+    "distribution_intro_overload",
+    "distribution_low_coverage",
+    "distribution_high_coverage",
+    "distribution_unknown_entity_id",
+    "distribution_unknown_fact_id",
+    "distribution_unknown_ideation_id",
+    "distribution_unknown_relationship_id",
+    "distribution_unknown_measurable_id",
+    "distribution_empty_full_section",
+]);
+exports.DistributionWarning = zod_1.z.object({
+    kind: exports.DistributionWarningKind,
+    message: zod_1.z.string().min(1),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.CoverageBlock = zod_1.z.object({
+    used: zod_1.z.number().int().nonnegative(),
+    total: zod_1.z.number().int().nonnegative(),
+    percent: zod_1.z.number().min(0).max(100),
+});
+exports.DistributionStats = zod_1.z.object({
+    coverage: zod_1.z.object({
+        entities: exports.CoverageBlock,
+        facts: exports.CoverageBlock,
+        relationships: exports.CoverageBlock,
+        ideations: exports.CoverageBlock,
+        measurables: exports.CoverageBlock,
+        overallPercent: zod_1.z.number().min(0).max(100),
+    }),
+});
+exports.UnusedKGItems = zod_1.z.object({
+    entityIds: zod_1.z.string().array(),
+    factIds: zod_1.z.string().array(),
+    relationshipIds: zod_1.z.string().array(),
+    ideationIds: zod_1.z.string().array(),
+    measurableIds: zod_1.z.string().array(),
+});
+exports.DistributionResult = zod_1.z.object({
+    meta: zod_1.z.object({
+        keyword: zod_1.z.string().min(1),
+        h1Title: zod_1.z.string().min(1),
+        language: zod_1.z.string().min(2).max(10),
+        primaryIntent: exports.IntentName,
+        generatedAt: zod_1.z.string().datetime(),
+        model: zod_1.z.string().min(1),
+    }),
+    sections: exports.SectionWithKG.array().min(1),
+    unused: exports.UnusedKGItems,
+    stats: exports.DistributionStats,
+    warnings: exports.DistributionWarning.array(),
 });
