@@ -150,8 +150,9 @@ export function postprocessOutline(input: PostprocessInput): OutlineGenerationRe
     s => s.type === "h2" && s.sectionVariant === "context",
   ).length;
 
-  const h1Source: "user" | "llm" = userH1Title ? "user" : "llm";
-  const h1Title = userH1Title ?? llmResult.h1Title;
+  const userH1 = userH1Title && userH1Title.trim().length > 0 ? userH1Title : undefined;
+  const h1Source: "user" | "llm" = userH1 ? "user" : "llm";
+  const h1Title = userH1 ?? llmResult.h1Title;
 
   return {
     meta: {

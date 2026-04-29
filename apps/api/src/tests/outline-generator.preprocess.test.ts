@@ -7,6 +7,8 @@ const baseFanout = (): QueryFanOutResult => ({
     keyword: "jak obniżyć kortyzol po 40tce",
     language: "pl",
     createdAt: "2026-04-29T10:00:00.000Z",
+    paaFetched: 1,
+    paaUsed: true,
   },
   normalization: {
     mainEntity: "kortyzol",
