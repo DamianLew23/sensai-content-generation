@@ -799,7 +799,7 @@ export type UnusedKGItems = z.infer<typeof UnusedKGItems>;
 export const DistributionResult = z.object({
   meta: z.object({
     keyword: z.string().min(1),
-    h1Title: z.string().min(1),
+    h1Title: z.string().min(1).max(300),
     language: z.string().min(2).max(10),
     primaryIntent: IntentName,
     generatedAt: z.string().datetime(),

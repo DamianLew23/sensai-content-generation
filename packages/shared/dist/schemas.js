@@ -644,7 +644,7 @@ exports.UnusedKGItems = zod_1.z.object({
 exports.DistributionResult = zod_1.z.object({
     meta: zod_1.z.object({
         keyword: zod_1.z.string().min(1),
-        h1Title: zod_1.z.string().min(1),
+        h1Title: zod_1.z.string().min(1).max(300),
         language: zod_1.z.string().min(2).max(10),
         primaryIntent: exports.IntentName,
         generatedAt: zod_1.z.string().datetime(),
