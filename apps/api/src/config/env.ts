@@ -94,6 +94,13 @@ const EnvSchema = z.object({
   QUERY_FANOUT_REASONING_PAA: z
     .enum(["low", "medium", "high"])
     .default("medium"),
+  OUTLINE_GENERATE_MODEL: z.string().default("openai/gpt-5.4"),
+  OUTLINE_GENERATE_REASONING: z.enum(["low", "medium", "high"]).default("medium"),
+  OUTLINE_GENERATE_TTL_DAYS: z.coerce.number().int().positive().default(7),
+  OUTLINE_DISTRIBUTE_MODEL: z.string().default("google/gemini-3-flash-preview"),
+  OUTLINE_DISTRIBUTE_TTL_DAYS: z.coerce.number().int().positive().default(7),
+  OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
+  OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
 });
 
