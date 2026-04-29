@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -464,4 +465,46 @@ exports.FanOutPaaCall = zod_1.z.object({
     })
         .array(),
     unmatched: zod_1.z.string().array(),
+});
+// ===== Plan 11 — Knowledge Graph Assembly =====
+exports.KGCounts = zod_1.z.object({
+    entities: zod_1.z.number().int().nonnegative(),
+    relationships: zod_1.z.number().int().nonnegative(),
+    facts: zod_1.z.number().int().nonnegative(),
+    measurables: zod_1.z.number().int().nonnegative(),
+    ideations: zod_1.z.number().int().nonnegative(),
+});
+exports.KGMeta = zod_1.z.object({
+    mainKeyword: zod_1.z.string().min(1),
+    mainEntity: zod_1.z.string(),
+    category: zod_1.z.string(),
+    language: zod_1.z.string().min(2).max(10),
+    generatedAt: zod_1.z.string().datetime(),
+    counts: exports.KGCounts,
+});
+exports.KGRelationship = exports.EntityRelation.extend({
+    sourceName: zod_1.z.string().min(1),
+    targetName: zod_1.z.string().min(1),
+});
+exports.KGMeasurable = exports.DataPoint.extend({
+    formatted: zod_1.z.string().min(1),
+});
+exports.KGAssemblyWarning = zod_1.z.object({
+    kind: zod_1.z.enum([
+        "relationship_unknown_source",
+        "relationship_unknown_target",
+        "relationship_self_edge",
+        "duplicate_entity_id",
+    ]),
+    message: zod_1.z.string().min(1),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.KnowledgeGraph = zod_1.z.object({
+    meta: exports.KGMeta,
+    entities: exports.Entity.array(),
+    relationships: exports.KGRelationship.array(),
+    facts: exports.Fact.array(),
+    measurables: exports.KGMeasurable.array(),
+    ideations: exports.Ideation.array(),
+    warnings: exports.KGAssemblyWarning.array(),
 });
