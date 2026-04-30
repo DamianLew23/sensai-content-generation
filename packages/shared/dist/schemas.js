@@ -484,6 +484,7 @@ exports.KGMeta = zod_1.z.object({
     counts: exports.KGCounts,
 });
 exports.KGRelationship = exports.EntityRelation.extend({
+    id: zod_1.z.string().min(1),
     sourceName: zod_1.z.string().min(1),
     targetName: zod_1.z.string().min(1),
 });

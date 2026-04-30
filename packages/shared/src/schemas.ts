@@ -585,6 +585,7 @@ export const KGMeta = z.object({
 export type KGMeta = z.infer<typeof KGMeta>;
 
 export const KGRelationship = EntityRelation.extend({
+  id: z.string().min(1),
   sourceName: z.string().min(1),
   targetName: z.string().min(1),
 });

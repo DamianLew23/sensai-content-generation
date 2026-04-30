@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { validateDistribution } from "../tools/kg-distributor/kg-distributor.validate";
 import type { SectionWithKG, KnowledgeGraph } from "@sensai/shared";
 
-const mkSection = (overrides: Partial<SectionWithKG> = {}): any => ({
+const mkSection = (overrides: Record<string, any> = {}): any => ({
   type: "h2",
   order: 1,
   sectionVariant: "full",
@@ -58,11 +58,11 @@ describe("validateDistribution", () => {
   it("emits distribution_high_coverage when above maxPercent", () => {
     const sections: any[] = [
       mkSection({
-        entities: Array.from({ length: 10 }, (_, i) => ({ id: `E${i+1}` })),
-        facts: Array.from({ length: 10 }, (_, i) => ({ id: `F${i+1}` })),
-        relationships: Array.from({ length: 5 }, (_, i) => ({ id: `R${i+1}` })),
-        ideations: Array.from({ length: 5 }, (_, i) => ({ id: `I${i+1}` })),
-        measurables: Array.from({ length: 5 }, (_, i) => ({ id: `D${i+1}` })),
+        entities: Array.from({ length: 10 }, (_, i) => ({ id: `E${i+1}` })) as any,
+        facts: Array.from({ length: 10 }, (_, i) => ({ id: `F${i+1}` })) as any,
+        relationships: Array.from({ length: 5 }, (_, i) => ({ id: `R${i+1}` })) as any,
+        ideations: Array.from({ length: 5 }, (_, i) => ({ id: `I${i+1}` })) as any,
+        measurables: Array.from({ length: 5 }, (_, i) => ({ id: `D${i+1}` })) as any,
       }),
     ];
     const kg = mkKG({ e: 10, f: 10, r: 5, i: 5, m: 5 });

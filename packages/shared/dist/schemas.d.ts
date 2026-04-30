@@ -1756,11 +1756,13 @@ export declare const KGRelationship: z.ZodObject<{
     description: z.ZodString;
     evidence: z.ZodString;
 } & {
+    id: z.ZodString;
     sourceName: z.ZodString;
     targetName: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
     source: string;
+    id: string;
     description: string;
     target: string;
     evidence: string;
@@ -1769,6 +1771,7 @@ export declare const KGRelationship: z.ZodObject<{
 }, {
     type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
     source: string;
+    id: string;
     description: string;
     target: string;
     evidence: string;
@@ -1893,11 +1896,13 @@ export declare const KnowledgeGraph: z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -1906,6 +1911,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2027,6 +2033,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2089,6 +2096,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2633,11 +2641,13 @@ export declare const IntroSectionWithKG: z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2646,6 +2656,7 @@ export declare const IntroSectionWithKG: z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2733,6 +2744,7 @@ export declare const IntroSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2781,6 +2793,7 @@ export declare const IntroSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2870,11 +2883,13 @@ export declare const FullSectionWithKG: z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2883,6 +2898,7 @@ export declare const FullSectionWithKG: z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2970,6 +2986,7 @@ export declare const FullSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3024,6 +3041,7 @@ export declare const FullSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3108,11 +3126,13 @@ export declare const ContextSectionWithKG: z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3121,6 +3141,7 @@ export declare const ContextSectionWithKG: z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3208,6 +3229,7 @@ export declare const ContextSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3259,6 +3281,7 @@ export declare const ContextSectionWithKG: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3337,11 +3360,13 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3350,6 +3375,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3437,6 +3463,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3485,6 +3512,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3572,11 +3600,13 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3585,6 +3615,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3672,6 +3703,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3726,6 +3758,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3808,11 +3841,13 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3821,6 +3856,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3908,6 +3944,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -3959,6 +3996,7 @@ export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -4293,11 +4331,13 @@ export declare const DistributionResult: z.ZodObject<{
             description: z.ZodString;
             evidence: z.ZodString;
         } & {
+            id: z.ZodString;
             sourceName: z.ZodString;
             targetName: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4306,6 +4346,7 @@ export declare const DistributionResult: z.ZodObject<{
         }, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4393,6 +4434,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4441,6 +4483,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4528,11 +4571,13 @@ export declare const DistributionResult: z.ZodObject<{
             description: z.ZodString;
             evidence: z.ZodString;
         } & {
+            id: z.ZodString;
             sourceName: z.ZodString;
             targetName: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4541,6 +4586,7 @@ export declare const DistributionResult: z.ZodObject<{
         }, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4628,6 +4674,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4682,6 +4729,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4764,11 +4812,13 @@ export declare const DistributionResult: z.ZodObject<{
             description: z.ZodString;
             evidence: z.ZodString;
         } & {
+            id: z.ZodString;
             sourceName: z.ZodString;
             targetName: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4777,6 +4827,7 @@ export declare const DistributionResult: z.ZodObject<{
         }, {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4864,6 +4915,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -4915,6 +4967,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5225,6 +5278,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5273,6 +5327,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5327,6 +5382,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5430,6 +5486,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5478,6 +5535,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
@@ -5532,6 +5590,7 @@ export declare const DistributionResult: z.ZodObject<{
         relationships: {
             type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
             source: string;
+            id: string;
             description: string;
             target: string;
             evidence: string;
