@@ -5680,16 +5680,19 @@ export declare const DraftImagePrompt: z.ZodObject<{
 }>;
 export type DraftImagePrompt = z.infer<typeof DraftImagePrompt>;
 export declare const DraftWarning: z.ZodObject<{
-    code: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_aggressive"]>;
+    kind: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_high_ratio"]>;
     message: z.ZodString;
     blockOrder: z.ZodOptional<z.ZodNumber>;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
     message: string;
+    kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+    context: Record<string, string>;
     blockOrder?: number | undefined;
 }, {
-    code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
     message: string;
+    kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+    context?: Record<string, string> | undefined;
     blockOrder?: number | undefined;
 }>;
 export type DraftWarning = z.infer<typeof DraftWarning>;
@@ -5869,16 +5872,19 @@ export declare const DraftGenerationResult: z.ZodObject<{
         factsRemovedFromH3: number;
     }>;
     warnings: z.ZodArray<z.ZodObject<{
-        code: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_aggressive"]>;
+        kind: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_high_ratio"]>;
         message: z.ZodString;
         blockOrder: z.ZodOptional<z.ZodNumber>;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
     }, "strip", z.ZodTypeAny, {
-        code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
         message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context: Record<string, string>;
         blockOrder?: number | undefined;
     }, {
-        code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
         message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context?: Record<string, string> | undefined;
         blockOrder?: number | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
@@ -5904,8 +5910,9 @@ export declare const DraftGenerationResult: z.ZodObject<{
         verbosity: "high" | "medium" | "low" | null;
     };
     warnings: {
-        code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
         message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context: Record<string, string>;
         blockOrder?: number | undefined;
     }[];
     htmlContent: string;
@@ -5951,8 +5958,9 @@ export declare const DraftGenerationResult: z.ZodObject<{
         verbosity: "high" | "medium" | "low" | null;
     };
     warnings: {
-        code: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_aggressive";
         message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context?: Record<string, string> | undefined;
         blockOrder?: number | undefined;
     }[];
     htmlContent: string;

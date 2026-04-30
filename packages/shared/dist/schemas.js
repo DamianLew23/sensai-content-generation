@@ -670,7 +670,7 @@ exports.DraftBlockStats = zod_1.z.object({
     sectionOrder: zod_1.z.number().int().nonnegative(),
     sectionType: zod_1.z.enum(["intro", "h2"]),
     sectionVariant: zod_1.z.enum(["full", "context"]).nullable(),
-    header: zod_1.z.string().nullable(),
+    header: zod_1.z.string().min(1).nullable(),
     passageTrigger: exports.PassageTrigger,
     charCount: zod_1.z.number().int().nonnegative(),
     responseId: zod_1.z.string().min(1),
@@ -680,25 +680,26 @@ exports.DraftBlockStats = zod_1.z.object({
     latencyMs: zod_1.z.number().int().nonnegative(),
 });
 exports.DraftImagePrompt = zod_1.z.object({
-    sectionHeader: zod_1.z.string(),
-    ideationType: zod_1.z.string(),
-    description: zod_1.z.string(),
-    prompt: zod_1.z.string(),
+    sectionHeader: zod_1.z.string().min(1),
+    ideationType: zod_1.z.string().min(1),
+    description: zod_1.z.string().min(1),
+    prompt: zod_1.z.string().min(1),
 });
 exports.DraftWarning = zod_1.z.object({
-    code: zod_1.z.enum([
+    kind: zod_1.z.enum([
         "draft_block_failed",
         "draft_chaining_disabled",
         "draft_no_image_prompts",
         "draft_short_block",
-        "draft_factual_dedup_aggressive",
+        "draft_factual_dedup_high_ratio",
     ]),
-    message: zod_1.z.string(),
+    message: zod_1.z.string().min(1),
     blockOrder: zod_1.z.number().int().nonnegative().optional(),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
 });
 exports.DraftMeta = zod_1.z.object({
     keyword: zod_1.z.string().min(1),
-    h1Title: zod_1.z.string().min(1),
+    h1Title: zod_1.z.string().min(1).max(300),
     language: zod_1.z.string().min(2).max(10),
     primaryIntent: exports.IntentName,
     model: zod_1.z.string().min(1),

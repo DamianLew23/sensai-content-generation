@@ -830,7 +830,7 @@ export const DraftBlockStats = z.object({
   sectionOrder: z.number().int().nonnegative(),
   sectionType: z.enum(["intro", "h2"]),
   sectionVariant: z.enum(["full", "context"]).nullable(),
-  header: z.string().nullable(),
+  header: z.string().min(1).nullable(),
   passageTrigger: PassageTrigger,
   charCount: z.number().int().nonnegative(),
   responseId: z.string().min(1),
@@ -842,29 +842,30 @@ export const DraftBlockStats = z.object({
 export type DraftBlockStats = z.infer<typeof DraftBlockStats>;
 
 export const DraftImagePrompt = z.object({
-  sectionHeader: z.string(),
-  ideationType: z.string(),
-  description: z.string(),
-  prompt: z.string(),
+  sectionHeader: z.string().min(1),
+  ideationType: z.string().min(1),
+  description: z.string().min(1),
+  prompt: z.string().min(1),
 });
 export type DraftImagePrompt = z.infer<typeof DraftImagePrompt>;
 
 export const DraftWarning = z.object({
-  code: z.enum([
+  kind: z.enum([
     "draft_block_failed",
     "draft_chaining_disabled",
     "draft_no_image_prompts",
     "draft_short_block",
-    "draft_factual_dedup_aggressive",
+    "draft_factual_dedup_high_ratio",
   ]),
-  message: z.string(),
+  message: z.string().min(1),
   blockOrder: z.number().int().nonnegative().optional(),
+  context: z.record(z.string()).default({}),
 });
 export type DraftWarning = z.infer<typeof DraftWarning>;
 
 export const DraftMeta = z.object({
   keyword: z.string().min(1),
-  h1Title: z.string().min(1),
+  h1Title: z.string().min(1).max(300),
   language: z.string().min(2).max(10),
   primaryIntent: IntentName,
   model: z.string().min(1),
