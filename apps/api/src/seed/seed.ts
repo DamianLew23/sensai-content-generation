@@ -147,10 +147,10 @@ async function main() {
     },
   );
 
-  // Plan 12 — Outline + Distribution. Terminal at `distribute` (no brief in this template).
+  // Plan 13 — Draft generation. Terminal at `draftGen`.
   const blogSeoOutline = await upsertTemplate(
     db,
-    "Blog SEO — fanout + deep research + clean + extract + entities + KG + outline + distribute",
+    "Blog SEO — fanout + deep research + clean + extract + entities + KG + outline + distribute + draft",
     1,
     {
       steps: [
@@ -164,6 +164,7 @@ async function main() {
         { key: "kg",           type: "tool.kg.assemble",        auto: true,  dependsOn: ["extract", "entities"] },
         { key: "outlineGen",   type: "tool.outline.generate",   auto: true,  dependsOn: ["fanout"] },
         { key: "distribute",   type: "tool.outline.distribute", auto: true,  dependsOn: ["outlineGen", "kg"] },
+        { key: "draftGen",     type: "tool.draft.generate",     auto: true,  dependsOn: ["distribute"] },
       ],
     },
   );
