@@ -642,10 +642,10 @@ const INTENT_TO_TRIGGER: Record<string, PassageTrigger> = {
 
 const TRIGGER_ORDER: PassageTrigger[] = [
   "definition",
+  "diagnosis", // before "instruction" so "Jak rozpoznać X" wins over "^jak\s"
   "instruction",
   "cause",
   "comparison",
-  "diagnosis",
   "list",
   "question", // catch-all last
 ];
