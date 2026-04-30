@@ -5736,7 +5736,6 @@ export declare const DraftStats: z.ZodObject<{
     totalPromptTokens: z.ZodNumber;
     totalCompletionTokens: z.ZodNumber;
     imagePromptCount: z.ZodNumber;
-    factsRemovedFromH3: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
     blockCount: number;
     totalChars: number;
@@ -5745,7 +5744,6 @@ export declare const DraftStats: z.ZodObject<{
     totalPromptTokens: number;
     totalCompletionTokens: number;
     imagePromptCount: number;
-    factsRemovedFromH3: number;
 }, {
     blockCount: number;
     totalChars: number;
@@ -5754,7 +5752,6 @@ export declare const DraftStats: z.ZodObject<{
     totalPromptTokens: number;
     totalCompletionTokens: number;
     imagePromptCount: number;
-    factsRemovedFromH3: number;
 }>;
 export type DraftStats = z.infer<typeof DraftStats>;
 export declare const DraftGenerationResult: z.ZodObject<{
@@ -5851,7 +5848,6 @@ export declare const DraftGenerationResult: z.ZodObject<{
         totalPromptTokens: z.ZodNumber;
         totalCompletionTokens: z.ZodNumber;
         imagePromptCount: z.ZodNumber;
-        factsRemovedFromH3: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
         blockCount: number;
         totalChars: number;
@@ -5860,7 +5856,6 @@ export declare const DraftGenerationResult: z.ZodObject<{
         totalPromptTokens: number;
         totalCompletionTokens: number;
         imagePromptCount: number;
-        factsRemovedFromH3: number;
     }, {
         blockCount: number;
         totalChars: number;
@@ -5869,7 +5864,6 @@ export declare const DraftGenerationResult: z.ZodObject<{
         totalPromptTokens: number;
         totalCompletionTokens: number;
         imagePromptCount: number;
-        factsRemovedFromH3: number;
     }>;
     warnings: z.ZodArray<z.ZodObject<{
         kind: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_high_ratio"]>;
@@ -5896,7 +5890,6 @@ export declare const DraftGenerationResult: z.ZodObject<{
         totalPromptTokens: number;
         totalCompletionTokens: number;
         imagePromptCount: number;
-        factsRemovedFromH3: number;
     };
     meta: {
         model: string;
@@ -5944,7 +5937,6 @@ export declare const DraftGenerationResult: z.ZodObject<{
         totalPromptTokens: number;
         totalCompletionTokens: number;
         imagePromptCount: number;
-        factsRemovedFromH3: number;
     };
     meta: {
         model: string;

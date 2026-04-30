@@ -884,7 +884,6 @@ export const DraftStats = z.object({
   totalPromptTokens: z.number().int().nonnegative(),
   totalCompletionTokens: z.number().int().nonnegative(),
   imagePromptCount: z.number().int().nonnegative(),
-  factsRemovedFromH3: z.number().int().nonnegative(),
 });
 export type DraftStats = z.infer<typeof DraftStats>;
 

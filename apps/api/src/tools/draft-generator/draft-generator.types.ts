@@ -26,10 +26,4 @@ export type EnrichedSection = DistributionResult["sections"][number] & {
     formatInstruction: string;
   }>;
   _externalIdeations: DraftImagePrompt[];
-  _coveredEntities: Set<string>;
 };
-
-export interface DedupResult {
-  sections: DistributionResult["sections"];
-  factsRemoved: number;
-}

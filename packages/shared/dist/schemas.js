@@ -716,7 +716,6 @@ exports.DraftStats = zod_1.z.object({
     totalPromptTokens: zod_1.z.number().int().nonnegative(),
     totalCompletionTokens: zod_1.z.number().int().nonnegative(),
     imagePromptCount: zod_1.z.number().int().nonnegative(),
-    factsRemovedFromH3: zod_1.z.number().int().nonnegative(),
 });
 exports.DraftGenerationResult = zod_1.z.object({
     meta: exports.DraftMeta,
