@@ -153,15 +153,16 @@ export const DraftImagePrompt = z.object({
 export type DraftImagePrompt = z.infer<typeof DraftImagePrompt>;
 
 export const DraftWarning = z.object({
-  code: z.enum([
+  kind: z.enum([
     "draft_block_failed",
     "draft_chaining_disabled",
     "draft_no_image_prompts",
     "draft_short_block",
-    "draft_factual_dedup_aggressive",
+    "draft_factual_dedup_high_ratio",
   ]),
-  message: z.string(),
+  message: z.string().min(1),
   blockOrder: z.number().int().nonnegative().optional(),
+  context: z.record(z.string()).default({}),
 });
 export type DraftWarning = z.infer<typeof DraftWarning>;
 
@@ -1452,7 +1453,7 @@ describe("DraftGeneratorClient.generate", () => {
     expect(createBlock.mock.calls[0][0].previousResponseId).toBeUndefined();
     expect(createBlock.mock.calls[1][0].previousResponseId).toBeUndefined();
     expect(createBlock.mock.calls[0][0].reasoning).toBeUndefined();
-    expect(result.warnings.some((w) => w.code === "draft_chaining_disabled")).toBe(true);
+    expect(result.warnings.some((w) => w.kind === "draft_chaining_disabled")).toBe(true);
   });
 });
 ```
@@ -1566,9 +1567,10 @@ export class DraftGeneratorClient {
 
     if (!useReasoning) {
       warnings.push({
-        code: "draft_chaining_disabled",
+        kind: "draft_chaining_disabled",
         message:
           "DRAFT_GENERATE_USE_REASONING=false — calling without previous_response_id chaining and without reasoning/verbosity params.",
+        context: { model: this.env.DRAFT_GENERATE_MODEL },
       });
     }
 
@@ -1618,9 +1620,10 @@ export class DraftGeneratorClient {
 
       if (cleaned.length < SHORT_BLOCK_THRESHOLD) {
         warnings.push({
-          code: "draft_short_block",
+          kind: "draft_short_block",
           message: `Block ${i + 1} produced only ${cleaned.length} chars`,
           blockOrder: section.order,
+          context: { responseId: res.id },
         });
       }
 
@@ -1632,7 +1635,7 @@ export class DraftGeneratorClient {
 
     if (allImagePrompts.length === 0) {
       warnings.push({
-        code: "draft_no_image_prompts",
+        kind: "draft_no_image_prompts",
         message: "No infografika/wykres ideations were present in the distribution.",
       });
     }
@@ -2298,7 +2301,7 @@ function DraftRenderer({ output }: { output: DraftGenerationResult }) {
           <ul className="list-disc space-y-1 pl-5">
             {warnings.map((w, i) => (
               <li key={i}>
-                <span className="font-mono text-xs">{w.code}</span>
+                <span className="font-mono text-xs">{w.kind}</span>
                 {w.blockOrder !== undefined ? ` (block ${w.blockOrder})` : ""}: {w.message}
               </li>
             ))}
