@@ -8,6 +8,7 @@ import { ScrapeOutput } from "./scrape";
 import { KGOutput } from "./kg";
 import { OutlineGenOutput } from "./outline";
 import { DistributeOutput } from "./distribute";
+import { DraftOutput } from "./draft";
 import { SerpOutput } from "./serp";
 
 export function StepOutput({
@@ -43,6 +44,8 @@ export function StepOutput({
       return <OutlineGenOutput value={value} />;
     case "tool.outline.distribute":
       return <DistributeOutput value={value} />;
+    case "tool.draft.generate":
+      return <DraftOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -59,6 +62,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.query.fanout" ||
     type === "tool.kg.assemble" ||
     type === "tool.outline.generate" ||
-    type === "tool.outline.distribute"
+    type === "tool.outline.distribute" ||
+    type === "tool.draft.generate"
   );
 }
