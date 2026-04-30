@@ -1,0 +1,110 @@
+{
+  "micro_areas": [
+    {
+      "area": "higiena snu",
+      "intent": "Instrukcyjna",
+      "question": "Jak poprawić sen po 40. roku życia, aby obniżyć poziom kortyzolu?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "aktywność fizyczna",
+      "intent": "Instrukcyjna",
+      "question": "Jakie formy i intensywność treningu po 40tce pomagają obniżyć kortyzol, a jakie mogą go podnosić?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "dieta i używki",
+      "intent": "Instrukcyjna",
+      "question": "Co jeść i czego unikać (kawa, alkohol, cukier), aby wspierać niższy kortyzol po 40tce?",
+      "ymyl": true,
+      "paa_questions": [
+        "Co pić na wysoki kortyzol?"
+      ]
+    },
+    {
+      "area": "techniki redukcji stresu",
+      "intent": "Instrukcyjna",
+      "question": "Jakie techniki (oddech, relaksacja, mindfulness) realnie pomagają obniżyć kortyzol w codziennym życiu?",
+      "ymyl": false,
+      "paa_questions": []
+    },
+    {
+      "area": "suplementy i leki",
+      "intent": "Instrukcyjna",
+      "question": "Jakie suplementy lub leki mogą wpływać na kortyzol po 40tce i kiedy nie stosować ich samodzielnie?",
+      "ymyl": true,
+      "paa_questions": [
+        "Jaka witamina zbija kortyzol?"
+      ]
+    },
+    {
+      "area": "badanie kortyzolu",
+      "intent": "Diagnostyczna",
+      "question": "Jak i kiedy najlepiej zbadać kortyzol (krew, ślina, mocz) oraz jak przygotować się do badania?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "interpretacja wyników",
+      "intent": "Diagnostyczna",
+      "question": "Jak interpretować wynik kortyzolu z uwzględnieniem pory dnia i norm laboratoryjnych?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "objawy podwyższonego kortyzolu",
+      "intent": "Diagnostyczna",
+      "question": "Jakie objawy mogą sugerować zbyt wysoki kortyzol u osoby po 40tce i kiedy iść do lekarza?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "czynniki zaburzające pomiar",
+      "intent": "Diagnostyczna",
+      "question": "Co może fałszować wynik kortyzolu (stres, infekcja, leki, praca zmianowa) i jak to uwzględnić?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "przyczyny wysokiego kortyzolu",
+      "intent": "Problemowa",
+      "question": "Jakie są najczęstsze przyczyny podwyższonego kortyzolu po 40. roku życia (stres, choroby, leki)?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "skutki zdrowotne",
+      "intent": "Problemowa",
+      "question": "Jakie konsekwencje dla zdrowia może mieć przewlekle podwyższony kortyzol po 40tce?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "różnicowanie z innymi problemami",
+      "intent": "Problemowa",
+      "question": "Jak odróżnić objawy wysokiego kortyzolu od innych częstych problemów po 40tce (tarczyca, menopauza/andropauza, depresja)?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "rola kortyzolu",
+      "intent": "Definicyjna",
+      "question": "Czym jest kortyzol i jaką pełni funkcję w organizmie, szczególnie w kontekście stresu?",
+      "ymyl": true,
+      "paa_questions": []
+    },
+    {
+      "area": "normy i rytm dobowy",
+      "intent": "Definicyjna",
+      "question": "Jak wygląda dobowy rytm wydzielania kortyzolu i co oznacza, że jest 'za wysoki'?",
+      "ymyl": true,
+      "paa_questions": []
+    }
+  ],
+  "unmatched_paa": [
+    "Co najbardziej zbija kortyzol?",
+    "Jak najszybciej zbić kortyzol?"
+  ]
+}

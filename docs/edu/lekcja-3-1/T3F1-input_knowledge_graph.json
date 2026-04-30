@@ -1,0 +1,54 @@
+{
+  "entities": [
+    {"name": "kortyzol", "type": "hormon", "description": "Hormon stresu produkowany przez nadnercza", "source": "kg"},
+    {"name": "nadnercza", "type": "organ", "description": "Gruczoły produkujące kortyzol i adrenalinę", "source": "kg"},
+    {"name": "oś HPA", "type": "układ", "description": "Oś podwzgórze-przysadka-nadnercza regulująca kortyzol", "source": "kg"},
+    {"name": "melatonina", "type": "hormon", "description": "Hormon snu, antagonista kortyzolu", "source": "kg"},
+    {"name": "ashwagandha", "type": "suplement", "description": "Adaptogen obniżający kortyzol", "source": "web"},
+    {"name": "magnez", "type": "minerał", "description": "Minerał wspierający redukcję stresu", "source": "web"},
+    {"name": "witamina C", "type": "witamina", "description": "Antyoksydant redukujący kortyzol", "source": "web"},
+    {"name": "omega-3", "type": "kwasy tłuszczowe", "description": "Kwasy tłuszczowe o działaniu przeciwzapalnym", "source": "kg"},
+    {"name": "HIIT", "type": "trening", "description": "Trening interwałowy wysokiej intensywności", "source": "kg"},
+    {"name": "kortyzol ślina", "type": "badanie", "description": "Test kortyzolu ze śliny", "source": "kg"},
+    {"name": "zespół Cushinga", "type": "choroba", "description": "Choroba spowodowana przewlekle wysokim kortyzolem", "source": "kg"},
+    {"name": "CAR", "type": "zjawisko", "description": "Cortisol Awakening Response - poranny skok kortyzolu", "source": "kg"},
+    {"name": "insulinooporność", "type": "stan", "description": "Zaburzenie metaboliczne powiązane z wysokim kortyzolem", "source": "kg"},
+    {"name": "menopauza", "type": "stan", "description": "Okres przejściowy u kobiet po 40tce wpływający na hormony", "source": "kg"},
+    {"name": "andropauza", "type": "stan", "description": "Spadek testosteronu u mężczyzn po 40tce", "source": "kg"}
+  ],
+  "facts": [
+    {"text": "Kortyzol osiąga najwyższy poziom 30-45 minut po przebudzeniu (CAR)", "source": "web", "confidence": 0.95},
+    {"text": "Przewlekle podwyższony kortyzol zwiększa ryzyko otyłości brzusznej o 40%", "source": "web", "confidence": 0.85},
+    {"text": "7-9 godzin snu obniża poziom kortyzolu o 20-30% w porównaniu do 5 godzin", "source": "web", "confidence": 0.9},
+    {"text": "Ashwagandha może obniżyć kortyzol o 11-32% w ciągu 8 tygodni suplementacji", "source": "web", "confidence": 0.8},
+    {"text": "Intensywny trening (>75% HR max) przez ponad 60 minut podnosi kortyzol", "source": "kg", "confidence": 0.9},
+    {"text": "Medytacja mindfulness przez 8 tygodni obniża kortyzol o około 25%", "source": "web", "confidence": 0.85},
+    {"text": "Kawa wypita przed 10:00 może zaburzać naturalny rytm kortyzolu", "source": "kg", "confidence": 0.75},
+    {"text": "Po 40. roku życia naturalna regeneracja osi HPA spowalnia", "source": "kg", "confidence": 0.85},
+    {"text": "Normy kortyzolu porannego: 10-20 μg/dl (krew), 0.2-0.8 μg/dl (ślina)", "source": "kg", "confidence": 0.95},
+    {"text": "Przewlekły stres zwiększa kortyzol bazowy o 50-80% powyżej normy", "source": "web", "confidence": 0.85}
+  ],
+  "relationships": [
+    {"from": "kortyzol", "to": "nadnercza", "type": "produkowany_przez"},
+    {"from": "oś HPA", "to": "kortyzol", "type": "reguluje"},
+    {"from": "melatonina", "to": "kortyzol", "type": "antagonista"},
+    {"from": "ashwagandha", "to": "kortyzol", "type": "obniża"},
+    {"from": "HIIT", "to": "kortyzol", "type": "podnosi_krótkoterminowo"},
+    {"from": "magnez", "to": "kortyzol", "type": "wspiera_redukcję"},
+    {"from": "zespół Cushinga", "to": "kortyzol", "type": "spowodowany_przez"},
+    {"from": "insulinooporność", "to": "kortyzol", "type": "powiązana_z"}
+  ],
+  "ideations": [
+    {"type": "tabela", "description": "Porównanie metod badania kortyzolu: krew vs ślina vs mocz 24h", "priority": "high"},
+    {"type": "infografika", "description": "Dobowy rytm kortyzolu - wykres z zaznaczeniem CAR i wieczornego minimum", "priority": "high"},
+    {"type": "checklist", "description": "10 objawów wysokiego kortyzolu - lista do samooceny", "priority": "medium"},
+    {"type": "tabela", "description": "Suplementy na kortyzol: dawkowanie, czas działania, przeciwwskazania", "priority": "high"},
+    {"type": "schemat", "description": "Higiena snu dla obniżenia kortyzolu - rutyna wieczorna krok po kroku", "priority": "medium"}
+  ],
+  "data_markers": [
+    {"marker": "STAT:kortyzol_normy", "description": "Aktualne normy kortyzolu wg pory dnia i metody badania"},
+    {"marker": "STAT:ashwagandha_skuteczność", "description": "Badania kliniczne skuteczności ashwagandhy"},
+    {"marker": "STAT:sen_kortyzol", "description": "Związek długości snu z poziomem kortyzolu"},
+    {"marker": "STAT:wiek_kortyzol", "description": "Zmiany poziomu kortyzolu z wiekiem"}
+  ]
+}

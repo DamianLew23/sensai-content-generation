@@ -182,16 +182,19 @@ export declare const RunInput: z.ZodObject<{
     mainKeyword: z.ZodOptional<z.ZodString>;
     intent: z.ZodOptional<z.ZodString>;
     contentType: z.ZodOptional<z.ZodString>;
+    h1Title: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     topic: string;
     mainKeyword?: string | undefined;
     intent?: string | undefined;
     contentType?: string | undefined;
+    h1Title?: string | undefined;
 }, {
     topic: string;
     mainKeyword?: string | undefined;
     intent?: string | undefined;
     contentType?: string | undefined;
+    h1Title?: string | undefined;
 }>;
 export type RunInput = z.infer<typeof RunInput>;
 export declare const StartRunDto: z.ZodObject<{
@@ -202,16 +205,19 @@ export declare const StartRunDto: z.ZodObject<{
         mainKeyword: z.ZodOptional<z.ZodString>;
         intent: z.ZodOptional<z.ZodString>;
         contentType: z.ZodOptional<z.ZodString>;
+        h1Title: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         topic: string;
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
+        h1Title?: string | undefined;
     }, {
         topic: string;
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
+        h1Title?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     projectId: string;
@@ -221,6 +227,7 @@ export declare const StartRunDto: z.ZodObject<{
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
+        h1Title?: string | undefined;
     };
 }, {
     projectId: string;
@@ -230,6 +237,7 @@ export declare const StartRunDto: z.ZodObject<{
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
+        h1Title?: string | undefined;
     };
 }>;
 export type StartRunDto = z.infer<typeof StartRunDto>;
@@ -1748,11 +1756,13 @@ export declare const KGRelationship: z.ZodObject<{
     description: z.ZodString;
     evidence: z.ZodString;
 } & {
+    id: z.ZodString;
     sourceName: z.ZodString;
     targetName: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
     source: string;
+    id: string;
     description: string;
     target: string;
     evidence: string;
@@ -1761,6 +1771,7 @@ export declare const KGRelationship: z.ZodObject<{
 }, {
     type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
     source: string;
+    id: string;
     description: string;
     target: string;
     evidence: string;
@@ -1885,11 +1896,13 @@ export declare const KnowledgeGraph: z.ZodObject<{
         description: z.ZodString;
         evidence: z.ZodString;
     } & {
+        id: z.ZodString;
         sourceName: z.ZodString;
         targetName: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -1898,6 +1911,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     }, {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2019,6 +2033,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2081,6 +2096,7 @@ export declare const KnowledgeGraph: z.ZodObject<{
     relationships: {
         type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
         source: string;
+        id: string;
         description: string;
         target: string;
         evidence: string;
@@ -2116,3 +2132,3493 @@ export declare const KnowledgeGraph: z.ZodObject<{
     }[];
 }>;
 export type KnowledgeGraph = z.infer<typeof KnowledgeGraph>;
+export declare const SectionType: z.ZodEnum<["intro", "h2"]>;
+export type SectionType = z.infer<typeof SectionType>;
+export declare const SectionVariant: z.ZodEnum<["full", "context"]>;
+export type SectionVariant = z.infer<typeof SectionVariant>;
+export declare const H3Format: z.ZodEnum<["question", "context"]>;
+export type H3Format = z.infer<typeof H3Format>;
+export declare const OutlineH3: z.ZodObject<{
+    header: z.ZodString;
+    format: z.ZodEnum<["question", "context"]>;
+    sourcePaa: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    header: string;
+    format: "question" | "context";
+    sourcePaa: string;
+}, {
+    header: string;
+    format: "question" | "context";
+    sourcePaa: string;
+}>;
+export type OutlineH3 = z.infer<typeof OutlineH3>;
+export declare const IntroSection: z.ZodObject<{
+    type: z.ZodLiteral<"intro">;
+    order: z.ZodLiteral<0>;
+    header: z.ZodNull;
+    sectionVariant: z.ZodNull;
+    h3s: z.ZodTuple<[], null>;
+}, "strip", z.ZodTypeAny, {
+    type: "intro";
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}, {
+    type: "intro";
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}>;
+export type IntroSection = z.infer<typeof IntroSection>;
+export declare const FullSection: z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"full">;
+    header: z.ZodString;
+    sourceArea: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    h3s: z.ZodArray<z.ZodObject<{
+        header: z.ZodString;
+        format: z.ZodEnum<["question", "context"]>;
+        sourcePaa: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}>;
+export type FullSection = z.infer<typeof FullSection>;
+export declare const ContextSection: z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"context">;
+    header: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    groupedAreas: z.ZodArray<z.ZodString, "many">;
+    contextNote: z.ZodString;
+    h3s: z.ZodTuple<[], null>;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}>;
+export type ContextSection = z.infer<typeof ContextSection>;
+export declare const OutlineSection: z.ZodUnion<[z.ZodObject<{
+    type: z.ZodLiteral<"intro">;
+    order: z.ZodLiteral<0>;
+    header: z.ZodNull;
+    sectionVariant: z.ZodNull;
+    h3s: z.ZodTuple<[], null>;
+}, "strip", z.ZodTypeAny, {
+    type: "intro";
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}, {
+    type: "intro";
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"full">;
+    header: z.ZodString;
+    sourceArea: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    h3s: z.ZodArray<z.ZodObject<{
+        header: z.ZodString;
+        format: z.ZodEnum<["question", "context"]>;
+        sourcePaa: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"context">;
+    header: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    groupedAreas: z.ZodArray<z.ZodString, "many">;
+    contextNote: z.ZodString;
+    h3s: z.ZodTuple<[], null>;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}, {
+    type: "h2";
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}>]>;
+export type OutlineSection = z.infer<typeof OutlineSection>;
+export declare const OutlineGenWarningKind: z.ZodEnum<["outline_missing_primary_intent_areas", "outline_h3_count_mismatch", "outline_unused_area", "outline_intent_override_no_match"]>;
+export type OutlineGenWarningKind = z.infer<typeof OutlineGenWarningKind>;
+export declare const OutlineGenWarning: z.ZodObject<{
+    kind: z.ZodEnum<["outline_missing_primary_intent_areas", "outline_h3_count_mismatch", "outline_unused_area", "outline_intent_override_no_match"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+    context?: Record<string, string> | undefined;
+}>;
+export type OutlineGenWarning = z.infer<typeof OutlineGenWarning>;
+export declare const OutlineGenerationResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        h1Title: z.ZodString;
+        h1Source: z.ZodEnum<["user", "llm"]>;
+        language: z.ZodString;
+        primaryIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        primaryIntentSource: z.ZodEnum<["user", "fanout"]>;
+        fullSectionsCount: z.ZodNumber;
+        contextSectionsCount: z.ZodNumber;
+        generatedAt: z.ZodString;
+        model: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        h1Source: "user" | "llm";
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        primaryIntentSource: "user" | "fanout";
+        fullSectionsCount: number;
+        contextSectionsCount: number;
+    }, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        h1Source: "user" | "llm";
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        primaryIntentSource: "user" | "fanout";
+        fullSectionsCount: number;
+        contextSectionsCount: number;
+    }>;
+    outline: z.ZodArray<z.ZodUnion<[z.ZodObject<{
+        type: z.ZodLiteral<"intro">;
+        order: z.ZodLiteral<0>;
+        header: z.ZodNull;
+        sectionVariant: z.ZodNull;
+        h3s: z.ZodTuple<[], null>;
+    }, "strip", z.ZodTypeAny, {
+        type: "intro";
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    }, {
+        type: "intro";
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"h2">;
+        order: z.ZodNumber;
+        sectionVariant: z.ZodLiteral<"full">;
+        header: z.ZodString;
+        sourceArea: z.ZodString;
+        sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        h3s: z.ZodArray<z.ZodObject<{
+            header: z.ZodString;
+            format: z.ZodEnum<["question", "context"]>;
+            sourcePaa: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }, {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }, {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"h2">;
+        order: z.ZodNumber;
+        sectionVariant: z.ZodLiteral<"context">;
+        header: z.ZodString;
+        sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        groupedAreas: z.ZodArray<z.ZodString, "many">;
+        contextNote: z.ZodString;
+        h3s: z.ZodTuple<[], null>;
+    }, "strip", z.ZodTypeAny, {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    }, {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    }>]>, "many">;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["outline_missing_primary_intent_areas", "outline_h3_count_mismatch", "outline_unused_area", "outline_intent_override_no_match"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        h1Source: "user" | "llm";
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        primaryIntentSource: "user" | "fanout";
+        fullSectionsCount: number;
+        contextSectionsCount: number;
+    };
+    warnings: {
+        message: string;
+        kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+        context: Record<string, string>;
+    }[];
+    outline: ({
+        type: "intro";
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    } | {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    } | {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    })[];
+}, {
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        h1Source: "user" | "llm";
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        primaryIntentSource: "user" | "fanout";
+        fullSectionsCount: number;
+        contextSectionsCount: number;
+    };
+    warnings: {
+        message: string;
+        kind: "outline_missing_primary_intent_areas" | "outline_h3_count_mismatch" | "outline_unused_area" | "outline_intent_override_no_match";
+        context?: Record<string, string> | undefined;
+    }[];
+    outline: ({
+        type: "intro";
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    } | {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    } | {
+        type: "h2";
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    })[];
+}>;
+export type OutlineGenerationResult = z.infer<typeof OutlineGenerationResult>;
+export declare const IntroSectionWithKG: z.ZodObject<{
+    type: z.ZodLiteral<"intro">;
+    order: z.ZodLiteral<0>;
+    header: z.ZodNull;
+    sectionVariant: z.ZodNull;
+    h3s: z.ZodTuple<[], null>;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "intro";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}, {
+    type: "intro";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}>;
+export type IntroSectionWithKG = z.infer<typeof IntroSectionWithKG>;
+export declare const FullSectionWithKG: z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"full">;
+    header: z.ZodString;
+    sourceArea: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    h3s: z.ZodArray<z.ZodObject<{
+        header: z.ZodString;
+        format: z.ZodEnum<["question", "context"]>;
+        sourcePaa: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }>, "many">;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}>;
+export type FullSectionWithKG = z.infer<typeof FullSectionWithKG>;
+export declare const ContextSectionWithKG: z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"context">;
+    header: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    groupedAreas: z.ZodArray<z.ZodString, "many">;
+    contextNote: z.ZodString;
+    h3s: z.ZodTuple<[], null>;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}>;
+export type ContextSectionWithKG = z.infer<typeof ContextSectionWithKG>;
+export declare const SectionWithKG: z.ZodUnion<[z.ZodObject<{
+    type: z.ZodLiteral<"intro">;
+    order: z.ZodLiteral<0>;
+    header: z.ZodNull;
+    sectionVariant: z.ZodNull;
+    h3s: z.ZodTuple<[], null>;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "intro";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}, {
+    type: "intro";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: null;
+    order: 0;
+    sectionVariant: null;
+    h3s: [];
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"full">;
+    header: z.ZodString;
+    sourceArea: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    h3s: z.ZodArray<z.ZodObject<{
+        header: z.ZodString;
+        format: z.ZodEnum<["question", "context"]>;
+        sourcePaa: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }, {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }>, "many">;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "full";
+    h3s: {
+        header: string;
+        format: "question" | "context";
+        sourcePaa: string;
+    }[];
+    sourceArea: string;
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"h2">;
+    order: z.ZodNumber;
+    sectionVariant: z.ZodLiteral<"context">;
+    header: z.ZodString;
+    sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    groupedAreas: z.ZodArray<z.ZodString, "many">;
+    contextNote: z.ZodString;
+    h3s: z.ZodTuple<[], null>;
+} & {
+    entities: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        originalSurface: z.ZodString;
+        entity: z.ZodString;
+        domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+        evidence: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }, {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }>, "many">;
+    facts: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        text: z.ZodString;
+        category: z.ZodEnum<["definition", "causal", "general"]>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+        confidence: z.ZodNumber;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }, {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+    relationships: z.ZodArray<z.ZodObject<{
+        source: z.ZodString;
+        target: z.ZodString;
+        type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+        description: z.ZodString;
+        evidence: z.ZodString;
+    } & {
+        id: z.ZodString;
+        sourceName: z.ZodString;
+        targetName: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }, {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }>, "many">;
+    ideations: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+        title: z.ZodString;
+        description: z.ZodString;
+        audience: z.ZodDefault<z.ZodString>;
+        channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        priority: z.ZodEnum<["high", "medium", "low"]>;
+    }, "strip", z.ZodTypeAny, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }, {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }>, "many">;
+    measurables: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        definition: z.ZodString;
+        value: z.ZodString;
+        unit: z.ZodNullable<z.ZodString>;
+        sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    } & {
+        formatted: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }, {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls: string[];
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience: string;
+        channels: string[];
+        keywords: string[];
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        sourceUrls: string[];
+        unit: string | null;
+        formatted: string;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}, {
+    type: "h2";
+    facts: {
+        id: string;
+        text: string;
+        category: "definition" | "causal" | "general";
+        priority: "high" | "medium" | "low";
+        confidence: number;
+        sourceUrls?: string[] | undefined;
+    }[];
+    ideations: {
+        type: "checklist" | "mini_course" | "info_box" | "habit";
+        title: string;
+        id: string;
+        priority: "high" | "medium" | "low";
+        description: string;
+        audience?: string | undefined;
+        channels?: string[] | undefined;
+        keywords?: string[] | undefined;
+    }[];
+    entities: {
+        id: string;
+        originalSurface: string;
+        entity: string;
+        domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+        evidence: string;
+    }[];
+    relationships: {
+        type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+        source: string;
+        id: string;
+        description: string;
+        target: string;
+        evidence: string;
+        sourceName: string;
+        targetName: string;
+    }[];
+    measurables: {
+        value: string;
+        definition: string;
+        id: string;
+        unit: string | null;
+        formatted: string;
+        sourceUrls?: string[] | undefined;
+    }[];
+    header: string;
+    order: number;
+    sectionVariant: "context";
+    h3s: [];
+    sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    groupedAreas: string[];
+    contextNote: string;
+}>]>;
+export type SectionWithKG = z.infer<typeof SectionWithKG>;
+export declare const DistributionWarningKind: z.ZodEnum<["distribution_duplicate_entity", "distribution_duplicate_fact", "distribution_duplicate_ideation", "distribution_duplicate_relationship", "distribution_duplicate_measurable", "distribution_intro_overload", "distribution_low_coverage", "distribution_high_coverage", "distribution_unknown_entity_id", "distribution_unknown_fact_id", "distribution_unknown_ideation_id", "distribution_unknown_relationship_id", "distribution_unknown_measurable_id", "distribution_empty_full_section"]>;
+export type DistributionWarningKind = z.infer<typeof DistributionWarningKind>;
+export declare const DistributionWarning: z.ZodObject<{
+    kind: z.ZodEnum<["distribution_duplicate_entity", "distribution_duplicate_fact", "distribution_duplicate_ideation", "distribution_duplicate_relationship", "distribution_duplicate_measurable", "distribution_intro_overload", "distribution_low_coverage", "distribution_high_coverage", "distribution_unknown_entity_id", "distribution_unknown_fact_id", "distribution_unknown_ideation_id", "distribution_unknown_relationship_id", "distribution_unknown_measurable_id", "distribution_empty_full_section"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+    context?: Record<string, string> | undefined;
+}>;
+export type DistributionWarning = z.infer<typeof DistributionWarning>;
+export declare const CoverageBlock: z.ZodObject<{
+    used: z.ZodNumber;
+    total: z.ZodNumber;
+    percent: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    used: number;
+    total: number;
+    percent: number;
+}, {
+    used: number;
+    total: number;
+    percent: number;
+}>;
+export type CoverageBlock = z.infer<typeof CoverageBlock>;
+export declare const DistributionStats: z.ZodObject<{
+    coverage: z.ZodObject<{
+        entities: z.ZodObject<{
+            used: z.ZodNumber;
+            total: z.ZodNumber;
+            percent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            used: number;
+            total: number;
+            percent: number;
+        }, {
+            used: number;
+            total: number;
+            percent: number;
+        }>;
+        facts: z.ZodObject<{
+            used: z.ZodNumber;
+            total: z.ZodNumber;
+            percent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            used: number;
+            total: number;
+            percent: number;
+        }, {
+            used: number;
+            total: number;
+            percent: number;
+        }>;
+        relationships: z.ZodObject<{
+            used: z.ZodNumber;
+            total: z.ZodNumber;
+            percent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            used: number;
+            total: number;
+            percent: number;
+        }, {
+            used: number;
+            total: number;
+            percent: number;
+        }>;
+        ideations: z.ZodObject<{
+            used: z.ZodNumber;
+            total: z.ZodNumber;
+            percent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            used: number;
+            total: number;
+            percent: number;
+        }, {
+            used: number;
+            total: number;
+            percent: number;
+        }>;
+        measurables: z.ZodObject<{
+            used: z.ZodNumber;
+            total: z.ZodNumber;
+            percent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            used: number;
+            total: number;
+            percent: number;
+        }, {
+            used: number;
+            total: number;
+            percent: number;
+        }>;
+        overallPercent: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        facts: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        ideations: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        entities: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        relationships: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        measurables: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        overallPercent: number;
+    }, {
+        facts: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        ideations: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        entities: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        relationships: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        measurables: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        overallPercent: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    coverage: {
+        facts: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        ideations: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        entities: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        relationships: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        measurables: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        overallPercent: number;
+    };
+}, {
+    coverage: {
+        facts: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        ideations: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        entities: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        relationships: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        measurables: {
+            used: number;
+            total: number;
+            percent: number;
+        };
+        overallPercent: number;
+    };
+}>;
+export type DistributionStats = z.infer<typeof DistributionStats>;
+export declare const UnusedKGItems: z.ZodObject<{
+    entityIds: z.ZodArray<z.ZodString, "many">;
+    factIds: z.ZodArray<z.ZodString, "many">;
+    relationshipIds: z.ZodArray<z.ZodString, "many">;
+    ideationIds: z.ZodArray<z.ZodString, "many">;
+    measurableIds: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    entityIds: string[];
+    factIds: string[];
+    relationshipIds: string[];
+    ideationIds: string[];
+    measurableIds: string[];
+}, {
+    entityIds: string[];
+    factIds: string[];
+    relationshipIds: string[];
+    ideationIds: string[];
+    measurableIds: string[];
+}>;
+export type UnusedKGItems = z.infer<typeof UnusedKGItems>;
+export declare const DistributionResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        h1Title: z.ZodString;
+        language: z.ZodString;
+        primaryIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        generatedAt: z.ZodString;
+        model: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }>;
+    sections: z.ZodArray<z.ZodUnion<[z.ZodObject<{
+        type: z.ZodLiteral<"intro">;
+        order: z.ZodLiteral<0>;
+        header: z.ZodNull;
+        sectionVariant: z.ZodNull;
+        h3s: z.ZodTuple<[], null>;
+    } & {
+        entities: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            originalSurface: z.ZodString;
+            entity: z.ZodString;
+            domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+            evidence: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }>, "many">;
+        facts: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            text: z.ZodString;
+            category: z.ZodEnum<["definition", "causal", "general"]>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+            confidence: z.ZodNumber;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+        relationships: z.ZodArray<z.ZodObject<{
+            source: z.ZodString;
+            target: z.ZodString;
+            type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+            description: z.ZodString;
+            evidence: z.ZodString;
+        } & {
+            id: z.ZodString;
+            sourceName: z.ZodString;
+            targetName: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }>, "many">;
+        ideations: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+            title: z.ZodString;
+            description: z.ZodString;
+            audience: z.ZodDefault<z.ZodString>;
+            channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+        }, "strip", z.ZodTypeAny, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }>, "many">;
+        measurables: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            definition: z.ZodString;
+            value: z.ZodString;
+            unit: z.ZodNullable<z.ZodString>;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        } & {
+            formatted: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }, {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        type: "intro";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    }, {
+        type: "intro";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"h2">;
+        order: z.ZodNumber;
+        sectionVariant: z.ZodLiteral<"full">;
+        header: z.ZodString;
+        sourceArea: z.ZodString;
+        sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        h3s: z.ZodArray<z.ZodObject<{
+            header: z.ZodString;
+            format: z.ZodEnum<["question", "context"]>;
+            sourcePaa: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }, {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }>, "many">;
+    } & {
+        entities: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            originalSurface: z.ZodString;
+            entity: z.ZodString;
+            domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+            evidence: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }>, "many">;
+        facts: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            text: z.ZodString;
+            category: z.ZodEnum<["definition", "causal", "general"]>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+            confidence: z.ZodNumber;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+        relationships: z.ZodArray<z.ZodObject<{
+            source: z.ZodString;
+            target: z.ZodString;
+            type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+            description: z.ZodString;
+            evidence: z.ZodString;
+        } & {
+            id: z.ZodString;
+            sourceName: z.ZodString;
+            targetName: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }>, "many">;
+        ideations: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+            title: z.ZodString;
+            description: z.ZodString;
+            audience: z.ZodDefault<z.ZodString>;
+            channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+        }, "strip", z.ZodTypeAny, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }>, "many">;
+        measurables: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            definition: z.ZodString;
+            value: z.ZodString;
+            unit: z.ZodNullable<z.ZodString>;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        } & {
+            formatted: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }, {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }, {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"h2">;
+        order: z.ZodNumber;
+        sectionVariant: z.ZodLiteral<"context">;
+        header: z.ZodString;
+        sourceIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        groupedAreas: z.ZodArray<z.ZodString, "many">;
+        contextNote: z.ZodString;
+        h3s: z.ZodTuple<[], null>;
+    } & {
+        entities: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            originalSurface: z.ZodString;
+            entity: z.ZodString;
+            domainType: z.ZodEnum<["PERSON", "ORGANIZATION", "LOCATION", "PRODUCT", "CONCEPT", "EVENT"]>;
+            evidence: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }, {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }>, "many">;
+        facts: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            text: z.ZodString;
+            category: z.ZodEnum<["definition", "causal", "general"]>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+            confidence: z.ZodNumber;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }, {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+        relationships: z.ZodArray<z.ZodObject<{
+            source: z.ZodString;
+            target: z.ZodString;
+            type: z.ZodEnum<["PART_OF", "LOCATED_IN", "CREATED_BY", "WORKS_FOR", "RELATED_TO", "HAS_FEATURE", "SOLVES", "COMPETES_WITH", "CONNECTED_TO", "USED_BY", "REQUIRES"]>;
+            description: z.ZodString;
+            evidence: z.ZodString;
+        } & {
+            id: z.ZodString;
+            sourceName: z.ZodString;
+            targetName: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }, {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }>, "many">;
+        ideations: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodEnum<["checklist", "mini_course", "info_box", "habit"]>;
+            title: z.ZodString;
+            description: z.ZodString;
+            audience: z.ZodDefault<z.ZodString>;
+            channels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keywords: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            priority: z.ZodEnum<["high", "medium", "low"]>;
+        }, "strip", z.ZodTypeAny, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }, {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }>, "many">;
+        measurables: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            definition: z.ZodString;
+            value: z.ZodString;
+            unit: z.ZodNullable<z.ZodString>;
+            sourceUrls: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        } & {
+            formatted: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }, {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    }, {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    }>]>, "many">;
+    unused: z.ZodObject<{
+        entityIds: z.ZodArray<z.ZodString, "many">;
+        factIds: z.ZodArray<z.ZodString, "many">;
+        relationshipIds: z.ZodArray<z.ZodString, "many">;
+        ideationIds: z.ZodArray<z.ZodString, "many">;
+        measurableIds: z.ZodArray<z.ZodString, "many">;
+    }, "strip", z.ZodTypeAny, {
+        entityIds: string[];
+        factIds: string[];
+        relationshipIds: string[];
+        ideationIds: string[];
+        measurableIds: string[];
+    }, {
+        entityIds: string[];
+        factIds: string[];
+        relationshipIds: string[];
+        ideationIds: string[];
+        measurableIds: string[];
+    }>;
+    stats: z.ZodObject<{
+        coverage: z.ZodObject<{
+            entities: z.ZodObject<{
+                used: z.ZodNumber;
+                total: z.ZodNumber;
+                percent: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                used: number;
+                total: number;
+                percent: number;
+            }, {
+                used: number;
+                total: number;
+                percent: number;
+            }>;
+            facts: z.ZodObject<{
+                used: z.ZodNumber;
+                total: z.ZodNumber;
+                percent: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                used: number;
+                total: number;
+                percent: number;
+            }, {
+                used: number;
+                total: number;
+                percent: number;
+            }>;
+            relationships: z.ZodObject<{
+                used: z.ZodNumber;
+                total: z.ZodNumber;
+                percent: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                used: number;
+                total: number;
+                percent: number;
+            }, {
+                used: number;
+                total: number;
+                percent: number;
+            }>;
+            ideations: z.ZodObject<{
+                used: z.ZodNumber;
+                total: z.ZodNumber;
+                percent: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                used: number;
+                total: number;
+                percent: number;
+            }, {
+                used: number;
+                total: number;
+                percent: number;
+            }>;
+            measurables: z.ZodObject<{
+                used: z.ZodNumber;
+                total: z.ZodNumber;
+                percent: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                used: number;
+                total: number;
+                percent: number;
+            }, {
+                used: number;
+                total: number;
+                percent: number;
+            }>;
+            overallPercent: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        }, {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        }>;
+    }, "strip", z.ZodTypeAny, {
+        coverage: {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        };
+    }, {
+        coverage: {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        };
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["distribution_duplicate_entity", "distribution_duplicate_fact", "distribution_duplicate_ideation", "distribution_duplicate_relationship", "distribution_duplicate_measurable", "distribution_intro_overload", "distribution_low_coverage", "distribution_high_coverage", "distribution_unknown_entity_id", "distribution_unknown_fact_id", "distribution_unknown_ideation_id", "distribution_unknown_relationship_id", "distribution_unknown_measurable_id", "distribution_empty_full_section"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        coverage: {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        };
+    };
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    };
+    warnings: {
+        message: string;
+        kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+        context: Record<string, string>;
+    }[];
+    sections: ({
+        type: "intro";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    } | {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    } | {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls: string[];
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience: string;
+            channels: string[];
+            keywords: string[];
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            sourceUrls: string[];
+            unit: string | null;
+            formatted: string;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    })[];
+    unused: {
+        entityIds: string[];
+        factIds: string[];
+        relationshipIds: string[];
+        ideationIds: string[];
+        measurableIds: string[];
+    };
+}, {
+    stats: {
+        coverage: {
+            facts: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            ideations: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            entities: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            relationships: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            measurables: {
+                used: number;
+                total: number;
+                percent: number;
+            };
+            overallPercent: number;
+        };
+    };
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    };
+    warnings: {
+        message: string;
+        kind: "distribution_duplicate_entity" | "distribution_duplicate_fact" | "distribution_duplicate_ideation" | "distribution_duplicate_relationship" | "distribution_duplicate_measurable" | "distribution_intro_overload" | "distribution_low_coverage" | "distribution_high_coverage" | "distribution_unknown_entity_id" | "distribution_unknown_fact_id" | "distribution_unknown_ideation_id" | "distribution_unknown_relationship_id" | "distribution_unknown_measurable_id" | "distribution_empty_full_section";
+        context?: Record<string, string> | undefined;
+    }[];
+    sections: ({
+        type: "intro";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: null;
+        order: 0;
+        sectionVariant: null;
+        h3s: [];
+    } | {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "full";
+        h3s: {
+            header: string;
+            format: "question" | "context";
+            sourcePaa: string;
+        }[];
+        sourceArea: string;
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    } | {
+        type: "h2";
+        facts: {
+            id: string;
+            text: string;
+            category: "definition" | "causal" | "general";
+            priority: "high" | "medium" | "low";
+            confidence: number;
+            sourceUrls?: string[] | undefined;
+        }[];
+        ideations: {
+            type: "checklist" | "mini_course" | "info_box" | "habit";
+            title: string;
+            id: string;
+            priority: "high" | "medium" | "low";
+            description: string;
+            audience?: string | undefined;
+            channels?: string[] | undefined;
+            keywords?: string[] | undefined;
+        }[];
+        entities: {
+            id: string;
+            originalSurface: string;
+            entity: string;
+            domainType: "PERSON" | "ORGANIZATION" | "LOCATION" | "PRODUCT" | "CONCEPT" | "EVENT";
+            evidence: string;
+        }[];
+        relationships: {
+            type: "PART_OF" | "LOCATED_IN" | "CREATED_BY" | "WORKS_FOR" | "RELATED_TO" | "HAS_FEATURE" | "SOLVES" | "COMPETES_WITH" | "CONNECTED_TO" | "USED_BY" | "REQUIRES";
+            source: string;
+            id: string;
+            description: string;
+            target: string;
+            evidence: string;
+            sourceName: string;
+            targetName: string;
+        }[];
+        measurables: {
+            value: string;
+            definition: string;
+            id: string;
+            unit: string | null;
+            formatted: string;
+            sourceUrls?: string[] | undefined;
+        }[];
+        header: string;
+        order: number;
+        sectionVariant: "context";
+        h3s: [];
+        sourceIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        groupedAreas: string[];
+        contextNote: string;
+    })[];
+    unused: {
+        entityIds: string[];
+        factIds: string[];
+        relationshipIds: string[];
+        ideationIds: string[];
+        measurableIds: string[];
+    };
+}>;
+export type DistributionResult = z.infer<typeof DistributionResult>;

@@ -85,7 +85,7 @@ export function resolveRelationships(
       });
       continue;
     }
-    out.push({ ...r, sourceName, targetName });
+    out.push({ id: `R${out.length + 1}`, ...r, sourceName, targetName });
   }
   return { relationships: out, warnings };
 }

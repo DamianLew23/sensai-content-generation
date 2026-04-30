@@ -6,6 +6,8 @@ import { JsonFallback } from "./json-fallback";
 import { QueryFanOutOutput } from "./query-fanout";
 import { ScrapeOutput } from "./scrape";
 import { KGOutput } from "./kg";
+import { OutlineGenOutput } from "./outline";
+import { DistributeOutput } from "./distribute";
 import { SerpOutput } from "./serp";
 
 export function StepOutput({
@@ -37,6 +39,10 @@ export function StepOutput({
       return <QueryFanOutOutput value={value} />;
     case "tool.kg.assemble":
       return <KGOutput value={value} />;
+    case "tool.outline.generate":
+      return <OutlineGenOutput value={value} />;
+    case "tool.outline.distribute":
+      return <DistributeOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -51,6 +57,8 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.content.extract" ||
     type === "tool.entity.extract" ||
     type === "tool.query.fanout" ||
-    type === "tool.kg.assemble"
+    type === "tool.kg.assemble" ||
+    type === "tool.outline.generate" ||
+    type === "tool.outline.distribute"
   );
 }

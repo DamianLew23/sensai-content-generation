@@ -8,12 +8,16 @@ import { ContentExtractHandler } from "./content-extract.handler";
 import { EntityExtractHandler } from "./entity-extract.handler";
 import { QueryFanOutHandler } from "./query-fanout.handler";
 import { KGAssemblyHandler } from "./kg-assembly.handler";
+import { OutlineGenerateHandler } from "./outline-generate.handler";
+import { OutlineDistributeHandler } from "./outline-distribute.handler";
 import { ToolsModule } from "../tools/tools.module";
+import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
+import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
 @Module({
-  imports: [ToolsModule],
+  imports: [ToolsModule, OutlineGeneratorModule, KGDistributorModule],
   providers: [
     BriefHandler,
     SerpFetchHandler,
@@ -24,6 +28,8 @@ import { loadEnv } from "../config/env";
     EntityExtractHandler,
     QueryFanOutHandler,
     KGAssemblyHandler,
+    OutlineGenerateHandler,
+    OutlineDistributeHandler,
     {
       provide: "YOUCOM_ENV",
       useFactory: () => loadEnv(),
@@ -45,6 +51,14 @@ import { loadEnv } from "../config/env";
       useFactory: () => loadEnv(),
     },
     {
+      provide: "OUTLINE_GENERATE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
+      provide: "OUTLINE_DISTRIBUTE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
       provide: STEP_HANDLERS,
       useFactory: (
         brief: BriefHandler,
@@ -56,7 +70,21 @@ import { loadEnv } from "../config/env";
         entities: EntityExtractHandler,
         fanout: QueryFanOutHandler,
         kg: KGAssemblyHandler,
-      ): StepHandler[] => [brief, serp, scrape, youcom, clean, extract, entities, fanout, kg],
+        outlineGenerate: OutlineGenerateHandler,
+        outlineDistribute: OutlineDistributeHandler,
+      ): StepHandler[] => [
+        brief,
+        serp,
+        scrape,
+        youcom,
+        clean,
+        extract,
+        entities,
+        fanout,
+        kg,
+        outlineGenerate,
+        outlineDistribute,
+      ],
       inject: [
         BriefHandler,
         SerpFetchHandler,
@@ -67,6 +95,8 @@ import { loadEnv } from "../config/env";
         EntityExtractHandler,
         QueryFanOutHandler,
         KGAssemblyHandler,
+        OutlineGenerateHandler,
+        OutlineDistributeHandler,
       ],
     },
   ],
