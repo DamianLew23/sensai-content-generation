@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a new pipeline step `tool.draft.generate` that consumes Plan 12's `DistributionResult` and emits an HTML article draft via per-section LLM calls with OpenAI Responses API response-id chaining, deterministic heading-trigger analysis, programmatic H3-vs-H2 fact deduplication, and a separate output of infographic prompts.
+**Goal:** Add a new pipeline step `tool.draft.generate` that consumes Plan 12's `DistributionResult` and emits an HTML article draft via per-section LLM calls with OpenAI Responses API response-id chaining, deterministic heading-trigger analysis, and a separate output of infographic prompts.
 
-**Architecture:** A handler caches its output via `ToolCacheService`. The handler delegates to a `DraftGeneratorClient` that orchestrates one LLM call per H2 block (introduction is its own block too) with `previous_response_id` chaining to keep tokens low and avoid cross-block duplication. Three pure modules pre/post-process: `dedup.ts` removes facts duplicated between H3 and parent H2; `headings.ts` matches each header against regex triggers (definition / instruction / cause / comparison / diagnosis / list / question) and stamps a passage format on every section + H3; `assemble.ts` glues per-block HTML chunks into a final article and extracts ideation entries flagged as infografika/wykres/diagram into a separate `imagePrompts[]` output. A new `OpenAIResponsesClient` (direct `openai` SDK, not ai@5) handles the Responses API call with reasoning + verbosity controls and persists usage into the existing `llm_calls` table so cost stays observable.
+**Architecture:** A handler caches its output via `ToolCacheService`. The handler delegates to a `DraftGeneratorClient` that orchestrates one LLM call per H2 block (introduction is its own block too) with `previous_response_id` chaining to keep tokens low and avoid cross-block duplication. Two pure modules pre/post-process: `headings.ts` matches each header against regex triggers (definition / instruction / cause / comparison / diagnosis / list / question) and stamps a passage format on every section + H3; `assemble.ts` glues per-block HTML chunks into a final article. A separate `ideations.ts` splits KG ideations into inline (table/list — rendered by the LLM in the prompt) vs external (infografika/wykres/diagram — emitted as a separate `imagePrompts[]` output). A new `OpenAIResponsesClient` (direct `openai` SDK, not ai@5) handles the Responses API call with reasoning + verbosity controls and persists usage into the existing `llm_calls` table so cost stays observable.
 
 **Tech Stack:** TypeScript / NestJS / Zod / Vitest / `openai` SDK ≥ 4.78 (Responses API + `previous_response_id`) / OpenAI direct (default model `gpt-5.2`) / existing `LlmClient` left untouched.
 
@@ -28,7 +28,7 @@
 
 **Gotcha 6 — Heading trigger detection is regex, not LLM:** The lesson explicitly says "to programatyczny algorytm, nie LLM" — adding an LLM hop here would inflate cost and reduce determinism. We mirror `HEADING_TRIGGERS` from the Python script verbatim (PL+EN patterns, plus an `intent_to_trigger` fallback). Tests assert each known wzorzec is hit.
 
-**Gotcha 7 — H3 fact deduplication runs BEFORE prompt assembly:** Without this, the LLM gets the same fact in H2 and H3 inputs and dutifully repeats it despite "NO DUPLICATE" rules. Dedup is by **first-80-chars-lowercased** of `fact.text` (matches lesson `_covered` set). Entities are NOT removed — only flagged with `_covered_in_h2 = true` so the prompt instructs "use name only, do not redefine". Tests verify both behaviors.
+**Gotcha 7 — No per-H3 KG payload:** Plan 12's distribution attaches KG items (entities/facts/relationships/ideations/measurables) only at the H2 section level. `OutlineH3` carries `{header, format, sourcePaa}` only — no per-H3 KG payload. This means the lesson Python script's H3-vs-H2 fact dedup is **inapplicable** to our pipeline. The "NO DUPLICATE" responsibility falls entirely on (a) the outline-context block in the prompt, and (b) `previous_response_id` chaining keeping the model aware of what it already wrote. If a future plan introduces per-H3 distribution, revive a dedup pass at that point.
 
 **Gotcha 8 — Ideations split into inline vs external before LLM:** Tabela / checklist / lista / porównanie / schemat → inline `<table>`/`<ul>` instructions inside the user prompt. Infografika / wykres / diagram / grafika → emitted as a separate `imagePrompts[]` array on the handler output (the lesson stores them in `output_image_prompts.json`). Don't ask the LLM to "describe" infografiki — it'll hallucinate alt text.
 
@@ -62,7 +62,6 @@ apps/api/
     │   └── draft-generator/                       (NEW)
     │       ├── draft-generator.client.ts          Orchestrates per-block calls with chaining
     │       ├── draft-generator.module.ts          NestJS DI
-    │       ├── draft-generator.dedup.ts           Pure: dedupe H3 facts vs parent H2
     │       ├── draft-generator.headings.ts        Pure: regex heading triggers + passage format
     │       ├── draft-generator.ideations.ts       Pure: split inline (table/list) vs external (infografika)
     │       ├── draft-generator.assemble.ts        Pure: glue blocks + extract image prompts + stats
@@ -187,7 +186,6 @@ export const DraftStats = z.object({
   totalPromptTokens: z.number().int().nonnegative(),
   totalCompletionTokens: z.number().int().nonnegative(),
   imagePromptCount: z.number().int().nonnegative(),
-  factsRemovedFromH3: z.number().int().nonnegative(),
 });
 export type DraftStats = z.infer<typeof DraftStats>;
 
@@ -279,16 +277,13 @@ git commit -m "feat(api): add Plan 13 draft.generate env keys"
 
 ---
 
-## Task 3: Pure module — H3 fact deduplication
+## Task 3: REMOVED — H3 fact deduplication is inapplicable
 
-**Files:**
-- Create: `apps/api/src/tools/draft-generator/draft-generator.types.ts`
-- Create: `apps/api/src/tools/draft-generator/draft-generator.dedup.ts`
-- Test: `apps/api/src/tests/draft-generator.dedup.test.ts`
+This task was removed during execution. Plan 12's distribution attaches KG payload at H2 sections only — `OutlineH3` has no per-H3 facts/entities to dedup. See Gotcha 7. Implementation reverted in commit `b4a5971` (`fix(api): remove H3 dedup — Plan 12 distributes KG only at H2 level`).
 
-- [ ] **Step 3.1: Write internal types**
+What survives from this task: the `apps/api/src/tools/draft-generator/draft-generator.types.ts` file containing `PassageFormat` and `EnrichedSection` interfaces, used by Tasks 4, 8, 9. (No `DedupResult` interface; no `_coveredEntities` field.)
 
-Create `apps/api/src/tools/draft-generator/draft-generator.types.ts`:
+`apps/api/src/tools/draft-generator/draft-generator.types.ts` final content:
 
 ```ts
 import type {
@@ -304,9 +299,6 @@ export interface PassageFormat {
   matchedBy: "header_pattern" | "source_intent" | "default";
 }
 
-// Section taken from DistributionResult.sections[N], augmented with deterministic
-// pre-processing artefacts. We keep the original shape readable by Zod schemas
-// and only add fields prefixed with `_` for clarity.
 export type EnrichedSection = DistributionResult["sections"][number] & {
   _passageFormat: PassageFormat;
   _h3sEnriched: Array<{
@@ -319,184 +311,10 @@ export type EnrichedSection = DistributionResult["sections"][number] & {
     formatInstruction: string;
   }>;
   _externalIdeations: DraftImagePrompt[];
-  _coveredEntities: Set<string>;
 };
-
-export interface DedupResult {
-  sections: DistributionResult["sections"];
-  factsRemoved: number;
-}
 ```
 
-- [ ] **Step 3.2: Write the failing test**
-
-Create `apps/api/src/tests/draft-generator.dedup.test.ts`:
-
-```ts
-import { describe, it, expect } from "vitest";
-import { dedupeH3Facts } from "../tools/draft-generator/draft-generator.dedup";
-import type { DistributionResult } from "@sensai/shared";
-
-function makeFact(id: string, text: string) {
-  return { id, text, category: "general" as const, priority: "medium" as const, confidence: 0.8, sourceUrls: [] };
-}
-
-describe("dedupeH3Facts", () => {
-  it("removes H3 facts that duplicate parent H2 by first 80 chars (case-insensitive)", () => {
-    const sections: DistributionResult["sections"] = [
-      {
-        type: "h2",
-        order: 1,
-        sectionVariant: "full",
-        header: "Jak obniżyć kortyzol",
-        sourceArea: "A1",
-        sourceIntent: "Instrukcyjna",
-        entities: [],
-        facts: [makeFact("F1", "Ashwagandha obniża kortyzol o 11-32%.")],
-        relationships: [],
-        ideations: [],
-        measurables: [],
-        h3s: [
-          {
-            header: "Czy ashwagandha działa?",
-            format: "question",
-            sourcePaa: "...",
-            entities: [],
-            facts: [
-              makeFact("F2", "ASHWAGANDHA OBNIŻA KORTYZOL O 11-32%."), // duplicate of F1
-              makeFact("F3", "Magnez ma efekt komplementarny."),       // unique
-            ],
-            relationships: [],
-            ideations: [],
-            measurables: [],
-          },
-        ],
-      } as any,
-    ];
-
-    const result = dedupeH3Facts(sections);
-
-    expect(result.factsRemoved).toBe(1);
-    expect(result.sections[0].h3s[0].facts).toHaveLength(1);
-    expect(result.sections[0].h3s[0].facts[0].id).toBe("F3");
-  });
-
-  it("flags entities covered by parent H2 without removing them", () => {
-    const sections: DistributionResult["sections"] = [
-      {
-        type: "h2",
-        order: 1,
-        sectionVariant: "full",
-        header: "Adaptogeny",
-        sourceArea: "A1",
-        sourceIntent: "Definicyjna",
-        entities: [{ id: "E1", entity: "Ashwagandha", domainType: "PRODUCT", evidence: "Adaptogen.", originalSurface: "Ashwagandha" }],
-        facts: [],
-        relationships: [],
-        ideations: [],
-        measurables: [],
-        h3s: [
-          {
-            header: "Dawkowanie",
-            format: "question",
-            sourcePaa: "...",
-            entities: [{ id: "E1", entity: "Ashwagandha", domainType: "PRODUCT", evidence: "Adaptogen.", originalSurface: "Ashwagandha" }],
-            facts: [],
-            relationships: [],
-            ideations: [],
-            measurables: [],
-          },
-        ],
-      } as any,
-    ];
-
-    const result = dedupeH3Facts(sections);
-
-    // entity stays in the array — module only marks coverage via returned set on the parent
-    expect(result.sections[0].h3s[0].entities).toHaveLength(1);
-    expect(result.factsRemoved).toBe(0);
-  });
-
-  it("returns intro sections unchanged", () => {
-    const sections: DistributionResult["sections"] = [
-      {
-        type: "intro",
-        order: 0,
-        header: null,
-        sectionVariant: null,
-        h3s: [],
-        entities: [],
-        facts: [makeFact("F1", "Intro fact")],
-        relationships: [],
-        ideations: [],
-        measurables: [],
-      } as any,
-    ];
-    const result = dedupeH3Facts(sections);
-    expect(result.factsRemoved).toBe(0);
-    expect(result.sections[0].facts).toHaveLength(1);
-  });
-});
-```
-
-Run: `pnpm --filter @sensai/api test -- draft-generator.dedup`
-Expected: FAIL — module not found.
-
-- [ ] **Step 3.3: Implement the module**
-
-Create `apps/api/src/tools/draft-generator/draft-generator.dedup.ts`:
-
-```ts
-import type { DistributionResult } from "@sensai/shared";
-import type { DedupResult } from "./draft-generator.types";
-
-const FACT_KEY_LEN = 80;
-
-function factKey(text: string): string {
-  return text.slice(0, FACT_KEY_LEN).toLowerCase().trim();
-}
-
-export function dedupeH3Facts(
-  sections: DistributionResult["sections"],
-): DedupResult {
-  let factsRemoved = 0;
-
-  const cloned = sections.map((s) => {
-    if (s.type === "intro") return s;
-
-    const parentFactKeys = new Set(s.facts.map((f) => factKey(f.text)));
-
-    const h3s = s.h3s.map((h3) => {
-      const filtered = h3.facts.filter((f) => {
-        if (parentFactKeys.has(factKey(f.text))) {
-          factsRemoved += 1;
-          return false;
-        }
-        return true;
-      });
-      return { ...h3, facts: filtered };
-    });
-
-    return { ...s, h3s };
-  });
-
-  return { sections: cloned as DistributionResult["sections"], factsRemoved };
-}
-```
-
-- [ ] **Step 3.4: Run tests — verify GREEN**
-
-Run: `pnpm --filter @sensai/api test -- draft-generator.dedup`
-Expected: PASS — all 3 cases.
-
-- [ ] **Step 3.5: Commit**
-
-```bash
-git add apps/api/src/tools/draft-generator/draft-generator.types.ts \
-        apps/api/src/tools/draft-generator/draft-generator.dedup.ts \
-        apps/api/src/tests/draft-generator.dedup.test.ts
-git commit -m "feat(api): add H3 fact deduplication for draft generation"
-```
+---
 
 ---
 
@@ -1276,15 +1094,11 @@ function renderSection(s: EnrichedSection): string {
       : "";
 
   const entities = s.entities.slice(0, 6).map((e: any) => {
-    if (s._coveredEntities?.has(e.id)) return null;
     const desc = (e.evidence ?? "").slice(0, 60);
     return desc ? `${e.entity} (${desc})` : e.entity;
   });
-  const entitiesStr = entities.filter(Boolean).join("; ") || "None";
-  const coveredStr =
-    s._coveredEntities && s._coveredEntities.size > 0
-      ? `\n   ⚠️ Already defined in parent H2 (use name only): ${Array.from(s._coveredEntities).join(", ")}`
-      : "";
+  const entitiesStr = entities.join("; ") || "None";
+  const coveredStr = "";
 
   const facts = (s.facts ?? []).slice(0, 6).map((f: any) => f.text.slice(0, 100));
   const factsStr = facts.length ? `\n      • ${facts.join("\n      • ")}` : "None";
@@ -1469,7 +1283,6 @@ Create `apps/api/src/tools/draft-generator/draft-generator.client.ts`:
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { OpenAIResponsesClient } from "../../llm/openai-responses.client";
 import { draftGeneratePrompt } from "../../prompts/draft-generate.prompt";
-import { dedupeH3Facts } from "./draft-generator.dedup";
 import { detectPassageFormat } from "./draft-generator.headings";
 import { splitIdeations } from "./draft-generator.ideations";
 import type {
@@ -1502,7 +1315,6 @@ export interface GenerateResult {
   blocks: DraftBlockStats[];
   imagePrompts: DraftImagePrompt[];
   warnings: DraftWarning[];
-  factsRemovedFromH3: number;
 }
 
 const SHORT_BLOCK_THRESHOLD = 200; // chars
@@ -1521,13 +1333,9 @@ export class DraftGeneratorClient {
     const lang = distribution.meta.language;
     const useReasoning = this.env.DRAFT_GENERATE_USE_REASONING;
 
-    // 1. Deduplicate
-    const dedup = dedupeH3Facts(distribution.sections);
-    const factsRemovedFromH3 = dedup.factsRemoved;
-
-    // 2. Enrich sections (passage format + ideation split + covered-entity flagging)
+    // 1. Enrich sections (passage format + ideation split)
     const allImagePrompts: DraftImagePrompt[] = [];
-    const enriched: EnrichedSection[] = dedup.sections.map((s) => {
+    const enriched: EnrichedSection[] = distribution.sections.map((s) => {
       const passageFormat = detectPassageFormat(
         s.type === "intro" ? null : s.header,
         (s as any).sourceIntent,
@@ -1545,21 +1353,16 @@ export class DraftGeneratorClient {
       const split = splitIdeations(ideations, sectionHeader);
       allImagePrompts.push(...split.external);
 
-      const coveredEntities = new Set<string>(
-        (s.entities ?? []).map((e: any) => e.id),
-      );
-
       return {
         ...s,
         _passageFormat: passageFormat,
         _h3sEnriched: h3sEnriched,
         _inlineIdeations: split.inline,
         _externalIdeations: split.external,
-        _coveredEntities: new Set<string>(), // start clean — H3 prompts get their own coverage; H2 doesn't suppress its own entities
       } as EnrichedSection;
     });
 
-    // 3. Sequential LLM calls with chaining
+    // 2. Sequential LLM calls with chaining
     const warnings: DraftWarning[] = [];
     const blocks: DraftBlockStats[] = [];
     const htmlChunks: string[] = [];
@@ -1645,7 +1448,6 @@ export class DraftGeneratorClient {
       blocks,
       imagePrompts: allImagePrompts,
       warnings,
-      factsRemovedFromH3,
     };
   }
 }
@@ -1873,7 +1675,6 @@ describe("DraftGenerateHandler.execute", () => {
         ],
         imagePrompts: [],
         warnings: [],
-        factsRemovedFromH3: 0,
       }),
     } as unknown as DraftGeneratorClient;
 
@@ -1900,7 +1701,6 @@ describe("DraftGenerateHandler.execute", () => {
     expect(out.htmlContent.startsWith("<h1>Jak obniżyć kortyzol</h1>")).toBe(true);
     expect(out.blocks).toHaveLength(2);
     expect(out.stats.blockCount).toBe(2);
-    expect(out.stats.factsRemovedFromH3).toBe(0);
   });
 });
 ```
@@ -2017,7 +1817,6 @@ export class DraftGenerateHandler implements StepHandler {
             totalPromptTokens,
             totalCompletionTokens,
             imagePromptCount: gen.imagePrompts.length,
-            factsRemovedFromH3: gen.factsRemovedFromH3,
           },
           warnings: gen.warnings,
         };
@@ -2251,7 +2050,7 @@ function DraftRenderer({ output }: { output: DraftGenerationResult }) {
         <div className="mt-1 text-lg font-semibold">{meta.h1Title}</div>
         <div className="mt-1 text-xs text-muted-foreground">
           {stats.blockCount} bloków · {stats.totalChars} znaków · {stats.totalLatencyMs} ms ·
-          ${stats.totalCostUsd} · {stats.imagePromptCount} infografik · usuniętych H3 faktów: {stats.factsRemovedFromH3}
+          ${stats.totalCostUsd} · {stats.imagePromptCount} infografik
         </div>
       </header>
 
@@ -2535,7 +2334,7 @@ gh pr create --title "Plan 13 — Draft Generation" --body "$(cat <<'EOF'
 ## Summary
 - Adds `tool.draft.generate` pipeline step consuming `DistributionResult` (Plan 12)
 - Per-block LLM calls via OpenAI Responses API with `previous_response_id` chaining
-- Deterministic heading-trigger analysis (regex, no LLM hop) + H3-vs-H2 fact dedup
+- Deterministic heading-trigger analysis (regex, no LLM hop)
 - Inline ideations rendered as HTML `<table>` / `<ul>`; infografika/wykres emitted as separate `imagePrompts[]`
 - New `OpenAIResponsesClient` reuses `CostTrackerService` so per-block cost/latency stays observable in `llm_calls`
 - New web renderer with sandboxed iframe HTML preview
@@ -2564,7 +2363,7 @@ After the PR merges to `main`, ask Claude to record the merge under `project_pla
 | Draft to nie finalna wersja — pipeline produces *draft*, not finished article | Output schema + UI label "draft" |
 | Generowanie sekcja po sekcji (Krok 1) | Task 9 — one LLM call per section |
 | Response ID chaining (Krok 2) | Task 7 (client) + Task 9 (orchestrator) |
-| 3 mechanizmy antyduplikacji (Krok 3) | Chaining (Task 9) + outline w prompcie (Task 8) + dedup H3/H2 (Task 3) |
+| 2 mechanizmy antyduplikacji (Krok 3) | Chaining (Task 9) + outline w prompcie (Task 8). The lesson's third mechanism (per-H3 fact dedup) is inapplicable — Plan 12 distributes KG only at H2 (see Gotcha 7). |
 | Analiza nagłówków → format sekcji (Krok 4) | Task 4 — `detectPassageFormat` |
 | Struktura sekcji 5 elementów (Krok 5) | `PASSAGE_BLUEPRINT` constant in Task 8 |
 | 5 typów kotwic encji (Krok 6) | `ENTITY_RULES` constant in Task 8 |
