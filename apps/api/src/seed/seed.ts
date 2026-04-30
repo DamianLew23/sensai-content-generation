@@ -147,6 +147,27 @@ async function main() {
     },
   );
 
+  // Plan 12 — Outline + Distribution. Terminal at `distribute` (no brief in this template).
+  const blogSeoOutline = await upsertTemplate(
+    db,
+    "Blog SEO — fanout + deep research + clean + extract + entities + KG + outline + distribute",
+    1,
+    {
+      steps: [
+        { key: "fanout",       type: "tool.query.fanout",       auto: true,  dependsOn: [] },
+        { key: "deepResearch", type: "tool.youcom.research",    auto: true,  dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",         auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",             auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",      auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract",    auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "entities",     type: "tool.entity.extract",     auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "kg",           type: "tool.kg.assemble",        auto: true,  dependsOn: ["extract", "entities"] },
+        { key: "outlineGen",   type: "tool.outline.generate",   auto: true,  dependsOn: ["fanout"] },
+        { key: "distribute",   type: "tool.outline.distribute", auto: true,  dependsOn: ["outlineGen", "kg"] },
+      ],
+    },
+  );
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
@@ -159,6 +180,7 @@ async function main() {
   console.log(`    "${blogSeoEntities.name}" v${blogSeoEntities.version}: ${blogSeoEntities.id}`);
   console.log(`    "${blogSeoFanout.name}" v${blogSeoFanout.version}: ${blogSeoFanout.id}`);
   console.log(`    "${blogSeoKg.name}" v${blogSeoKg.version}: ${blogSeoKg.id}`);
+  console.log(`    "${blogSeoOutline.name}" v${blogSeoOutline.version}: ${blogSeoOutline.id}`);
 
   await pool.end();
 }
