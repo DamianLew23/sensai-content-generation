@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import OpenAI from "openai";
+import type { Response, ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import { CostTrackerService } from "./cost-tracker.service";
 import { calculateCostUsd } from "./pricing";
 
@@ -43,7 +44,7 @@ export class OpenAIResponsesClient {
   async createBlock(args: CreateBlockArgs): Promise<CreateBlockResult> {
     const t0 = Date.now();
 
-    const params: Record<string, unknown> = {
+    const params: ResponseCreateParamsNonStreaming = {
       model: args.model,
       input: [
         { role: "system", content: args.system },
@@ -54,17 +55,17 @@ export class OpenAIResponsesClient {
     if (args.reasoning) params.reasoning = args.reasoning;
     if (args.verbosity) params.text = { verbosity: args.verbosity };
 
-    const response = await this.sdk.responses.create(params as any, {
+    const response: Response = await this.sdk.responses.create(params, {
       timeout: CALL_TIMEOUT_MS,
     });
 
     const latencyMs = Date.now() - t0;
-    const promptTokens = (response as any).usage?.input_tokens ?? 0;
-    const completionTokens = (response as any).usage?.output_tokens ?? 0;
-    const model = (response as any).model ?? args.model;
+    const promptTokens = response.usage?.input_tokens ?? 0;
+    const completionTokens = response.usage?.output_tokens ?? 0;
+    const model = response.model ?? args.model;
     const costUsd = calculateCostUsd(model, promptTokens, completionTokens);
-    const outputText = (response as any).output_text ?? "";
-    const id = (response as any).id;
+    const outputText = response.output_text ?? "";
+    const id = response.id;
 
     await this.cost.record({
       runId: args.ctx.runId,

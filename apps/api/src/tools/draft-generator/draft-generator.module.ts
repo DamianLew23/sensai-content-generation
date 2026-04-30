@@ -1,10 +1,12 @@
 import { Module } from "@nestjs/common";
 import OpenAI from "openai";
+import { LlmModule } from "../../llm/llm.module";
 import { OpenAIResponsesClient } from "../../llm/openai-responses.client";
 import { DraftGeneratorClient } from "./draft-generator.client";
 import { loadEnv } from "../../config/env";
 
 @Module({
+  imports: [LlmModule],
   providers: [
     {
       provide: "OPENAI_RESPONSES_SDK",
