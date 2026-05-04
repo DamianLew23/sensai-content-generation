@@ -5977,3 +5977,322 @@ export declare const DraftGenerationResult: z.ZodObject<{
     }[];
 }>;
 export type DraftGenerationResult = z.infer<typeof DraftGenerationResult>;
+export declare const ClaimType: z.ZodEnum<["statystyka", "konkretna_data", "trend", "norma_medyczna", "porownanie", "datowane_zdarzenie", "legislacja", "organizacja"]>;
+export type ClaimType = z.infer<typeof ClaimType>;
+export declare const ClaimTagName: z.ZodEnum<["p", "li", "td"]>;
+export type ClaimTagName = z.infer<typeof ClaimTagName>;
+export declare const ExtractedClaim: z.ZodObject<{
+    id: z.ZodNumber;
+    paragraphHtml: z.ZodString;
+    claimText: z.ZodString;
+    context: z.ZodString;
+    claimTypes: z.ZodArray<z.ZodEnum<["statystyka", "konkretna_data", "trend", "norma_medyczna", "porownanie", "datowane_zdarzenie", "legislacja", "organizacja"]>, "many">;
+    score: z.ZodNumber;
+    h2Context: z.ZodString;
+    tagName: z.ZodEnum<["p", "li", "td"]>;
+    question: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    id: number;
+    score: number;
+    context: string;
+    paragraphHtml: string;
+    claimText: string;
+    claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+    h2Context: string;
+    tagName: "p" | "li" | "td";
+    question?: string | undefined;
+}, {
+    id: number;
+    score: number;
+    context: string;
+    paragraphHtml: string;
+    claimText: string;
+    claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+    h2Context: string;
+    tagName: "p" | "li" | "td";
+    question?: string | undefined;
+}>;
+export type ExtractedClaim = z.infer<typeof ExtractedClaim>;
+export declare const VerificationStatus: z.ZodEnum<["confirmed", "corrected", "unverified"]>;
+export type VerificationStatus = z.infer<typeof VerificationStatus>;
+export declare const ClaimVerification: z.ZodObject<{
+    claimId: z.ZodNumber;
+    status: z.ZodEnum<["confirmed", "corrected", "unverified"]>;
+    source: z.ZodDefault<z.ZodString>;
+    sourceUrl: z.ZodDefault<z.ZodString>;
+    correctedValue: z.ZodOptional<z.ZodString>;
+    note: z.ZodDefault<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    status: "confirmed" | "corrected" | "unverified";
+    source: string;
+    claimId: number;
+    sourceUrl: string;
+    note: string;
+    correctedValue?: string | undefined;
+}, {
+    status: "confirmed" | "corrected" | "unverified";
+    claimId: number;
+    source?: string | undefined;
+    sourceUrl?: string | undefined;
+    correctedValue?: string | undefined;
+    note?: string | undefined;
+}>;
+export type ClaimVerification = z.infer<typeof ClaimVerification>;
+export declare const EnrichmentWarning: z.ZodObject<{
+    kind: z.ZodEnum<["enrich_no_claims_found", "enrich_questions_failed", "enrich_verify_failed", "enrich_low_confirmation_rate", "enrich_invalid_url_skipped", "enrich_web_search_cost_untracked"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+    context?: Record<string, string> | undefined;
+}>;
+export type EnrichmentWarning = z.infer<typeof EnrichmentWarning>;
+export declare const EnrichmentMeta: z.ZodObject<{
+    keyword: z.ZodString;
+    language: z.ZodString;
+    verifyModel: z.ZodString;
+    questionModel: z.ZodString;
+    generatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    verifyModel: string;
+    questionModel: string;
+}, {
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    verifyModel: string;
+    questionModel: string;
+}>;
+export type EnrichmentMeta = z.infer<typeof EnrichmentMeta>;
+export declare const EnrichmentStats: z.ZodObject<{
+    totalClaimsFound: z.ZodNumber;
+    claimsVerified: z.ZodNumber;
+    sourcesAdded: z.ZodNumber;
+    correctionsFlagged: z.ZodNumber;
+    unverified: z.ZodNumber;
+    totalCostUsd: z.ZodString;
+    totalLatencyMs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    unverified: number;
+    totalClaimsFound: number;
+    claimsVerified: number;
+    sourcesAdded: number;
+    correctionsFlagged: number;
+}, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    unverified: number;
+    totalClaimsFound: number;
+    claimsVerified: number;
+    sourcesAdded: number;
+    correctionsFlagged: number;
+}>;
+export type EnrichmentStats = z.infer<typeof EnrichmentStats>;
+export declare const DataEnrichmentResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        verifyModel: z.ZodString;
+        questionModel: z.ZodString;
+        generatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        verifyModel: string;
+        questionModel: string;
+    }, {
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        verifyModel: string;
+        questionModel: string;
+    }>;
+    htmlContent: z.ZodString;
+    claims: z.ZodArray<z.ZodObject<{
+        id: z.ZodNumber;
+        paragraphHtml: z.ZodString;
+        claimText: z.ZodString;
+        context: z.ZodString;
+        claimTypes: z.ZodArray<z.ZodEnum<["statystyka", "konkretna_data", "trend", "norma_medyczna", "porownanie", "datowane_zdarzenie", "legislacja", "organizacja"]>, "many">;
+        score: z.ZodNumber;
+        h2Context: z.ZodString;
+        tagName: z.ZodEnum<["p", "li", "td"]>;
+        question: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        id: number;
+        score: number;
+        context: string;
+        paragraphHtml: string;
+        claimText: string;
+        claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+        h2Context: string;
+        tagName: "p" | "li" | "td";
+        question?: string | undefined;
+    }, {
+        id: number;
+        score: number;
+        context: string;
+        paragraphHtml: string;
+        claimText: string;
+        claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+        h2Context: string;
+        tagName: "p" | "li" | "td";
+        question?: string | undefined;
+    }>, "many">;
+    verifications: z.ZodArray<z.ZodObject<{
+        claimId: z.ZodNumber;
+        status: z.ZodEnum<["confirmed", "corrected", "unverified"]>;
+        source: z.ZodDefault<z.ZodString>;
+        sourceUrl: z.ZodDefault<z.ZodString>;
+        correctedValue: z.ZodOptional<z.ZodString>;
+        note: z.ZodDefault<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        status: "confirmed" | "corrected" | "unverified";
+        source: string;
+        claimId: number;
+        sourceUrl: string;
+        note: string;
+        correctedValue?: string | undefined;
+    }, {
+        status: "confirmed" | "corrected" | "unverified";
+        claimId: number;
+        source?: string | undefined;
+        sourceUrl?: string | undefined;
+        correctedValue?: string | undefined;
+        note?: string | undefined;
+    }>, "many">;
+    stats: z.ZodObject<{
+        totalClaimsFound: z.ZodNumber;
+        claimsVerified: z.ZodNumber;
+        sourcesAdded: z.ZodNumber;
+        correctionsFlagged: z.ZodNumber;
+        unverified: z.ZodNumber;
+        totalCostUsd: z.ZodString;
+        totalLatencyMs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        unverified: number;
+        totalClaimsFound: number;
+        claimsVerified: number;
+        sourcesAdded: number;
+        correctionsFlagged: number;
+    }, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        unverified: number;
+        totalClaimsFound: number;
+        claimsVerified: number;
+        sourcesAdded: number;
+        correctionsFlagged: number;
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["enrich_no_claims_found", "enrich_questions_failed", "enrich_verify_failed", "enrich_low_confirmation_rate", "enrich_invalid_url_skipped", "enrich_web_search_cost_untracked"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        unverified: number;
+        totalClaimsFound: number;
+        claimsVerified: number;
+        sourcesAdded: number;
+        correctionsFlagged: number;
+    };
+    meta: {
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        verifyModel: string;
+        questionModel: string;
+    };
+    warnings: {
+        message: string;
+        kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+        context: Record<string, string>;
+    }[];
+    htmlContent: string;
+    claims: {
+        id: number;
+        score: number;
+        context: string;
+        paragraphHtml: string;
+        claimText: string;
+        claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+        h2Context: string;
+        tagName: "p" | "li" | "td";
+        question?: string | undefined;
+    }[];
+    verifications: {
+        status: "confirmed" | "corrected" | "unverified";
+        source: string;
+        claimId: number;
+        sourceUrl: string;
+        note: string;
+        correctedValue?: string | undefined;
+    }[];
+}, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        unverified: number;
+        totalClaimsFound: number;
+        claimsVerified: number;
+        sourcesAdded: number;
+        correctionsFlagged: number;
+    };
+    meta: {
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        verifyModel: string;
+        questionModel: string;
+    };
+    warnings: {
+        message: string;
+        kind: "enrich_no_claims_found" | "enrich_questions_failed" | "enrich_verify_failed" | "enrich_low_confirmation_rate" | "enrich_invalid_url_skipped" | "enrich_web_search_cost_untracked";
+        context?: Record<string, string> | undefined;
+    }[];
+    htmlContent: string;
+    claims: {
+        id: number;
+        score: number;
+        context: string;
+        paragraphHtml: string;
+        claimText: string;
+        claimTypes: ("statystyka" | "konkretna_data" | "trend" | "norma_medyczna" | "porownanie" | "datowane_zdarzenie" | "legislacja" | "organizacja")[];
+        h2Context: string;
+        tagName: "p" | "li" | "td";
+        question?: string | undefined;
+    }[];
+    verifications: {
+        status: "confirmed" | "corrected" | "unverified";
+        claimId: number;
+        source?: string | undefined;
+        sourceUrl?: string | undefined;
+        correctedValue?: string | undefined;
+        note?: string | undefined;
+    }[];
+}>;
+export type DataEnrichmentResult = z.infer<typeof DataEnrichmentResult>;
