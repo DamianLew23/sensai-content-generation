@@ -89,4 +89,26 @@ describe("extractClaims", () => {
     expect(senClaim!.paragraphHtml.startsWith("<p")).toBe(true);
     expect(senClaim!.paragraphHtml.endsWith("</p>")).toBe(true);
   });
+
+  it("matches Polish org name at paragraph start (Światowa Organizacja Zdrowia)", () => {
+    // Regression: JS `\b` is ASCII-only; non-ASCII leading chars need
+    // (?<!\p{L}) lookbehind. Without it, ORG_CLAIM_RE silently misses.
+    const html =
+      "<h2>WHO</h2><p>Światowa Organizacja Zdrowia szacuje, że ponad 500 milionów osób cierpi na bezsenność.</p>";
+    const claims = extractClaims(html, { maxClaims: 15, minScore: 2 });
+    expect(claims.length).toBeGreaterThan(0);
+    expect(claims[0].claimTypes).toContain("organizacja");
+  });
+
+  it("does not emit a claim for an empty <td>", () => {
+    // Regression: <td>-exemption from the 30-char gate must still reject empty.
+    const html =
+      "<h2>X</h2><table><tr><th>Adaptogen</th><th>Dawka</th></tr><tr><td>Ashwagandha</td><td></td></tr></table>";
+    const claims = extractClaims(html, { maxClaims: 15, minScore: 2 });
+    // Only the non-empty cell may be considered (or none, depending on score).
+    // The crucial assertion: NO claim has empty claimText.
+    for (const c of claims) {
+      expect(c.claimText.length).toBeGreaterThan(0);
+    }
+  });
 });
