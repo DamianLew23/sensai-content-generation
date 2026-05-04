@@ -18,6 +18,8 @@ interface CreateBlockArgs {
   previousResponseId?: string;
   reasoning?: { effort: "low" | "medium" | "high" };
   verbosity?: "low" | "medium" | "high";
+  tools?: Array<{ type: string }>;
+  toolChoice?: "auto" | "none";
 }
 
 export interface CreateBlockResult {
@@ -54,6 +56,13 @@ export class OpenAIResponsesClient {
     if (args.previousResponseId) params.previous_response_id = args.previousResponseId;
     if (args.reasoning) params.reasoning = args.reasoning;
     if (args.verbosity) params.text = { verbosity: args.verbosity };
+    if (args.tools && args.tools.length > 0) {
+      // SDK accepts a wider type; we only use a small subset (web_search_preview).
+      params.tools = args.tools as any;
+    }
+    if (args.toolChoice) {
+      params.tool_choice = args.toolChoice;
+    }
 
     const response: Response = await this.sdk.responses.create(params, {
       timeout: CALL_TIMEOUT_MS,
