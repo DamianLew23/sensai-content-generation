@@ -26,19 +26,45 @@ describe("buildCitation", () => {
   it("formats source + url with em-dash separator", () => {
     expect(
       buildCitation("WHO, 2024", "https://who.int/news/x"),
-    ).toBe("WHO, 2024 — who.int/news/x");
+    ).toBe("Źródło: WHO, 2024 — who.int/news/x");
   });
   it("returns plain source when url empty", () => {
-    expect(buildCitation("WHO, 2024", "")).toBe("WHO, 2024");
+    expect(buildCitation("WHO, 2024", "")).toBe("Źródło: WHO, 2024");
   });
   it("trims trailing dot from source", () => {
-    expect(buildCitation("WHO, 2024.", "")).toBe("WHO, 2024");
+    expect(buildCitation("WHO, 2024.", "")).toBe("Źródło: WHO, 2024");
   });
   it("truncates over-long URLs to first 4 path segments", () => {
     const longUrl = "https://example.com/" + "segment/".repeat(40) + "end";
     const out = buildCitation("Example", longUrl);
     expect(out.length).toBeLessThan(180);
-    expect(out.startsWith("Example — example.com/")).toBe(true);
+    expect(out.startsWith("Źródło: Example — example.com/")).toBe(true);
+  });
+});
+
+describe("buildCitation label fallback", () => {
+  it("prepends default 'Źródło: ' when source lacks a label", () => {
+    expect(buildCitation("WHO, 2024", "https://who.int/x")).toBe(
+      "Źródło: WHO, 2024 — who.int/x",
+    );
+  });
+  it("does not double-prepend when label is already present", () => {
+    expect(buildCitation("Źródło: WHO, 2024", "https://who.int/x")).toBe(
+      "Źródło: WHO, 2024 — who.int/x",
+    );
+  });
+  it("accepts an explicit English label", () => {
+    expect(
+      buildCitation("WHO, 2024", "https://who.int/x", "Source"),
+    ).toBe("Source: WHO, 2024 — who.int/x");
+  });
+});
+
+describe("cleanSourceValue HTML escape", () => {
+  it("escapes <, >, & in source strings", () => {
+    expect(cleanSourceValue("Foo & Bar <script>alert(1)</script>")).toBe(
+      "Foo &amp; Bar &lt;script&gt;alert(1)&lt;/script&gt;",
+    );
   });
 });
 
@@ -60,6 +86,14 @@ describe("addSourceToElement", () => {
   });
   it("supports english Source: marker for dedup detection", () => {
     const html = "<p>Already (Source: who.int).</p>";
+    const out = addSourceToElement(html, "Źródło: foo.pl", "p");
+    expect(out).toBe(html);
+  });
+});
+
+describe("Quelle dedup (German)", () => {
+  it("does not duplicate when German citation already present", () => {
+    const html = "<p>Tekst mit Zitat (Quelle: who.int).</p>";
     const out = addSourceToElement(html, "Źródło: foo.pl", "p");
     expect(out).toBe(html);
   });

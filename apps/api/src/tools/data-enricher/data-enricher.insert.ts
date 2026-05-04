@@ -22,13 +22,26 @@ export function cleanSourceValue(value: string): string {
   // 4. Strip leading protocol/www if any survived
   value = value.replace(/^https?:\/\//, "").replace(/^www\./, "");
 
+  // 5. Defense-in-depth: escape HTML special chars from verifier output.
+  //    The article is rendered in a sandboxed iframe, but cleaning here
+  //    keeps the raw HTML well-formed if it's ever exported or inspected.
+  value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
   return value.trim();
 }
 
-export function buildCitation(source: string, sourceUrl: string): string {
+export function buildCitation(
+  source: string,
+  sourceUrl: string,
+  label: string = "Źródło",
+): string {
   const cleanSource = source.trim().replace(/\.$/, "");
 
-  if (!sourceUrl) return cleanSource;
+  // Ensure the citation starts with a recognized language label so dedup detection works.
+  const hasLabel = /^(?:Source|Źródło|Quelle):/i.test(cleanSource);
+  const labeled = hasLabel ? cleanSource : `${label}: ${cleanSource}`;
+
+  if (!sourceUrl) return labeled;
 
   let displayUrl = sourceUrl
     .trim()
@@ -41,10 +54,10 @@ export function buildCitation(source: string, sourceUrl: string): string {
     displayUrl = parts.slice(0, 4).join("/");
   }
 
-  return `${cleanSource} — ${displayUrl}`;
+  return `${labeled} — ${displayUrl}`;
 }
 
-const CITATION_MARKER_RE = /\((?:Source|Źródło):/i;
+const CITATION_MARKER_RE = /\((?:Source|Źródło|Quelle):/i;
 
 export function addSourceToElement(
   html: string,
