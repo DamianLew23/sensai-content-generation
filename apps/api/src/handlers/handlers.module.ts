@@ -10,14 +10,16 @@ import { QueryFanOutHandler } from "./query-fanout.handler";
 import { KGAssemblyHandler } from "./kg-assembly.handler";
 import { OutlineGenerateHandler } from "./outline-generate.handler";
 import { OutlineDistributeHandler } from "./outline-distribute.handler";
+import { DraftGenerateHandler } from "./draft-generate.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
 import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
+import { DraftGeneratorModule } from "../tools/draft-generator/draft-generator.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
 @Module({
-  imports: [ToolsModule, OutlineGeneratorModule, KGDistributorModule],
+  imports: [ToolsModule, OutlineGeneratorModule, KGDistributorModule, DraftGeneratorModule],
   providers: [
     BriefHandler,
     SerpFetchHandler,
@@ -30,6 +32,7 @@ import { loadEnv } from "../config/env";
     KGAssemblyHandler,
     OutlineGenerateHandler,
     OutlineDistributeHandler,
+    DraftGenerateHandler,
     {
       provide: "YOUCOM_ENV",
       useFactory: () => loadEnv(),
@@ -59,6 +62,10 @@ import { loadEnv } from "../config/env";
       useFactory: () => loadEnv(),
     },
     {
+      provide: "DRAFT_GENERATE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
       provide: STEP_HANDLERS,
       useFactory: (
         brief: BriefHandler,
@@ -72,6 +79,7 @@ import { loadEnv } from "../config/env";
         kg: KGAssemblyHandler,
         outlineGenerate: OutlineGenerateHandler,
         outlineDistribute: OutlineDistributeHandler,
+        draftGenerate: DraftGenerateHandler,
       ): StepHandler[] => [
         brief,
         serp,
@@ -84,6 +92,7 @@ import { loadEnv } from "../config/env";
         kg,
         outlineGenerate,
         outlineDistribute,
+        draftGenerate,
       ],
       inject: [
         BriefHandler,
@@ -97,6 +106,7 @@ import { loadEnv } from "../config/env";
         KGAssemblyHandler,
         OutlineGenerateHandler,
         OutlineDistributeHandler,
+        DraftGenerateHandler,
       ],
     },
   ],

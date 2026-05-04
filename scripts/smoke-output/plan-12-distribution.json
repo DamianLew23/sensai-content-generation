@@ -1,0 +1,587 @@
+{
+  "meta": {
+    "keyword": "kortyzol",
+    "h1Title": "Jak obniżyć kortyzol po 40. roku życia",
+    "language": "pl",
+    "primaryIntent": "Instrukcyjna",
+    "generatedAt": "2026-04-30T12:24:33.798Z",
+    "model": "google/gemini-3-flash-preview"
+  },
+  "sections": [
+    {
+      "type": "intro",
+      "order": 0,
+      "header": null,
+      "sectionVariant": null,
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E1",
+          "originalSurface": "kortyzol",
+          "entity": "kortyzol",
+          "domainType": "CONCEPT",
+          "evidence": "Hormon stresu produkowany przez nadnercza"
+        }
+      ],
+      "facts": [],
+      "relationships": [],
+      "ideations": [],
+      "measurables": []
+    },
+    {
+      "type": "h2",
+      "order": 1,
+      "sectionVariant": "full",
+      "header": "Sen, który pomaga obniżyć kortyzol",
+      "sourceArea": "higiena snu",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E4",
+          "originalSurface": "melatonina",
+          "entity": "melatonina",
+          "domainType": "CONCEPT",
+          "evidence": "Hormon snu, antagonista kortyzolu"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F3",
+          "text": "7-9 godzin snu obniża poziom kortyzolu o 20-30% w porównaniu do 5 godzin",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.9,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [
+        {
+          "source": "E4",
+          "target": "E1",
+          "type": "RELATED_TO",
+          "description": "melatonina antagonista kortyzol",
+          "evidence": "lesson fixture: antagonista",
+          "id": "R3",
+          "sourceName": "melatonina",
+          "targetName": "kortyzol"
+        }
+      ],
+      "ideations": [
+        {
+          "id": "I5",
+          "type": "info_box",
+          "title": "Higiena snu dla obniżenia kortyzolu - rutyna wieczorna krok po kroku",
+          "description": "Higiena snu dla obniżenia kortyzolu - rutyna wieczorna krok po kroku",
+          "audience": "",
+          "channels": [],
+          "keywords": [],
+          "priority": "medium"
+        }
+      ],
+      "measurables": [
+        {
+          "id": "D3",
+          "definition": "Związek długości snu z poziomem kortyzolu",
+          "value": "STAT:sen_kortyzol",
+          "unit": null,
+          "sourceUrls": [],
+          "formatted": "STAT:sen_kortyzol: Związek długości snu z poziomem kortyzolu"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "order": 2,
+      "sectionVariant": "full",
+      "header": "Ruch, który reguluje stres zamiast go nasilać",
+      "sourceArea": "aktywność fizyczna",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E9",
+          "originalSurface": "HIIT",
+          "entity": "HIIT",
+          "domainType": "CONCEPT",
+          "evidence": "Trening interwałowy wysokiej intensywności"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F5",
+          "text": "Intensywny trening (>75% HR max) przez ponad 60 minut podnosi kortyzol",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.9,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [
+        {
+          "source": "E9",
+          "target": "E1",
+          "type": "CONNECTED_TO",
+          "description": "HIIT podnosi_krótkoterminowo kortyzol",
+          "evidence": "lesson fixture: podnosi_krótkoterminowo",
+          "id": "R5",
+          "sourceName": "HIIT",
+          "targetName": "kortyzol"
+        }
+      ],
+      "ideations": [],
+      "measurables": []
+    },
+    {
+      "type": "h2",
+      "order": 3,
+      "sectionVariant": "full",
+      "header": "Dieta i napoje, które wspierają niższy kortyzol",
+      "sourceArea": "dieta i używki",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [
+        {
+          "header": "Co pić na wysoki kortyzol?",
+          "format": "question",
+          "sourcePaa": "Co pić na wysoki kortyzol?"
+        }
+      ],
+      "entities": [
+        {
+          "id": "E8",
+          "originalSurface": "omega-3",
+          "entity": "omega-3",
+          "domainType": "PRODUCT",
+          "evidence": "Kwasy tłuszczowe o działaniu przeciwzapalnym"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F7",
+          "text": "Kawa wypita przed 10:00 może zaburzać naturalny rytm kortyzolu",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.75,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [],
+      "ideations": [],
+      "measurables": []
+    },
+    {
+      "type": "h2",
+      "order": 4,
+      "sectionVariant": "full",
+      "header": "Techniki, które realnie wyciszają organizm na co dzień",
+      "sourceArea": "techniki redukcji stresu",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [],
+      "entities": [],
+      "facts": [
+        {
+          "id": "F6",
+          "text": "Medytacja mindfulness przez 8 tygodni obniża kortyzol o około 25%",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.85,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [],
+      "ideations": [],
+      "measurables": []
+    },
+    {
+      "type": "h2",
+      "order": 5,
+      "sectionVariant": "full",
+      "header": "Suplementy i leki: co może wpływać na kortyzol i kiedy uważać",
+      "sourceArea": "suplementy i leki",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [
+        {
+          "header": "Witaminy a obniżanie kortyzolu",
+          "format": "context",
+          "sourcePaa": "Jaka witamina zbija kortyzol?"
+        }
+      ],
+      "entities": [
+        {
+          "id": "E5",
+          "originalSurface": "ashwagandha",
+          "entity": "ashwagandha",
+          "domainType": "PRODUCT",
+          "evidence": "Adaptogen obniżający kortyzol"
+        },
+        {
+          "id": "E6",
+          "originalSurface": "magnez",
+          "entity": "magnez",
+          "domainType": "PRODUCT",
+          "evidence": "Minerał wspierający redukcję stresu"
+        },
+        {
+          "id": "E7",
+          "originalSurface": "witamina C",
+          "entity": "witamina C",
+          "domainType": "PRODUCT",
+          "evidence": "Antyoksydant redukujący kortyzol"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F4",
+          "text": "Ashwagandha może obniżyć kortyzol o 11-32% w ciągu 8 tygodni suplementacji",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.8,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [
+        {
+          "source": "E5",
+          "target": "E1",
+          "type": "SOLVES",
+          "description": "ashwagandha obniża kortyzol",
+          "evidence": "lesson fixture: obniża",
+          "id": "R4",
+          "sourceName": "ashwagandha",
+          "targetName": "kortyzol"
+        },
+        {
+          "source": "E6",
+          "target": "E1",
+          "type": "SOLVES",
+          "description": "magnez wspiera_redukcję kortyzol",
+          "evidence": "lesson fixture: wspiera_redukcję",
+          "id": "R6",
+          "sourceName": "magnez",
+          "targetName": "kortyzol"
+        }
+      ],
+      "ideations": [
+        {
+          "id": "I4",
+          "type": "info_box",
+          "title": "Suplementy na kortyzol: dawkowanie, czas działania, przeciwwskazania",
+          "description": "Suplementy na kortyzol: dawkowanie, czas działania, przeciwwskazania",
+          "audience": "",
+          "channels": [],
+          "keywords": [],
+          "priority": "high"
+        }
+      ],
+      "measurables": [
+        {
+          "id": "D2",
+          "definition": "Badania kliniczne skuteczności ashwagandhy",
+          "value": "STAT:ashwagandha_skuteczność",
+          "unit": null,
+          "sourceUrls": [],
+          "formatted": "STAT:ashwagandha_skuteczność: Badania kliniczne skuteczności ashwagandhy"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "order": 6,
+      "sectionVariant": "context",
+      "header": "Czym jest kortyzol i kiedy jego poziom naprawdę ma znaczenie",
+      "sourceIntent": "Definicyjna",
+      "groupedAreas": [
+        "rola kortyzolu",
+        "normy i rytm dobowy"
+      ],
+      "contextNote": "Krótko wyjaśnij rolę kortyzolu, jego związek ze stresem oraz dobowy rytm wydzielania. Wspomnij, że ocena „za wysokiego” poziomu zależy od pory dnia, objawów i kontekstu klinicznego.",
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E2",
+          "originalSurface": "nadnercza",
+          "entity": "nadnercza",
+          "domainType": "CONCEPT",
+          "evidence": "Gruczoły produkujące kortyzol i adrenalinę"
+        },
+        {
+          "id": "E3",
+          "originalSurface": "oś HPA",
+          "entity": "oś HPA",
+          "domainType": "CONCEPT",
+          "evidence": "Oś podwzgórze-przysadka-nadnercza regulująca kortyzol"
+        },
+        {
+          "id": "E12",
+          "originalSurface": "CAR",
+          "entity": "CAR",
+          "domainType": "CONCEPT",
+          "evidence": "Cortisol Awakening Response - poranny skok kortyzolu"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F1",
+          "text": "Kortyzol osiąga najwyższy poziom 30-45 minut po przebudzeniu (CAR)",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.95,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [
+        {
+          "source": "E1",
+          "target": "E2",
+          "type": "PART_OF",
+          "description": "kortyzol produkowany_przez nadnercza",
+          "evidence": "lesson fixture: produkowany_przez",
+          "id": "R1",
+          "sourceName": "kortyzol",
+          "targetName": "nadnercza"
+        },
+        {
+          "source": "E3",
+          "target": "E1",
+          "type": "CONNECTED_TO",
+          "description": "oś HPA reguluje kortyzol",
+          "evidence": "lesson fixture: reguluje",
+          "id": "R2",
+          "sourceName": "oś HPA",
+          "targetName": "kortyzol"
+        }
+      ],
+      "ideations": [
+        {
+          "id": "I2",
+          "type": "info_box",
+          "title": "Dobowy rytm kortyzolu - wykres z zaznaczeniem CAR i wieczornego minimum",
+          "description": "Dobowy rytm kortyzolu - wykres z zaznaczeniem CAR i wieczornego minimum",
+          "audience": "",
+          "channels": [],
+          "keywords": [],
+          "priority": "high"
+        }
+      ],
+      "measurables": []
+    },
+    {
+      "type": "h2",
+      "order": 7,
+      "sectionVariant": "context",
+      "header": "Kiedy badać kortyzol i jak nie pomylić wyniku z chwilową reakcją na stres",
+      "sourceIntent": "Diagnostyczna",
+      "groupedAreas": [
+        "badanie kortyzolu",
+        "interpretacja wyników",
+        "objawy podwyższonego kortyzolu",
+        "czynniki zaburzające pomiar"
+      ],
+      "contextNote": "Zwięźle opisz, jakie badania są stosowane, jak przygotować się do oznaczenia i dlaczego wynik trzeba interpretować z uwzględnieniem pory dnia, leków, infekcji, pracy zmianowej i objawów. Dodaj, kiedy warto skonsultować się z lekarzem.",
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E10",
+          "originalSurface": "kortyzol ślina",
+          "entity": "kortyzol ślina",
+          "domainType": "CONCEPT",
+          "evidence": "Test kortyzolu ze śliny"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F9",
+          "text": "Normy kortyzolu porannego: 10-20 μg/dl (krew), 0.2-0.8 μg/dl (ślina)",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.95,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [],
+      "ideations": [
+        {
+          "id": "I1",
+          "type": "info_box",
+          "title": "Porównanie metod badania kortyzolu: krew vs ślina vs mocz 24h",
+          "description": "Porównanie metod badania kortyzolu: krew vs ślina vs mocz 24h",
+          "audience": "",
+          "channels": [],
+          "keywords": [],
+          "priority": "high"
+        }
+      ],
+      "measurables": [
+        {
+          "id": "D1",
+          "definition": "Aktualne normy kortyzolu wg pory dnia i metody badania",
+          "value": "STAT:kortyzol_normy",
+          "unit": null,
+          "sourceUrls": [],
+          "formatted": "STAT:kortyzol_normy: Aktualne normy kortyzolu wg pory dnia i metody badania"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "order": 8,
+      "sectionVariant": "context",
+      "header": "Skąd bierze się wysoki kortyzol i z czym można go pomylić po 40. roku życia",
+      "sourceIntent": "Problemowa",
+      "groupedAreas": [
+        "przyczyny wysokiego kortyzolu",
+        "skutki zdrowotne",
+        "różnicowanie z innymi problemami"
+      ],
+      "contextNote": "Krótko przedstaw najczęstsze przyczyny przewlekle podwyższonego kortyzolu, możliwe skutki zdrowotne oraz to, że podobne objawy mogą dawać inne problemy, np. zaburzenia tarczycy, menopauza, andropauza czy depresja.",
+      "h3s": [],
+      "entities": [
+        {
+          "id": "E11",
+          "originalSurface": "zespół Cushinga",
+          "entity": "zespół Cushinga",
+          "domainType": "CONCEPT",
+          "evidence": "Choroba spowodowana przewlekle wysokim kortyzolem"
+        },
+        {
+          "id": "E13",
+          "originalSurface": "insulinooporność",
+          "entity": "insulinooporność",
+          "domainType": "CONCEPT",
+          "evidence": "Zaburzenie metaboliczne powiązane z wysokim kortyzolem"
+        },
+        {
+          "id": "E14",
+          "originalSurface": "menopauza",
+          "entity": "menopauza",
+          "domainType": "CONCEPT",
+          "evidence": "Okres przejściowy u kobiet po 40tce wpływający na hormony"
+        },
+        {
+          "id": "E15",
+          "originalSurface": "andropauza",
+          "entity": "andropauza",
+          "domainType": "CONCEPT",
+          "evidence": "Spadek testosteronu u mężczyzn po 40tce"
+        }
+      ],
+      "facts": [
+        {
+          "id": "F2",
+          "text": "Przewlekle podwyższony kortyzol zwiększa ryzyko otyłości brzusznej o 40%",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.85,
+          "sourceUrls": []
+        },
+        {
+          "id": "F8",
+          "text": "Po 40. roku życia naturalna regeneracja osi HPA spowalnia",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.85,
+          "sourceUrls": []
+        },
+        {
+          "id": "F10",
+          "text": "Przewlekły stres zwiększa kortyzol bazowy o 50-80% powyżej normy",
+          "category": "general",
+          "priority": "medium",
+          "confidence": 0.85,
+          "sourceUrls": []
+        }
+      ],
+      "relationships": [
+        {
+          "source": "E11",
+          "target": "E1",
+          "type": "RELATED_TO",
+          "description": "zespół Cushinga spowodowany_przez kortyzol",
+          "evidence": "lesson fixture: spowodowany_przez",
+          "id": "R7",
+          "sourceName": "zespół Cushinga",
+          "targetName": "kortyzol"
+        },
+        {
+          "source": "E13",
+          "target": "E1",
+          "type": "RELATED_TO",
+          "description": "insulinooporność powiązana_z kortyzol",
+          "evidence": "lesson fixture: powiązana_z",
+          "id": "R8",
+          "sourceName": "insulinooporność",
+          "targetName": "kortyzol"
+        }
+      ],
+      "ideations": [
+        {
+          "id": "I3",
+          "type": "checklist",
+          "title": "10 objawów wysokiego kortyzolu - lista do samooceny",
+          "description": "10 objawów wysokiego kortyzolu - lista do samooceny",
+          "audience": "",
+          "channels": [],
+          "keywords": [],
+          "priority": "medium"
+        }
+      ],
+      "measurables": [
+        {
+          "id": "D4",
+          "definition": "Zmiany poziomu kortyzolu z wiekiem",
+          "value": "STAT:wiek_kortyzol",
+          "unit": null,
+          "sourceUrls": [],
+          "formatted": "STAT:wiek_kortyzol: Zmiany poziomu kortyzolu z wiekiem"
+        }
+      ]
+    }
+  ],
+  "unused": {
+    "entityIds": [],
+    "factIds": [],
+    "relationshipIds": [],
+    "ideationIds": [],
+    "measurableIds": []
+  },
+  "stats": {
+    "coverage": {
+      "entities": {
+        "used": 15,
+        "total": 15,
+        "percent": 100
+      },
+      "facts": {
+        "used": 10,
+        "total": 10,
+        "percent": 100
+      },
+      "relationships": {
+        "used": 8,
+        "total": 8,
+        "percent": 100
+      },
+      "ideations": {
+        "used": 5,
+        "total": 5,
+        "percent": 100
+      },
+      "measurables": {
+        "used": 4,
+        "total": 4,
+        "percent": 100
+      },
+      "overallPercent": 100
+    }
+  },
+  "warnings": [
+    {
+      "kind": "distribution_high_coverage",
+      "message": "Overall coverage 100% exceeds maximum 95%",
+      "context": {
+        "overallPercent": "100",
+        "threshold": "95"
+      }
+    }
+  ]
+}

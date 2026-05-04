@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "keyword": "kortyzol",
+    "h1Title": "Jak obniżyć kortyzol po 40. roku życia",
+    "h1Source": "llm",
+    "language": "pl",
+    "primaryIntent": "Instrukcyjna",
+    "primaryIntentSource": "fanout",
+    "fullSectionsCount": 5,
+    "contextSectionsCount": 3,
+    "generatedAt": "2026-04-30T12:24:31.354Z",
+    "model": "openai/gpt-5.4"
+  },
+  "outline": [
+    {
+      "type": "intro",
+      "order": 0,
+      "header": null,
+      "sectionVariant": null,
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 1,
+      "sectionVariant": "full",
+      "header": "Sen, który pomaga obniżyć kortyzol",
+      "sourceArea": "higiena snu",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 2,
+      "sectionVariant": "full",
+      "header": "Ruch, który reguluje stres zamiast go nasilać",
+      "sourceArea": "aktywność fizyczna",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 3,
+      "sectionVariant": "full",
+      "header": "Dieta i napoje, które wspierają niższy kortyzol",
+      "sourceArea": "dieta i używki",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [
+        {
+          "header": "Co pić na wysoki kortyzol?",
+          "format": "question",
+          "sourcePaa": "Co pić na wysoki kortyzol?"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "order": 4,
+      "sectionVariant": "full",
+      "header": "Techniki, które realnie wyciszają organizm na co dzień",
+      "sourceArea": "techniki redukcji stresu",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 5,
+      "sectionVariant": "full",
+      "header": "Suplementy i leki: co może wpływać na kortyzol i kiedy uważać",
+      "sourceArea": "suplementy i leki",
+      "sourceIntent": "Instrukcyjna",
+      "h3s": [
+        {
+          "header": "Witaminy a obniżanie kortyzolu",
+          "format": "context",
+          "sourcePaa": "Jaka witamina zbija kortyzol?"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "order": 6,
+      "sectionVariant": "context",
+      "header": "Czym jest kortyzol i kiedy jego poziom naprawdę ma znaczenie",
+      "sourceIntent": "Definicyjna",
+      "groupedAreas": [
+        "rola kortyzolu",
+        "normy i rytm dobowy"
+      ],
+      "contextNote": "Krótko wyjaśnij rolę kortyzolu, jego związek ze stresem oraz dobowy rytm wydzielania. Wspomnij, że ocena „za wysokiego” poziomu zależy od pory dnia, objawów i kontekstu klinicznego.",
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 7,
+      "sectionVariant": "context",
+      "header": "Kiedy badać kortyzol i jak nie pomylić wyniku z chwilową reakcją na stres",
+      "sourceIntent": "Diagnostyczna",
+      "groupedAreas": [
+        "badanie kortyzolu",
+        "interpretacja wyników",
+        "objawy podwyższonego kortyzolu",
+        "czynniki zaburzające pomiar"
+      ],
+      "contextNote": "Zwięźle opisz, jakie badania są stosowane, jak przygotować się do oznaczenia i dlaczego wynik trzeba interpretować z uwzględnieniem pory dnia, leków, infekcji, pracy zmianowej i objawów. Dodaj, kiedy warto skonsultować się z lekarzem.",
+      "h3s": []
+    },
+    {
+      "type": "h2",
+      "order": 8,
+      "sectionVariant": "context",
+      "header": "Skąd bierze się wysoki kortyzol i z czym można go pomylić po 40. roku życia",
+      "sourceIntent": "Problemowa",
+      "groupedAreas": [
+        "przyczyny wysokiego kortyzolu",
+        "skutki zdrowotne",
+        "różnicowanie z innymi problemami"
+      ],
+      "contextNote": "Krótko przedstaw najczęstsze przyczyny przewlekle podwyższonego kortyzolu, możliwe skutki zdrowotne oraz to, że podobne objawy mogą dawać inne problemy, np. zaburzenia tarczycy, menopauza, andropauza czy depresja.",
+      "h3s": []
+    }
+  ],
+  "warnings": []
+}

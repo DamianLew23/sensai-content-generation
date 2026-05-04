@@ -5622,3 +5622,358 @@ export declare const DistributionResult: z.ZodObject<{
     };
 }>;
 export type DistributionResult = z.infer<typeof DistributionResult>;
+export declare const PassageTrigger: z.ZodEnum<["definition", "instruction", "cause", "comparison", "diagnosis", "list", "question"]>;
+export type PassageTrigger = z.infer<typeof PassageTrigger>;
+export declare const DraftBlockStats: z.ZodObject<{
+    sectionOrder: z.ZodNumber;
+    sectionType: z.ZodEnum<["intro", "h2"]>;
+    sectionVariant: z.ZodNullable<z.ZodEnum<["full", "context"]>>;
+    header: z.ZodNullable<z.ZodString>;
+    passageTrigger: z.ZodEnum<["definition", "instruction", "cause", "comparison", "diagnosis", "list", "question"]>;
+    charCount: z.ZodNumber;
+    responseId: z.ZodString;
+    promptTokens: z.ZodNumber;
+    completionTokens: z.ZodNumber;
+    costUsd: z.ZodString;
+    latencyMs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    header: string | null;
+    sectionVariant: "context" | "full" | null;
+    sectionOrder: number;
+    sectionType: "intro" | "h2";
+    passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+    charCount: number;
+    responseId: string;
+    promptTokens: number;
+    completionTokens: number;
+    costUsd: string;
+    latencyMs: number;
+}, {
+    header: string | null;
+    sectionVariant: "context" | "full" | null;
+    sectionOrder: number;
+    sectionType: "intro" | "h2";
+    passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+    charCount: number;
+    responseId: string;
+    promptTokens: number;
+    completionTokens: number;
+    costUsd: string;
+    latencyMs: number;
+}>;
+export type DraftBlockStats = z.infer<typeof DraftBlockStats>;
+export declare const DraftImagePrompt: z.ZodObject<{
+    sectionHeader: z.ZodString;
+    ideationType: z.ZodString;
+    description: z.ZodString;
+    prompt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    description: string;
+    sectionHeader: string;
+    ideationType: string;
+    prompt: string;
+}, {
+    description: string;
+    sectionHeader: string;
+    ideationType: string;
+    prompt: string;
+}>;
+export type DraftImagePrompt = z.infer<typeof DraftImagePrompt>;
+export declare const DraftWarning: z.ZodObject<{
+    kind: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_high_ratio"]>;
+    message: z.ZodString;
+    blockOrder: z.ZodOptional<z.ZodNumber>;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+    context: Record<string, string>;
+    blockOrder?: number | undefined;
+}, {
+    message: string;
+    kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+    context?: Record<string, string> | undefined;
+    blockOrder?: number | undefined;
+}>;
+export type DraftWarning = z.infer<typeof DraftWarning>;
+export declare const DraftMeta: z.ZodObject<{
+    keyword: z.ZodString;
+    h1Title: z.ZodString;
+    language: z.ZodString;
+    primaryIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+    model: z.ZodString;
+    generatedAt: z.ZodString;
+    useReasoning: z.ZodBoolean;
+    reasoningEffort: z.ZodNullable<z.ZodEnum<["low", "medium", "high"]>>;
+    verbosity: z.ZodNullable<z.ZodEnum<["low", "medium", "high"]>>;
+}, "strip", z.ZodTypeAny, {
+    model: string;
+    h1Title: string;
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    useReasoning: boolean;
+    reasoningEffort: "high" | "medium" | "low" | null;
+    verbosity: "high" | "medium" | "low" | null;
+}, {
+    model: string;
+    h1Title: string;
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+    useReasoning: boolean;
+    reasoningEffort: "high" | "medium" | "low" | null;
+    verbosity: "high" | "medium" | "low" | null;
+}>;
+export type DraftMeta = z.infer<typeof DraftMeta>;
+export declare const DraftStats: z.ZodObject<{
+    blockCount: z.ZodNumber;
+    totalChars: z.ZodNumber;
+    totalLatencyMs: z.ZodNumber;
+    totalCostUsd: z.ZodString;
+    totalPromptTokens: z.ZodNumber;
+    totalCompletionTokens: z.ZodNumber;
+    imagePromptCount: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    blockCount: number;
+    totalChars: number;
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    totalPromptTokens: number;
+    totalCompletionTokens: number;
+    imagePromptCount: number;
+}, {
+    blockCount: number;
+    totalChars: number;
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    totalPromptTokens: number;
+    totalCompletionTokens: number;
+    imagePromptCount: number;
+}>;
+export type DraftStats = z.infer<typeof DraftStats>;
+export declare const DraftGenerationResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        h1Title: z.ZodString;
+        language: z.ZodString;
+        primaryIntent: z.ZodEnum<["Definicyjna", "Problemowa", "Instrukcyjna", "Decyzyjna", "Diagnostyczna", "Porównawcza"]>;
+        model: z.ZodString;
+        generatedAt: z.ZodString;
+        useReasoning: z.ZodBoolean;
+        reasoningEffort: z.ZodNullable<z.ZodEnum<["low", "medium", "high"]>>;
+        verbosity: z.ZodNullable<z.ZodEnum<["low", "medium", "high"]>>;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        useReasoning: boolean;
+        reasoningEffort: "high" | "medium" | "low" | null;
+        verbosity: "high" | "medium" | "low" | null;
+    }, {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        useReasoning: boolean;
+        reasoningEffort: "high" | "medium" | "low" | null;
+        verbosity: "high" | "medium" | "low" | null;
+    }>;
+    htmlContent: z.ZodString;
+    blocks: z.ZodArray<z.ZodObject<{
+        sectionOrder: z.ZodNumber;
+        sectionType: z.ZodEnum<["intro", "h2"]>;
+        sectionVariant: z.ZodNullable<z.ZodEnum<["full", "context"]>>;
+        header: z.ZodNullable<z.ZodString>;
+        passageTrigger: z.ZodEnum<["definition", "instruction", "cause", "comparison", "diagnosis", "list", "question"]>;
+        charCount: z.ZodNumber;
+        responseId: z.ZodString;
+        promptTokens: z.ZodNumber;
+        completionTokens: z.ZodNumber;
+        costUsd: z.ZodString;
+        latencyMs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        header: string | null;
+        sectionVariant: "context" | "full" | null;
+        sectionOrder: number;
+        sectionType: "intro" | "h2";
+        passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+        charCount: number;
+        responseId: string;
+        promptTokens: number;
+        completionTokens: number;
+        costUsd: string;
+        latencyMs: number;
+    }, {
+        header: string | null;
+        sectionVariant: "context" | "full" | null;
+        sectionOrder: number;
+        sectionType: "intro" | "h2";
+        passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+        charCount: number;
+        responseId: string;
+        promptTokens: number;
+        completionTokens: number;
+        costUsd: string;
+        latencyMs: number;
+    }>, "many">;
+    imagePrompts: z.ZodArray<z.ZodObject<{
+        sectionHeader: z.ZodString;
+        ideationType: z.ZodString;
+        description: z.ZodString;
+        prompt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        description: string;
+        sectionHeader: string;
+        ideationType: string;
+        prompt: string;
+    }, {
+        description: string;
+        sectionHeader: string;
+        ideationType: string;
+        prompt: string;
+    }>, "many">;
+    stats: z.ZodObject<{
+        blockCount: z.ZodNumber;
+        totalChars: z.ZodNumber;
+        totalLatencyMs: z.ZodNumber;
+        totalCostUsd: z.ZodString;
+        totalPromptTokens: z.ZodNumber;
+        totalCompletionTokens: z.ZodNumber;
+        imagePromptCount: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        blockCount: number;
+        totalChars: number;
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        totalPromptTokens: number;
+        totalCompletionTokens: number;
+        imagePromptCount: number;
+    }, {
+        blockCount: number;
+        totalChars: number;
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        totalPromptTokens: number;
+        totalCompletionTokens: number;
+        imagePromptCount: number;
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["draft_block_failed", "draft_chaining_disabled", "draft_no_image_prompts", "draft_short_block", "draft_factual_dedup_high_ratio"]>;
+        message: z.ZodString;
+        blockOrder: z.ZodOptional<z.ZodNumber>;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context: Record<string, string>;
+        blockOrder?: number | undefined;
+    }, {
+        message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context?: Record<string, string> | undefined;
+        blockOrder?: number | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        blockCount: number;
+        totalChars: number;
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        totalPromptTokens: number;
+        totalCompletionTokens: number;
+        imagePromptCount: number;
+    };
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        useReasoning: boolean;
+        reasoningEffort: "high" | "medium" | "low" | null;
+        verbosity: "high" | "medium" | "low" | null;
+    };
+    warnings: {
+        message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context: Record<string, string>;
+        blockOrder?: number | undefined;
+    }[];
+    htmlContent: string;
+    blocks: {
+        header: string | null;
+        sectionVariant: "context" | "full" | null;
+        sectionOrder: number;
+        sectionType: "intro" | "h2";
+        passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+        charCount: number;
+        responseId: string;
+        promptTokens: number;
+        completionTokens: number;
+        costUsd: string;
+        latencyMs: number;
+    }[];
+    imagePrompts: {
+        description: string;
+        sectionHeader: string;
+        ideationType: string;
+        prompt: string;
+    }[];
+}, {
+    stats: {
+        blockCount: number;
+        totalChars: number;
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        totalPromptTokens: number;
+        totalCompletionTokens: number;
+        imagePromptCount: number;
+    };
+    meta: {
+        model: string;
+        h1Title: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        primaryIntent: "Definicyjna" | "Problemowa" | "Instrukcyjna" | "Decyzyjna" | "Diagnostyczna" | "Porównawcza";
+        useReasoning: boolean;
+        reasoningEffort: "high" | "medium" | "low" | null;
+        verbosity: "high" | "medium" | "low" | null;
+    };
+    warnings: {
+        message: string;
+        kind: "draft_block_failed" | "draft_chaining_disabled" | "draft_no_image_prompts" | "draft_short_block" | "draft_factual_dedup_high_ratio";
+        context?: Record<string, string> | undefined;
+        blockOrder?: number | undefined;
+    }[];
+    htmlContent: string;
+    blocks: {
+        header: string | null;
+        sectionVariant: "context" | "full" | null;
+        sectionOrder: number;
+        sectionType: "intro" | "h2";
+        passageTrigger: "definition" | "question" | "instruction" | "cause" | "comparison" | "diagnosis" | "list";
+        charCount: number;
+        responseId: string;
+        promptTokens: number;
+        completionTokens: number;
+        costUsd: string;
+        latencyMs: number;
+    }[];
+    imagePrompts: {
+        description: string;
+        sectionHeader: string;
+        ideationType: string;
+        prompt: string;
+    }[];
+}>;
+export type DraftGenerationResult = z.infer<typeof DraftGenerationResult>;

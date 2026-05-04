@@ -11,15 +11,21 @@
  *
  * Run: pnpm smoke:plan-12
  */
-import "dotenv/config";
 import "reflect-metadata";
-import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { config as dotenvConfig } from "dotenv";
 import { join, resolve } from "node:path";
-import { Test } from "@nestjs/testing";
-import { ConfigModule } from "@nestjs/config";
-import { HandlersModule } from "../apps/api/src/handlers/handlers.module";
+// Load env from both root .env and apps/api/.env (in this order — api overrides root for shared keys)
+dotenvConfig({ path: resolve(__dirname, "../.env") });
+dotenvConfig({ path: resolve(__dirname, "../apps/api/.env"), override: true });
+import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { randomUUID } from "node:crypto";
+import { CostTrackerService } from "../apps/api/src/llm/cost-tracker.service";
+import { LlmClient } from "../apps/api/src/llm/llm.client";
+import { OutlineGeneratorClient } from "../apps/api/src/tools/outline-generator/outline-generator.client";
+import { KGDistributorClient } from "../apps/api/src/tools/kg-distributor/kg-distributor.client";
 import { OutlineGenerateHandler } from "../apps/api/src/handlers/outline-generate.handler";
 import { OutlineDistributeHandler } from "../apps/api/src/handlers/outline-distribute.handler";
+import { loadEnv } from "../apps/api/src/config/env";
 import {
   KnowledgeGraph,
   QueryFanOutResult,
@@ -31,6 +37,7 @@ import {
 // ---------------------------------------------------------------------------
 
 const FIXTURES_DIR = resolve(__dirname, "../docs/edu/lekcja-3-1");
+
 const OUTPUT_DIR = resolve(__dirname, "smoke-output");
 
 // ---------------------------------------------------------------------------
@@ -322,18 +329,23 @@ async function main() {
       `${kg.facts.length} facts, ${kg.measurables.length} measurables, ${kg.ideations.length} ideations`,
   );
 
-  // Bootstrap NestJS testing module
-  const moduleRef = await Test.createTestingModule({
-    imports: [
-      ConfigModule.forRoot({ isGlobal: true }),
-      HandlersModule,
-    ],
-  }).compile();
+  // Bypass NestJS DI — direct instantiation (tsx/esbuild does not emit constructor metadata)
+  const env = loadEnv();
+  // Pass-through stub cache (no DB) — every getOrSet calls fetcher and returns its result
+  const stubCostTracker = { record: async () => {} } as any;
+  const stubCache = {
+    getOrSet: async (opts: any) => {
+      const fetched = await opts.fetcher();
+      return fetched.result ?? fetched;
+    },
+  } as any;
+  const llm = new LlmClient(stubCostTracker);
+  const outlineGenClient = new OutlineGeneratorClient(llm, env);
+  const kgDistClient = new KGDistributorClient(llm, env);
+  const generateHandler = new OutlineGenerateHandler(outlineGenClient, stubCache, env);
+  const distributeHandler = new OutlineDistributeHandler(kgDistClient, stubCache, env);
 
-  const generateHandler = moduleRef.get(OutlineGenerateHandler);
-  const distributeHandler = moduleRef.get(OutlineDistributeHandler);
-
-  const runId = `smoke-plan-12-${Date.now()}`;
+  const runId = randomUUID();
 
   // Step 1: Outline generation
   console.log("[smoke] Step 1: outline.generate …");
@@ -414,7 +426,6 @@ async function main() {
   console.log(`[smoke] ASSERT contextSectionsCount===3: ${contextSections === 3 ? "PASS" : `WARN (got ${contextSections})`}`);
   console.log(`[smoke] ASSERT coverage>50: ${coveragePercent > 50 ? "PASS" : `WARN (got ${coveragePercent}%)`}`);
 
-  await moduleRef.close();
   console.log("[smoke] PASS — Plan 12 outline+distribute smoke complete");
 }
 

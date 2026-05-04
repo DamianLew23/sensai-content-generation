@@ -99,6 +99,16 @@ const EnvSchema = z.object({
   OUTLINE_GENERATE_TTL_DAYS: z.coerce.number().int().positive().default(7),
   OUTLINE_DISTRIBUTE_MODEL: z.string().default("google/gemini-3-flash-preview"),
   OUTLINE_DISTRIBUTE_TTL_DAYS: z.coerce.number().int().positive().default(7),
+  // ----- Plan 13 — Draft Generation -----
+  DRAFT_GENERATE_MODEL: z.string().default("gpt-5.2"),
+  DRAFT_GENERATE_USE_REASONING: z
+    .union([z.boolean(), z.string()])
+    .transform((v) => (typeof v === "boolean" ? v : v.toLowerCase() === "true"))
+    .default(true),
+  DRAFT_GENERATE_REASONING_EFFORT: z.enum(["low", "medium", "high"]).default("medium"),
+  DRAFT_GENERATE_VERBOSITY: z.enum(["low", "medium", "high"]).default("medium"),
+  DRAFT_GENERATE_BLOCK_DELAY_MS: z.coerce.number().int().min(0).max(10_000).default(800),
+  DRAFT_GENERATE_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
   OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),

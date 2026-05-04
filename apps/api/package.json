@@ -28,6 +28,7 @@
     "drizzle-orm": "^0.36.0",
     "ioredis": "^5.4.1",
     "nestjs-pino": "^4.1.0",
+    "openai": "^6.35.0",
     "p-limit": "^6",
     "p-retry": "^8.0.0",
     "pg": "^8.13.0",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.1.19",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.11.10",
     "@vitest/coverage-v8": "^4.1.4",

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
-exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
+exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -655,4 +655,73 @@ exports.DistributionResult = zod_1.z.object({
     unused: exports.UnusedKGItems,
     stats: exports.DistributionStats,
     warnings: exports.DistributionWarning.array(),
+});
+// ===== Plan 13 — Draft Generation =====
+exports.PassageTrigger = zod_1.z.enum([
+    "definition",
+    "instruction",
+    "cause",
+    "comparison",
+    "diagnosis",
+    "list",
+    "question",
+]);
+exports.DraftBlockStats = zod_1.z.object({
+    sectionOrder: zod_1.z.number().int().nonnegative(),
+    sectionType: zod_1.z.enum(["intro", "h2"]),
+    sectionVariant: zod_1.z.enum(["full", "context"]).nullable(),
+    header: zod_1.z.string().min(1).nullable(),
+    passageTrigger: exports.PassageTrigger,
+    charCount: zod_1.z.number().int().nonnegative(),
+    responseId: zod_1.z.string().min(1),
+    promptTokens: zod_1.z.number().int().nonnegative(),
+    completionTokens: zod_1.z.number().int().nonnegative(),
+    costUsd: zod_1.z.string(),
+    latencyMs: zod_1.z.number().int().nonnegative(),
+});
+exports.DraftImagePrompt = zod_1.z.object({
+    sectionHeader: zod_1.z.string().min(1),
+    ideationType: zod_1.z.string().min(1),
+    description: zod_1.z.string().min(1),
+    prompt: zod_1.z.string().min(1),
+});
+exports.DraftWarning = zod_1.z.object({
+    kind: zod_1.z.enum([
+        "draft_block_failed",
+        "draft_chaining_disabled",
+        "draft_no_image_prompts",
+        "draft_short_block",
+        "draft_factual_dedup_high_ratio",
+    ]),
+    message: zod_1.z.string().min(1),
+    blockOrder: zod_1.z.number().int().nonnegative().optional(),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.DraftMeta = zod_1.z.object({
+    keyword: zod_1.z.string().min(1),
+    h1Title: zod_1.z.string().min(1).max(300),
+    language: zod_1.z.string().min(2).max(10),
+    primaryIntent: exports.IntentName,
+    model: zod_1.z.string().min(1),
+    generatedAt: zod_1.z.string().datetime(),
+    useReasoning: zod_1.z.boolean(),
+    reasoningEffort: zod_1.z.enum(["low", "medium", "high"]).nullable(),
+    verbosity: zod_1.z.enum(["low", "medium", "high"]).nullable(),
+});
+exports.DraftStats = zod_1.z.object({
+    blockCount: zod_1.z.number().int().nonnegative(),
+    totalChars: zod_1.z.number().int().nonnegative(),
+    totalLatencyMs: zod_1.z.number().int().nonnegative(),
+    totalCostUsd: zod_1.z.string(),
+    totalPromptTokens: zod_1.z.number().int().nonnegative(),
+    totalCompletionTokens: zod_1.z.number().int().nonnegative(),
+    imagePromptCount: zod_1.z.number().int().nonnegative(),
+});
+exports.DraftGenerationResult = zod_1.z.object({
+    meta: exports.DraftMeta,
+    htmlContent: zod_1.z.string().min(1),
+    blocks: exports.DraftBlockStats.array().min(1),
+    imagePrompts: exports.DraftImagePrompt.array(),
+    stats: exports.DraftStats,
+    warnings: exports.DraftWarning.array(),
 });

@@ -812,3 +812,87 @@ export const DistributionResult = z.object({
   warnings: DistributionWarning.array(),
 });
 export type DistributionResult = z.infer<typeof DistributionResult>;
+
+// ===== Plan 13 — Draft Generation =====
+
+export const PassageTrigger = z.enum([
+  "definition",
+  "instruction",
+  "cause",
+  "comparison",
+  "diagnosis",
+  "list",
+  "question",
+]);
+export type PassageTrigger = z.infer<typeof PassageTrigger>;
+
+export const DraftBlockStats = z.object({
+  sectionOrder: z.number().int().nonnegative(),
+  sectionType: z.enum(["intro", "h2"]),
+  sectionVariant: z.enum(["full", "context"]).nullable(),
+  header: z.string().min(1).nullable(),
+  passageTrigger: PassageTrigger,
+  charCount: z.number().int().nonnegative(),
+  responseId: z.string().min(1),
+  promptTokens: z.number().int().nonnegative(),
+  completionTokens: z.number().int().nonnegative(),
+  costUsd: z.string(),
+  latencyMs: z.number().int().nonnegative(),
+});
+export type DraftBlockStats = z.infer<typeof DraftBlockStats>;
+
+export const DraftImagePrompt = z.object({
+  sectionHeader: z.string().min(1),
+  ideationType: z.string().min(1),
+  description: z.string().min(1),
+  prompt: z.string().min(1),
+});
+export type DraftImagePrompt = z.infer<typeof DraftImagePrompt>;
+
+export const DraftWarning = z.object({
+  kind: z.enum([
+    "draft_block_failed",
+    "draft_chaining_disabled",
+    "draft_no_image_prompts",
+    "draft_short_block",
+    "draft_factual_dedup_high_ratio",
+  ]),
+  message: z.string().min(1),
+  blockOrder: z.number().int().nonnegative().optional(),
+  context: z.record(z.string()).default({}),
+});
+export type DraftWarning = z.infer<typeof DraftWarning>;
+
+export const DraftMeta = z.object({
+  keyword: z.string().min(1),
+  h1Title: z.string().min(1).max(300),
+  language: z.string().min(2).max(10),
+  primaryIntent: IntentName,
+  model: z.string().min(1),
+  generatedAt: z.string().datetime(),
+  useReasoning: z.boolean(),
+  reasoningEffort: z.enum(["low", "medium", "high"]).nullable(),
+  verbosity: z.enum(["low", "medium", "high"]).nullable(),
+});
+export type DraftMeta = z.infer<typeof DraftMeta>;
+
+export const DraftStats = z.object({
+  blockCount: z.number().int().nonnegative(),
+  totalChars: z.number().int().nonnegative(),
+  totalLatencyMs: z.number().int().nonnegative(),
+  totalCostUsd: z.string(),
+  totalPromptTokens: z.number().int().nonnegative(),
+  totalCompletionTokens: z.number().int().nonnegative(),
+  imagePromptCount: z.number().int().nonnegative(),
+});
+export type DraftStats = z.infer<typeof DraftStats>;
+
+export const DraftGenerationResult = z.object({
+  meta: DraftMeta,
+  htmlContent: z.string().min(1),
+  blocks: DraftBlockStats.array().min(1),
+  imagePrompts: DraftImagePrompt.array(),
+  stats: DraftStats,
+  warnings: DraftWarning.array(),
+});
+export type DraftGenerationResult = z.infer<typeof DraftGenerationResult>;
