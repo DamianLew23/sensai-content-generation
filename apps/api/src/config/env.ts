@@ -109,6 +109,13 @@ const EnvSchema = z.object({
   DRAFT_GENERATE_VERBOSITY: z.enum(["low", "medium", "high"]).default("medium"),
   DRAFT_GENERATE_BLOCK_DELAY_MS: z.coerce.number().int().min(0).max(10_000).default(800),
   DRAFT_GENERATE_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
+  // ----- Plan 14 — Data Enrichment -----
+  DATA_ENRICH_VERIFY_MODEL: z.string().default("gpt-5.2"),
+  DATA_ENRICH_QUESTION_MODEL: z.string().default("gpt-4.1-mini"),
+  DATA_ENRICH_MAX_CLAIMS: z.coerce.number().int().min(1).max(50).default(15),
+  DATA_ENRICH_MIN_SCORE: z.coerce.number().int().min(1).max(10).default(2),
+  DATA_ENRICH_LOW_CONFIRM_WARNING: z.coerce.number().min(0).max(1).default(0.2),
+  DATA_ENRICH_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
   OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
