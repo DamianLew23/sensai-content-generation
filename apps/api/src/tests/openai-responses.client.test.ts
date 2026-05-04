@@ -47,6 +47,33 @@ describe("OpenAIResponsesClient", () => {
     expect(recordedCall.completionTokens).toBe(200);
   });
 
+  it("uses requested model name (not date-versioned response.model) for cost lookup", async () => {
+    const create = vi.fn().mockResolvedValue({
+      id: "resp_x",
+      output_text: "ok",
+      model: "gpt-5.2-2025-12-11", // OpenAI returns date-versioned name
+      usage: { input_tokens: 1_000_000, output_tokens: 1_000_000 },
+    });
+    const recordedCalls: any[] = [];
+    const cost = { record: vi.fn(async (c: any) => { recordedCalls.push(c); }) } as any;
+    const client = new OpenAIResponsesClient({ responses: { create } } as any, cost);
+
+    const res = await client.createBlock({
+      ctx: { runId: "r", stepId: "s", attempt: 1 },
+      model: "gpt-5.2", // requested
+      system: "S",
+      input: "I",
+    });
+
+    // Cost is computed against args.model ("gpt-5.2" → priced) not response.model
+    // (date-versioned, missing from price table → would yield "0").
+    expect(res.costUsd).not.toBe("0");
+    expect(Number(res.costUsd)).toBeGreaterThan(0);
+    expect(recordedCalls[0].costUsd).toBe(res.costUsd);
+    // The audit-trail `model` field still carries the versioned name from the response
+    expect(res.model).toBe("gpt-5.2-2025-12-11");
+  });
+
   it("omits chaining and reasoning params when not provided", async () => {
     const create = vi.fn().mockResolvedValue({
       id: "r1",

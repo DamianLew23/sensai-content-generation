@@ -62,8 +62,11 @@ export class OpenAIResponsesClient {
     const latencyMs = Date.now() - t0;
     const promptTokens = response.usage?.input_tokens ?? 0;
     const completionTokens = response.usage?.output_tokens ?? 0;
+    // OpenAI returns date-versioned model names ("gpt-5.2-2025-12-11"); price table
+    // is keyed by the requested name, so use args.model for cost lookup. Keep the
+    // versioned response.model for audit.
     const model = response.model ?? args.model;
-    const costUsd = calculateCostUsd(model, promptTokens, completionTokens);
+    const costUsd = calculateCostUsd(args.model, promptTokens, completionTokens);
     const outputText = response.output_text ?? "";
     const id = response.id;
 
