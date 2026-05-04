@@ -9,14 +9,20 @@
  *
  * Run: pnpm smoke:plan-13
  */
-import "dotenv/config";
 import "reflect-metadata";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { config as dotenvConfig } from "dotenv";
 import { join, resolve } from "node:path";
-import { Test } from "@nestjs/testing";
-import { ConfigModule } from "@nestjs/config";
-import { HandlersModule } from "../apps/api/src/handlers/handlers.module";
+// Load env from both root .env and apps/api/.env (in this order — api overrides root for shared keys)
+dotenvConfig({ path: resolve(__dirname, "../.env") });
+dotenvConfig({ path: resolve(__dirname, "../apps/api/.env"), override: true });
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { randomUUID } from "node:crypto";
+import OpenAI from "openai";
+import { CostTrackerService } from "../apps/api/src/llm/cost-tracker.service";
+import { OpenAIResponsesClient } from "../apps/api/src/llm/openai-responses.client";
+import { DraftGeneratorClient } from "../apps/api/src/tools/draft-generator/draft-generator.client";
 import { DraftGenerateHandler } from "../apps/api/src/handlers/draft-generate.handler";
+import { loadEnv } from "../apps/api/src/config/env";
 import { DistributionResult } from "@sensai/shared";
 
 const OUTPUT_DIR = resolve(__dirname, "smoke-output");
@@ -40,15 +46,24 @@ async function main() {
       `language=${distribution.meta.language}`,
   );
 
-  const moduleRef = await Test.createTestingModule({
-    imports: [ConfigModule.forRoot({ isGlobal: true }), HandlersModule],
-  }).compile();
-
-  const handler = moduleRef.get(DraftGenerateHandler);
+  // Bypass NestJS DI — direct instantiation (tsx/esbuild does not emit constructor metadata)
+  const env = loadEnv();
+  // Pass-through stub cache (no DB) — every getOrSet calls fetcher and returns its result
+  const stubCostTracker = { record: async () => {} } as any;
+  const stubCache = {
+    getOrSet: async (opts: any) => {
+      const fetched = await opts.fetcher();
+      return fetched.result ?? fetched;
+    },
+  } as any;
+  const openaiSdk = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+  const responsesClient = new OpenAIResponsesClient(openaiSdk, stubCostTracker);
+  const draftClient = new DraftGeneratorClient(responsesClient, env);
+  const handler = new DraftGenerateHandler(draftClient, stubCache, env);
 
   const ctx = {
     run: {
-      id: `smoke-plan-13-${Date.now()}`,
+      id: randomUUID(),
       input: { topic: distribution.meta.keyword, mainKeyword: distribution.meta.keyword },
     },
     step: { id: "smoke-step-draft-generate" },
@@ -85,7 +100,6 @@ async function main() {
   console.log(`[smoke] ASSERT blocks>=2: ${out.stats.blockCount >= 2 ? "PASS" : `WARN (got ${out.stats.blockCount})`}`);
   console.log(`[smoke] ASSERT html starts with <h1>: ${out.htmlContent.trimStart().startsWith("<h1>") ? "PASS" : "WARN"}`);
 
-  await moduleRef.close();
   console.log("[smoke] PASS — Plan 13 draft.generate smoke complete");
 }
 
