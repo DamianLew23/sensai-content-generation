@@ -9,8 +9,10 @@
 export const SOURCE_CITATION_RE =
   /\((?:Source|Źródło):\s*(?:[^()]*|\([^()]*\))*\)/gi;
 
+// Trailing `(?!\w)` (instead of `\b`) so that values like `20%` match — `\b`
+// fails between `%` (non-word) and a following non-word character.
 export const NUM_RE =
-  /\b\d+(?:[.,]\d+)?\s?(?:%|mln|mld|tys\.?|k|M|B|zł|PLN|USD|EUR|mg|g|kg|ml|μg|mcg|IU|kcal)?\b/gi;
+  /\b\d+(?:[.,]\d+)?\s?(?:%|mln|mld|tys\.?|k|M|B|zł|PLN|USD|EUR|mg|g|kg|ml|μg|mcg|IU|kcal)?(?!\w)/gi;
 
 export const DATE_RE =
   /\b(?:\d{4}-\d{2}-\d{2}|\d{1,2}\s+[A-Za-zÀ-ž]+\s+\d{4}|\d{4})\b/g;
