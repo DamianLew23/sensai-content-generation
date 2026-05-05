@@ -116,6 +116,12 @@ const EnvSchema = z.object({
   DATA_ENRICH_MIN_SCORE: z.coerce.number().int().min(1).max(10).default(2),
   DATA_ENRICH_LOW_CONFIRM_WARNING: z.coerce.number().min(0).max(1).default(0.2),
   DATA_ENRICH_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
+  // ----- Plan 15 — Article Optimize + Intermediate -----
+  ARTICLE_OPTIMIZE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_OPTIMIZE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
+  ARTICLE_INTERMEDIATE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_INTERMEDIATE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
+  ARTICLE_INTERMEDIATE_MAX_GROWTH: z.coerce.number().nonnegative().default(0.10),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
   OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
