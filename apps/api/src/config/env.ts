@@ -122,6 +122,23 @@ const EnvSchema = z.object({
   ARTICLE_INTERMEDIATE_MODEL: z.string().default("gpt-5.2"),
   ARTICLE_INTERMEDIATE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
   ARTICLE_INTERMEDIATE_MAX_GROWTH: z.coerce.number().nonnegative().default(0.10),
+  // ----- Plan 16 — Article Humanize -----
+  ARTICLE_HUMANIZE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_HUMANIZE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
+  ARTICLE_HUMANIZE_ASL_MIN: z.coerce.number().int().positive().default(12),
+  ARTICLE_HUMANIZE_ASL_MAX: z.coerce.number().int().positive().default(20),
+  ARTICLE_HUMANIZE_SENTENCE_HARD_CAP: z.coerce.number().int().positive().default(24),
+  ARTICLE_HUMANIZE_MIN_STRONG_PER_BLOCK: z.coerce.number().int().nonnegative().default(1),
+  ARTICLE_HUMANIZE_MAX_STRONG_PER_BLOCK: z.coerce.number().int().positive().default(4),
+  ARTICLE_HUMANIZE_STRONG_WORDS_PER_BLOCK: z.coerce.number().int().positive().default(500),
+  ARTICLE_HUMANIZE_BOLD_SHARE_MAX: z.coerce.number().nonnegative().default(0.08),
+  ARTICLE_HUMANIZE_MIN_LEN_RATIO: z.coerce.number().nonnegative().default(0.80),
+  ARTICLE_HUMANIZE_MAX_LEN_RATIO: z.coerce.number().nonnegative().default(1.20),
+  ARTICLE_HUMANIZE_RETRY_ENABLED: z
+    .union([z.boolean(), z.string()])
+    .transform((v) => (typeof v === "boolean" ? v : v.toLowerCase() === "true"))
+    .default(true),
+  ARTICLE_HUMANIZE_LANG_PROBE_THRESHOLD: z.coerce.number().int().nonnegative().default(8),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
   OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
