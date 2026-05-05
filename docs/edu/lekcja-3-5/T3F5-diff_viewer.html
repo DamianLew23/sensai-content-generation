@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Humanization Diff Viewer — Reguły anty-AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e2e4ed;
+    --text-dim: #8b90a5;
+    --text-faint: #5a5f75;
+
+    --r-vocab: #ef4444;
+    --r-transitions: #f97316;
+    --r-rhythm: #22c55e;
+    --r-opener: #06b6d4;
+    --r-closer: #0ea5e9;
+    --r-parenthetical: #a855f7;
+    --r-concrete: #f59e0b;
+    --r-active: #ec4899;
+    --r-filler: #eab308;
+    --r-starter: #14b8a6;
+    --r-punctuation: #6366f1;
+    --r-density: #8b5cf6;
+    --r-promotional: #d946ef;
+    --r-pronouns: #818cf8;
+    --r-tense: #34d399;
+    --r-rhetorical: #f43f5e;
+    --r-paragraph: #3b82f6;
+    --r-meaning: #fb923c;
+    --r-repetition: #c084fc;
+    --r-natural: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(180deg, var(--bg) 0%, rgba(15,17,23,0.95) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px 16px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .header h1 span { color: var(--r-paragraph); }
+  .header p { font-size: 13px; color: var(--text-dim); }
+
+  /* ── Legend toggle ── */
+  .legend-toggle {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 101;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .legend-toggle:hover { background: var(--border); }
+
+  /* ── Legend panel ── */
+  .legend-panel {
+    position: fixed;
+    top: 120px;
+    right: 24px;
+    z-index: 100;
+    width: 320px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .legend-panel.open { display: block; }
+  .legend-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .legend-label { color: var(--text); }
+  .legend-label span { color: var(--text-dim); }
+  .legend-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  /* ── Main content ── */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 40px 120px;
+  }
+
+  /* ── Section blocks ── */
+  .diff-section {
+    margin-bottom: 48px;
+  }
+  .section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.3px;
+  }
+  .section-heading .tag {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-faint);
+    background: var(--surface2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Before / After blocks ── */
+  .diff-pair {
+    margin-bottom: 24px;
+  }
+  .diff-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+  .diff-label.before { color: var(--text-faint); }
+  .diff-label.after { color: var(--r-paragraph); }
+
+  .diff-block {
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .diff-block.original {
+    background: rgba(90, 95, 117, 0.08);
+    border: 1px solid rgba(90, 95, 117, 0.15);
+    color: var(--text-dim);
+  }
+  .diff-block.humanized {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .diff-arrow {
+    text-align: center;
+    padding: 8px 0;
+    color: var(--text-faint);
+    font-size: 18px;
+  }
+
+  /* ── Highlighted spans ── */
+  mark[data-rule] {
+    position: relative;
+    border-radius: 3px;
+    padding: 1px 3px;
+    cursor: help;
+    transition: filter 0.15s;
+    color: inherit;
+  }
+  mark[data-rule]:hover {
+    filter: brightness(1.3);
+  }
+
+  /* Rule colors as backgrounds with low opacity */
+  mark[data-rule="R1"]  { background: rgba(239,68,68,0.18); border-bottom: 2px solid var(--r-vocab); }
+  mark[data-rule="R2"]  { background: rgba(249,115,22,0.18); border-bottom: 2px solid var(--r-transitions); }
+  mark[data-rule="R3"]  { background: rgba(34,197,94,0.18); border-bottom: 2px solid var(--r-rhythm); }
+  mark[data-rule="R4"]  { background: rgba(6,182,212,0.18); border-bottom: 2px solid var(--r-opener); }
+  mark[data-rule="R5"]  { background: rgba(14,165,233,0.18); border-bottom: 2px solid var(--r-closer); }
+  mark[data-rule="R6"]  { background: rgba(168,85,247,0.18); border-bottom: 2px solid var(--r-parenthetical); }
+  mark[data-rule="R7"]  { background: rgba(245,158,11,0.18); border-bottom: 2px solid var(--r-concrete); }
+  mark[data-rule="R8"]  { background: rgba(236,72,153,0.18); border-bottom: 2px solid var(--r-active); }
+  mark[data-rule="R9"]  { background: rgba(234,179,8,0.18); border-bottom: 2px solid var(--r-filler); }
+  mark[data-rule="R10"] { background: rgba(20,184,166,0.18); border-bottom: 2px solid var(--r-starter); }
+  mark[data-rule="R11"] { background: rgba(99,102,241,0.18); border-bottom: 2px solid var(--r-punctuation); }
+  mark[data-rule="R12"] { background: rgba(139,92,246,0.18); border-bottom: 2px solid var(--r-density); }
+  mark[data-rule="R13"] { background: rgba(217,70,239,0.18); border-bottom: 2px solid var(--r-promotional); }
+  mark[data-rule="R16"] { background: rgba(129,140,248,0.18); border-bottom: 2px solid var(--r-pronouns); }
+  mark[data-rule="R17"] { background: rgba(52,211,153,0.18); border-bottom: 2px solid var(--r-tense); }
+  mark[data-rule="R20"] { background: rgba(244,63,94,0.18); border-bottom: 2px solid var(--r-rhetorical); }
+  mark[data-rule="PS"]  { background: rgba(59,130,246,0.18); border-bottom: 2px solid var(--r-paragraph); }
+  mark[data-rule="MP"]  { background: rgba(251,146,60,0.18); border-bottom: 2px solid var(--r-meaning); }
+  mark[data-rule="NR"]  { background: rgba(192,132,252,0.18); border-bottom: 2px solid var(--r-repetition); }
+  mark[data-rule="NL"]  { background: rgba(251,191,36,0.18); border-bottom: 2px solid var(--r-natural); }
+
+  /* ── Tooltip ── */
+  mark[data-rule]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e2030;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    max-width: 360px;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+    z-index: 50;
+    line-height: 1.5;
+  }
+  mark[data-rule]:hover::after { opacity: 1; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .stat-value.green { color: #22c55e; }
+  .stat-value.blue { color: #3b82f6; }
+  .stat-value.amber { color: #f59e0b; }
+  .stat-value.red { color: #ef4444; }
+
+  /* ── Summary note ── */
+  .summary-note {
+    font-size: 13px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+  .summary-note strong { color: var(--text); }
+
+  del {
+    color: var(--text-faint);
+    text-decoration: line-through;
+    text-decoration-color: rgba(239,68,68,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Humanization <span>Diff Viewer</span></h1>
+  <p>Porównanie oryginału (output_intermediate) z wersją humanizowaną — zmiany oznaczone regułami anty-AI</p>
+</div>
+
+<button class="legend-toggle" onclick="document.querySelector('.legend-panel').classList.toggle('open')">
+  ◆ Legenda reguł
+</button>
+
+<div class="legend-panel">
+  <h3>Tier 1 — Critical Signals</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-vocab)"></div><div class="legend-label"><strong>R1</strong> Banned AI Vocabulary</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-transitions)"></div><div class="legend-label"><strong>R2</strong> Banned Signpost Transitions</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-rhythm)"></div><div class="legend-label"><strong>R3</strong> Sentence Rhythm</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-opener)"></div><div class="legend-label"><strong>R4</strong> Opener Rule</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-closer)"></div><div class="legend-label"><strong>R5</strong> Closer Rule</div></div>
+  <hr class="legend-divider">
+  <h3>Tier 2 — Structural</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-parenthetical)"></div><div class="legend-label"><strong>R6</strong> Parenthetical Asides</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-concrete)"></div><div class="legend-label"><strong>R7</strong> Concrete over Abstract</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-active)"></div><div class="legend-label"><strong>R8</strong> Active Voice</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-filler)"></div><div class="legend-label"><strong>R9</strong> Eliminate Filler</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-starter)"></div><div class="legend-label"><strong>R10</strong> Starter Diversity</div></div>
+  <hr class="legend-divider">
+  <h3>Tier 4 — Detector Signals</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-pronouns)"></div><div class="legend-label"><strong>R16</strong> Personal Pronouns</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-tense)"></div><div class="legend-label"><strong>R17</strong> Tense Mixing</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-rhetorical)"></div><div class="legend-label"><strong>R20</strong> Rhetorical Questions</div></div>
+  <hr class="legend-divider">
+  <h3>Language Quality</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-paragraph)"></div><div class="legend-label"><strong>PS</strong> Paragraph Structure</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-meaning)"></div><div class="legend-label"><strong>MP</strong> Meaning Preservation</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-natural)"></div><div class="legend-label"><strong>NL</strong> Natural Language</div></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-repetition)"></div><div class="legend-label"><strong>NR</strong> No Repetition</div></div>
+</div>
+
+<div class="content">
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value blue">219 → 178</div><div class="stat-label">Linie HTML</div></div>
+  <div class="stat"><div class="stat-value green">11 → 4</div><div class="stat-label">Paragrafów w intro</div></div>
+  <div class="stat"><div class="stat-value amber">~45%</div><div class="stat-label">Tekstu przepisanego</div></div>
+  <div class="stat"><div class="stat-value red">6</div><div class="stat-label">Źródeł zachowanych</div></div>
+</div>
+
+<div class="summary-note">
+  <strong>Jak czytać ten widok:</strong> Każda sekcja pokazuje oryginał (wyszarzony) i wersję humanizowaną. 
+  Kolorowe podkreślenia = zastosowana reguła. <strong>Najedź myszką</strong> na podkreślony fragment, żeby zobaczyć opis reguły.
+  Kliknij <strong>◆ Legenda reguł</strong> w prawym górnym rogu, żeby zobaczyć pełną mapę kolorów.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Intro / Lead -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H1: Intro — lead artykułu <span class="tag">11 → 3 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał (11 krótkich &lt;p&gt;)</div>
+    <div class="diff-block original">
+      <p><strong>Kortyzol</strong>, hormon stresu produkowany przez nadnercza, da się obniżyć po 40. roku życia przez działania, które uspokajają <strong>oś HPA</strong> i stabilizują dobowy rytm hormonu.</p>
+      <p>W praktyce kluczowe jest dopasowanie codziennych nawyków do tego, jak kortyzol naturalnie „pracuje" w ciągu doby.</p>
+      <p>Poranny start dnia warto dopasować do naturalnego rytmu kortyzolu i ograniczyć najtrudniejsze rozmowy oraz decyzje tuż po wstaniu.</p>
+      <p>Przewlekłe stresory w kalendarzu pomagają zmniejszyć krótkie bloki pracy z przerwami, które przerywają stałą aktywację osi HPA.</p>
+      <p>Codzienny ruch o umiarkowanej intensywności w stałej porze…</p>
+      <p style="color:var(--text-faint);font-style:italic">…+ 6 kolejnych jednozdaniowych paragrafów</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany (3 płynne akapity)</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono 4 krótkie &lt;p&gt; w jeden płynny akapit z 6 zdaniami"><strong>Kortyzol</strong> to hormon stresu wytwarzany przez nadnercza. Da się go obniżyć po 40. roku życia, jeśli skupisz się na tym, co uspokaja <strong>oś HPA</strong> i porządkuje dobowy rytm wydzielania.</mark> <mark data-rule="NL" data-tip="NL: Natural Language — dodane naturalne dopowiedzenie zamiast suchego faktu">Nie chodzi o jednorazowy „reset". Chodzi o powtarzalne decyzje, które organizm rozpoznaje jako sygnał bezpieczeństwa.</mark> <mark data-rule="R16" data-tip="R16: Personal Pronouns — dodano bezpośredni zwrot „Brzmi…? W praktyce…" zamiast bezosobowego opisu">Brzmi technicznie? W praktyce to codzienność, tylko ustawiona mądrzej.</mark></p>
+
+      <p><mark data-rule="R4" data-tip="R4: Opener Rule — zmieniono abstrakcyjny start na konkretny: „Rano kortyzol i tak idzie w górę"">Rano kortyzol i tak idzie w górę.</mark> <mark data-rule="R8" data-tip="R8: Active Voice — „Poranny start dnia warto dopasować" → aktywne „dopasuj" + „nie wciskaj"">Dlatego start dnia dopasuj do tego rytmu i nie wciskaj w pierwsze minuty najtrudniejszych rozmów.</mark> <mark data-rule="MP" data-tip="MP: Meaning Preservation — oryginał miał odwrócony sens: „stresory pomagają zmniejszyć bloki". Naprawiono: „bloki z przerwami przerywają aktywację HPA"">Masz w kalendarzu stresory, które ciągną się tygodniami? Pomagają krótkie bloki pracy z przerwami.</mark> <mark data-rule="R3" data-tip="R3: Sentence Rhythm — krótkie zdanie po dwóch dłuższych (burst pattern)">Takie cięcia przerywają stałą aktywację osi HPA.</mark> <mark data-rule="R9" data-tip="R9: Eliminate Filler — usunięto „o umiarkowanej intensywności w stałej porze zwykle wspiera regulację lepiej niż" → krótsze, gęstsze">Pomaga też ruch. Umiarkowana intensywność o stałej porze zwykle reguluje więcej niż okazjonalne „zrywy" wysiłku.</mark></p>
+
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono 5 krótkich akapitów (rytm dobowy + posiłki + monitoring) w jeden płynny akapit">Ustal stałe godziny snu i pobudki. Dodaj wieczorną rutynę bez bodźców, które podbijają pobudzenie. Pomagają też regularne posiłki i nawodnienie. Ogranicz używki po południu i wieczorem, bo wtedy najłatwiej niechcący wydłużyć reakcję stresową.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Sen -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Sen po 40tce <span class="tag">8 → 4 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał — każdy fakt osobny &lt;p&gt;</div>
+    <div class="diff-block original">
+      <p><strong>Melatonina</strong>, hormon snu będący antagonistą kortyzolu, pomaga obniżyć kortyzol…</p>
+      <p>Stała godzina snu i pobudki przez 7 dni w tygodniu wzmacnia nocny wyrzut melatoniny.</p>
+      <p>Mocne światło i ekrany ograniczone na 60–90 minut przed snem…</p>
+      <p>Temperatura w sypialni <strong>17–19°C</strong> oraz pełne zaciemnienie…</p>
+      <p>Ostatni duży posiłek zjedzony 2–3 godziny przed snem…</p>
+      <p>Wstawanie o tej samej porze także po gorszej nocy…</p>
+      <p style="font-style:italic">To właśnie konsekwencja…</p>
+      <p>Sen trwający 7–9 godzin obniża poziom kortyzolu o <strong>20–30%</strong> w porównaniu do 5 godzin.</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="R1" data-tip="R1: Banned AI Vocabulary — usunięto „antagonistą kortyzolu" (typowy AI-styl formalnej apozycji) → zastąpiono potocznym „przeciwnik""><strong>Melatonina</strong> to hormon snu i naturalny „przeciwnik" kortyzolu.</mark> <mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono informacje o godzinach snu, świetle i ekranach w jeden akapit">Pomaga obniżyć kortyzol po 40tce, gdy uporządkujesz porę zasypiania i jakość snu. Liczy się stałość. Ta sama godzina snu i pobudki przez 7 dni w tygodniu wzmacnia nocny wyrzut melatoniny.</mark> <mark data-rule="R10" data-tip="R10: Starter Diversity — zmieniono start ze zdania o melatoninie na konkretny detal o ekranach">Wieczorem przeszkadza mocne światło i ekrany.</mark></p>
+
+      <p><mark data-rule="R7" data-tip="R7: Concrete over Abstract — „Temperatura 17–19°C oraz zaciemnienie" → „W sypialni robi różnicę konkret: 17–19°C…"">W sypialni robi różnicę konkret: 17–19°C i pełne zaciemnienie.</mark> <mark data-rule="R3" data-tip="R3: Sentence Rhythm — krótkie zdanie po dłuższych (alternacja)">Zwykle skracają czas zasypiania.</mark> <mark data-rule="R16" data-tip="R16: Personal Pronouns — dodano „A jeśli noc była słabsza, wstań…" (ty-forma)">A jeśli noc była słabsza, wstań o tej samej porze.</mark></p>
+
+      <p><mark data-rule="NL" data-tip="NL: Natural Language — zachowano kurywę + połączono z danymi liczbowymi w jedno zdanie zamiast dwóch osobnych &lt;p&gt;"><i>To właśnie konsekwencja (a nie „idealna noc") najczęściej stabilizuje rytm dobowy.</i> Co to oznacza w liczbach? Sen trwający 7–9 godzin obniża poziom kortyzolu o <strong>20–30%</strong> w porównaniu do 5 godzin.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Aktywność fizyczna -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Aktywność fizyczna <span class="tag">5 → 3 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał</div>
+    <div class="diff-block original">
+      <p>HIIT zwykle sprawdza się najlepiej jako <strong>dodatek</strong> do bazy z treningu umiarkowanego, <del>ponieważ</del> intensywność generuje silniejszy bodziec stresowy.</p>
+      <p>Trening umiarkowany ułatwia utrzymanie <strong>regularności</strong> bez przeciążania regeneracji, <del>co ma znaczenie przy kumulacji</del> pracy…</p>
+      <p>HIIT <del>warto dobierać tak, aby po sesji powrót do spokojnego oddechu następował</del> w rozsądnym czasie…</p>
+      <p>Intensywny trening (&gt;75% HR max) przez ponad <strong>60 minut</strong> podnosi kortyzol.</p>
+      <p>Werdykt: po 40tce baza oparta na aktywności umiarkowanej…</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="R2" data-tip="R2: Banned Signpost Transitions — usunięto „ponieważ" (AI signpost) → zamieniono na krótsze, naturalne zdanie">HIIT najczęściej działa najlepiej jako <strong>dodatek</strong> do bazy z treningu umiarkowanego. Sama intensywność daje silniejszy bodziec stresowy.</mark> <mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono informacje o regularności i kumulacji obowiązków w jeden akapit">Umiarkowany wysiłek ułatwia utrzymanie regularności bez przeciążania regeneracji. To ma znaczenie, gdy po 40tce kumuluje się praca, sen i obowiązki.</mark></p>
+
+      <p><mark data-rule="R8" data-tip="R8: Active Voice — „HIIT warto dobierać tak, aby po sesji powrót…następował" (strona bierna) → „Interwały dobieraj tak, by po sesji wracać" (aktywna)">Interwały dobieraj tak, by po sesji wracać do spokojnego oddechu w rozsądnym czasie.</mark> <mark data-rule="R3" data-tip="R3: Sentence Rhythm — krótkie zdanie imperatywne przerywa dłuższą narrację">Nie kończ treningu w stanie skrajnego wyczerpania.</mark> <mark data-rule="R11" data-tip="R11: Natural Punctuation — dodano dwukropek zamiast łącznika „jest też twarda granica:"">Jest też twarda granica: intensywny trening (&gt;75% HR max) przez ponad <strong>60 minut</strong> podnosi kortyzol.</mark> <mark data-rule="R5" data-tip="R5: Closer Rule — zmieniono suchy „Werdykt:" na naturalne podsumowanie bez AI-pattern">Werdykt jest prosty. Po 40tce baza oparta na aktywności umiarkowanej zwykle sprzyja stabilizacji.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Dieta -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Dieta i używki <span class="tag">8 → 3 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał</div>
+    <div class="diff-block original">
+      <p><strong>Omega-3</strong>, <del>kwasy tłuszczowe o działaniu przeciwzapalnym, wspierają obniżanie kortyzolu po 40tce przez stabilizację odpowiedzi organizmu na stres i lepszą regenerację po obciążeniach dnia.</del></p>
+      <p>Omega-3 <del>warto włączać</del> do głównych posiłków, <del>wybierając</del>…</p>
+      <p>Roślinne źródła omega-3 dobrze uzupełniają śniadania…, <del>co ułatwia regularność podaży</del>.</p>
+      <p>Każdy posiłek oparty o <strong>białko</strong>…</p>
+      <p><del>Jasne godziny na kofeinę oraz rezygnacja z używania jej do maskowania zmęczenia</del>…</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="R1" data-tip="R1: Banned AI Vocabulary — usunięto AI-apozycję „kwasy tłuszczowe o działaniu przeciwzapalnym, wspierają…przez stabilizację" → rozbito na naturalne zdania"><strong>Omega-3</strong> to kwasy tłuszczowe o działaniu przeciwzapalnym. Wspierają obniżanie kortyzolu po 40tce, bo stabilizują odpowiedź organizmu na stres.</mark> <mark data-rule="R8" data-tip="R8: Active Voice — „Omega-3 warto włączać, wybierając…" (bezosobowe) → „W praktyce omega-3 warto dorzucać. Wybieraj…" (aktywne imperatywy)">W praktyce omega-3 warto dorzucać do głównych posiłków. Tłuste ryby, owoce morza albo produkty z alg ułatwiają dowiezienie EPA i DHA.</mark> <mark data-rule="R6" data-tip="R6: Parenthetical Aside — dodano nawiasową wstawkę „To np. siemię lniane, nasiona chia…"">Roślinne źródła omega-3 dobrze uzupełniają śniadania i kolacje. To np. siemię lniane, nasiona chia lub orzechy włoskie.</mark> <mark data-rule="R3" data-tip="R3: Sentence Rhythm — bardzo krótkie zdanie zamykające (burst): „I tu wygrywa regularność."">I tu wygrywa regularność.</mark></p>
+
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono białko+alkohol+kofeinę w jeden akapit o nawykach żywieniowych">Każdy posiłek oparty o <strong>białko</strong>, warzywa i źródło węglowodanów o niższym indeksie glikemicznym pomaga ograniczać skoki energii. Takie skoki napędzają „głód stresowy". Ogranicz alkohol w dni robocze.</mark> <mark data-rule="R16" data-tip="R16: Personal Pronouns — dodano „Jeśli używasz jej…łatwo rozstroisz" (ty-forma zamiast bezosobowego)">Pomaga też ustalenie jasnych godzin na kofeinę. Jeśli używasz jej do maskowania zmęczenia po niedospaniu, łatwo rozstroisz rytm snu opisany wcześniej.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Techniki redukcji stresu -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Techniki redukcji stresu <span class="tag">7 → 2 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał (7 &lt;p&gt;)</div>
+    <div class="diff-block original">
+      <p><strong>Medytacja mindfulness</strong> obniża kortyzol po 40tce, <del>gdy wykonujesz ją regularnie i łączysz z</del> krótkimi technikami…</p>
+      <p><del>Techniki najlepiej dobierać do</del> rytmu dnia pracy, <del>ponieważ regularność</del>…</p>
+      <p>Stała pora praktyki bazowej (rano lub wieczorem) i minimalny czas ułatwiają utrzymanie nawyku.</p>
+      <p>Technika interwencyjna na momenty napięcia…</p>
+      <p>Efekt warto ocenić po 2–3 tygodniach…</p>
+      <p><i>To może wydawać się „miękkie"…</i></p>
+      <p>Medytacja mindfulness przez 8 tygodni obniża kortyzol o około <strong>25%</strong>.</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — 4 osobne &lt;p&gt; (opis, pora, nawyk, interwencja) połączone w jeden płynny akapit"><strong>Medytacja mindfulness</strong> obniża kortyzol po 40tce, jeśli robisz ją regularnie. Pomaga też, gdy łączysz ją z krótkimi technikami „na tu i teraz" w ciągu dnia.</mark> <mark data-rule="R20" data-tip="R20: Rhetorical Questions — dodano pytanie retoryczne „Co wybrać, gdy pracy jest dużo…?" zamiast stwierdzenia">Co wybrać, gdy pracy jest dużo, a napięcie wraca falami?</mark> <mark data-rule="R2" data-tip="R2: Banned Signpost Transitions — „ponieważ regularność…" → „Najczęściej wygrywa dopasowanie"">Najczęściej wygrywa dopasowanie do rytmu dnia.</mark> <mark data-rule="R17" data-tip="R17: Tense Mixing — zmiana czasu: „ułatwiają utrzymanie" (czas teraźniejszy) → „Działa to nawet w gorszym tygodniu" (dodane potoczne)">Stała pora praktyki bazowej i minimalny czas ułatwiają utrzymanie nawyku. Działa to nawet w gorszym tygodniu.</mark></p>
+
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono ocenę efektu + kurywę + statystykę w zamykający akapit">Efekt warto ocenić po 2–3 tygodniach. Zapisuj sen, napięcie i „głód stresowy", a potem zostaw tylko to, co działa u ciebie.</mark> <mark data-rule="R12" data-tip="R12: Information Density — zachowano kurywę o „miękkim" podejściu i dołączono statystykę 25% w tym samym akapicie">To może wydawać się „miękkie", ale działa wtedy, gdy jest powtarzalne i mierzalne. Medytacja mindfulness przez 8 tygodni obniża kortyzol o około <strong>25%</strong>.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Suplementy -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Suplementy i leki <span class="tag">5 → 3 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał</div>
+    <div class="diff-block original">
+      <p><strong>Ashwagandha</strong>, <del>adaptogen obniżający kortyzol</del>, może pomóc po 40tce, <del>jeśli stosujesz suplementy jako dodatek</del>…</p>
+      <p><del>Jeden preparat na raz ułatwia ocenę efektu</del> po 2–4 tygodniach <del>i ogranicza mieszanie wpływu</del>…</p>
+      <p><del>Najbezpieczniejsze interwencje warto dobierać pod kątem</del> chorób i leków…</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="R1" data-tip="R1: Banned AI Vocabulary — usunięto AI-apozycję „adaptogen obniżający kortyzol" z definicji Ashwagandhy"><strong>Ashwagandha</strong> może pomóc po 40tce, ale tylko jako dodatek do snu, ruchu i redukcji stresu.</mark> <mark data-rule="R16" data-tip="R16: Personal Pronouns — „Jeden preparat na raz ułatwia ocenę" → „Jeśli sięgasz po suplementy, wprowadzaj jeden preparat"">Jeśli sięgasz po suplementy, wprowadzaj jeden preparat na raz. Ułatwia to ocenę efektu po 2–4 tygodniach.</mark> <mark data-rule="R8" data-tip="R8: Active Voice — „Najbezpieczniejsze interwencje warto dobierać" (pasywne) → „Najbezpieczniej jest najpierw uwzględnić" (aktywne)">Najbezpieczniej jest najpierw uwzględnić choroby i leki. Dopiero potem rozważ silniej działające zioła.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Badania i objawy -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Badania i objawy <span class="tag">8 → 4 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał — kluczowy problem</div>
+    <div class="diff-block original">
+      <p><strong>Kortyzol ślina</strong>, <del>test kortyzolu ze śliny</del>, pomaga rozpoznać…, <del>gdy pobierasz próbki o właściwych porach i interpretujesz wynik w kontekście</del>…</p>
+      <p><del>Wybór między kortyzolem w krwi…warto ustalić z lekarzem…, ponieważ każde badanie</del>…</p>
+      <p><del>Materiał najlepiej pobierać zgodnie z instrukcją</del> (pora dnia), <del>a godziny snu…warto zapisać, aby wynik dało się rzetelnie zinterpretować</del>.</p>
+      <p>Wynik <del>należy porównywać</del> z normami konkretnego laboratorium, <del>ponieważ metody</del>…</p>
+      <p>Badań lepiej unikać w trakcie infekcji…</p>
+      <p>Pilna konsultacja jest ważna przy nasilonych objawach…<del>lub pracy zmianowej, bo plan pobrań</del>…</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — połączono wybór metody + instrukcje pobierania w jeden akapit"><strong>Kortyzol ślina</strong> to test kortyzolu ze śliny. Pomaga rozpoznać i monitorować wysoki kortyzol po 40tce, o ile pobierasz próbki o właściwych porach.</mark> <mark data-rule="R2" data-tip="R2: Banned Signpost Transitions — „ponieważ każde badanie" → „Każde badanie odpowiada na inne pytanie kliniczne."">Wybór między kortyzolem w krwi, kortyzolem ślina i kortyzolem w moczu 24h warto ustalić z lekarzem. Każde badanie odpowiada na inne pytanie kliniczne.</mark></p>
+
+      <p><mark data-rule="R8" data-tip="R8: Active Voice — „Materiał najlepiej pobierać" → „Materiał pobieraj" (bezpośredni imperatyw)">Materiał pobieraj zgodnie z instrukcją, zwłaszcza co do pory dnia. Zapisz też godziny snu i stresory z dnia badania.</mark> <mark data-rule="NL" data-tip="NL: Natural Language — dodano ludzkie „Takie notatki często ratują interpretację" zamiast formalnego „aby wynik dało się rzetelnie zinterpretować"">Takie notatki często ratują interpretację.</mark> <mark data-rule="R2" data-tip="R2: Banned Signpost Transitions — usunięto drugie „ponieważ" z sekcji">Wynik porównuj z normami konkretnego laboratorium, bo metody analityczne różnią się między placówkami.</mark></p>
+
+      <p><mark data-rule="NR" data-tip="NR: ⚠️ No Repetition — UWAGA: tu reguła NIE zadziałała. „Pilna konsultacja jest ważna… Jest też ważna…" — powtórzony predykat w sąsiednich zdaniach">Pilna konsultacja jest ważna przy nasilonych objawach i przyjmowaniu <strong>glikokortykosteroidów</strong>. <span style="border-bottom:2px wavy var(--r-repetition)">Jest też ważna</span> przy pracy zmianowej, bo plan pobrań i interpretacja zwykle wymagają korekty.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Przyczyny i skutki -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">H2: Przyczyny i skutki <span class="tag">6 → 3 paragrafów</span></div>
+
+  <div class="diff-pair">
+    <div class="diff-label before">Oryginał</div>
+    <div class="diff-block original">
+      <p>Przewlekle podwyższony <strong>kortyzol</strong> po 40tce <del>najczęściej wynika z</del>…<del>a jego skutki obejmują</del>…</p>
+      <p><strong>Zespół Cushinga</strong>, <del>choroba spowodowana przewlekle wysokim kortyzolem</del>, wymaga diagnostyki…</p>
+      <p><strong>Insulinooporność</strong>, <del>zaburzenie metaboliczne powiązane z wysokim kortyzolem</del>, częściej nasila…</p>
+      <p><strong>Menopauza</strong>, <del>okres przejściowy u kobiet po 40tce wpływający na hormony</del>, oraz <strong>andropauza</strong>, <del>spadek testosteronu u mężczyzn po 40tce</del>, mogą dawać objawy…</p>
+    </div>
+    <div class="diff-arrow">↓</div>
+    <div class="diff-label after">Humanizowany</div>
+    <div class="diff-block humanized">
+      <p><mark data-rule="R1" data-tip="R1: Banned AI Vocabulary — usunięto 4 AI-apozycje: „choroba spowodowana…", „zaburzenie metaboliczne…", „okres przejściowy…" → krótkie, bezpośrednie zdania">Przewlekle podwyższony <strong>kortyzol</strong> po 40tce najczęściej wiąże się z długotrwałym stresem. Może też wynikać z niektórych leków lub chorób.</mark> <mark data-rule="R7" data-tip="R7: Concrete over Abstract — dodano konkret „Często przesuwa się ona w stronę brzucha" zamiast abstrakcyjnego „zmiana dystrybucji"">Skutki bywają konkretne: zaburzenia metaboliczne i zmiana dystrybucji tkanki tłuszczowej. Często przesuwa się ona w stronę brzucha.</mark></p>
+
+      <p><mark data-rule="PS" data-tip="PS: Paragraph Structure — Cushing + insulinooporność + menopauza/andropauza w jednym akapicie o diagnostyce różnicowej"><strong>Zespół Cushinga</strong> wymaga diagnostyki, gdy objawy są nasilone i postępują mimo zmian stylu życia. <strong>Insulinooporność</strong> częściej nasila „głód stresowy" i ułatwia tycie w okolicy brzucha.</mark> <mark data-rule="R10" data-tip="R10: Starter Diversity — „Menopauza…oraz andropauza…mogą dawać" → „Do tego dochodzi tło hormonalne. Menopauza…"">Do tego dochodzi tło hormonalne. <strong>Menopauza</strong> u kobiet po 40tce i <strong>andropauza</strong> u mężczyzn mogą dawać podobne objawy.</mark></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION: Podsumowanie zmian -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="diff-section">
+  <div class="section-heading">Podsumowanie: zastosowane reguły <span class="tag">analiza ilościowa</span></div>
+
+  <div class="stats-bar" style="flex-direction:column;gap:12px;">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="stat"><div class="stat-value blue">PS ×14</div><div class="stat-label">Paragraph Structure</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-vocab)">R1 ×5</div><div class="stat-label">Banned AI Vocabulary</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-active)">R8 ×5</div><div class="stat-label">Active Voice</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-transitions)">R2 ×4</div><div class="stat-label">Banned Transitions</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-pronouns)">R16 ×4</div><div class="stat-label">Personal Pronouns</div></div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="stat"><div class="stat-value" style="color:var(--r-rhythm)">R3 ×4</div><div class="stat-label">Sentence Rhythm</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-meaning)">MP ×1</div><div class="stat-label">Meaning Fix</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-rhetorical)">R20 ×2</div><div class="stat-label">Rhetorical Questions</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-natural)">NL ×3</div><div class="stat-label">Natural Language</div></div>
+      <div class="stat"><div class="stat-value" style="color:var(--r-repetition)">NR ×1 ⚠️</div><div class="stat-label">Repetition (bug)</div></div>
+    </div>
+  </div>
+
+  <div class="summary-note">
+    <strong>Największy wpływ:</strong> Reguła <strong>Paragraph Structure</strong> (14 zastosowań) — połączenie jednozdaniowych &lt;p&gt; w płynne akapity 3-6 zdań. 
+    To zmieniło artykuł z „listy faktów" w tekst, który się czyta.<br><br>
+    <strong>Nierozwiązane:</strong> „Pilna konsultacja jest ważna… Jest też ważna…" — powtórzony predykat (reguła NR) mimo 3 iteracji promptu. 
+    Heading h3→h2 — model nadal promuje nagłówki mimo LOCKED rule.
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+  // Auto-open legend on desktop
+  if (window.innerWidth > 1100) {
+    document.querySelector('.legend-panel').classList.add('open');
+  }
+</script>
+
+</body>
+</html>
