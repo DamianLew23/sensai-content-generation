@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
-exports.ArticleIntermediateResult = exports.ArticleIntermediateStats = exports.ArticleIntermediateWarning = exports.FormattingCounts = exports.ArticleOptimizeResult = exports.ArticleOptimizeStats = exports.ArticleOptimizeWarning = exports.ProtectionStats = exports.ArticlePostProductionMeta = exports.DataEnrichmentResult = exports.EnrichmentStats = exports.EnrichmentMeta = exports.EnrichmentWarning = exports.ClaimVerification = exports.VerificationStatus = exports.ExtractedClaim = exports.ClaimTagName = exports.ClaimType = exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
+exports.ArticleHumanizeWarning = exports.ArticleIntermediateResult = exports.ArticleIntermediateStats = exports.ArticleIntermediateWarning = exports.FormattingCounts = exports.ArticleOptimizeResult = exports.ArticleOptimizeStats = exports.ArticleOptimizeWarning = exports.ProtectionStats = exports.ArticlePostProductionMeta = exports.DataEnrichmentResult = exports.EnrichmentStats = exports.EnrichmentMeta = exports.EnrichmentWarning = exports.ClaimVerification = exports.VerificationStatus = exports.ExtractedClaim = exports.ClaimTagName = exports.ClaimType = exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
+exports.ArticleHumanizeResult = exports.ArticleHumanizeStats = exports.ArticleHumanizeSentenceStats = exports.ArticleHumanizeReadability = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -861,4 +862,54 @@ exports.ArticleIntermediateResult = zod_1.z.object({
     stats: exports.ArticleIntermediateStats,
     protection: exports.ProtectionStats,
     warnings: exports.ArticleIntermediateWarning.array(),
+});
+// ===== Plan 16 — Article Humanize =====
+exports.ArticleHumanizeWarning = zod_1.z.object({
+    kind: zod_1.z.enum([
+        "humanize_spans_missing",
+        "humanize_language_probe",
+        "humanize_low_burstiness",
+        "humanize_retry_used",
+        "humanize_retry_rejected_anchors",
+    ]),
+    message: zod_1.z.string().min(1),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.ArticleHumanizeReadability = zod_1.z.object({
+    wordsTotal: zod_1.z.number().int().nonnegative(),
+    sentencesTotal: zod_1.z.number().int().nonnegative(),
+    avgSentenceLength: zod_1.z.number().nonnegative(),
+    longSentencesGtCap: zod_1.z.number().int().nonnegative(),
+    strongSpans: zod_1.z.number().int().nonnegative(),
+    boldTokenCount: zod_1.z.number().int().nonnegative(),
+    boldShare: zod_1.z.number().nonnegative(),
+});
+exports.ArticleHumanizeSentenceStats = zod_1.z.object({
+    varianceInput: zod_1.z.number().nonnegative(),
+    varianceOutput: zod_1.z.number().nonnegative(),
+    cvOutput: zod_1.z.number().nonnegative(),
+    minLength: zod_1.z.number().int().nonnegative(),
+    maxLength: zod_1.z.number().int().nonnegative(),
+    avgLength: zod_1.z.number().nonnegative(),
+});
+exports.ArticleHumanizeStats = zod_1.z.object({
+    inputLength: zod_1.z.number().int().nonnegative(),
+    outputLength: zod_1.z.number().int().nonnegative(),
+    ratio: zod_1.z.number().nonnegative(),
+    sourcesBefore: zod_1.z.number().int().nonnegative(),
+    sourcesAfter: zod_1.z.number().int().nonnegative(),
+    emDashesReplaced: zod_1.z.number().int().nonnegative(),
+    retryUsed: zod_1.z.boolean(),
+    retryAccepted: zod_1.z.boolean(),
+    readability: exports.ArticleHumanizeReadability,
+    sentence: exports.ArticleHumanizeSentenceStats,
+    totalCostUsd: zod_1.z.string(),
+    totalLatencyMs: zod_1.z.number().int().nonnegative(),
+});
+exports.ArticleHumanizeResult = zod_1.z.object({
+    meta: exports.ArticlePostProductionMeta,
+    htmlContent: zod_1.z.string().min(1),
+    stats: exports.ArticleHumanizeStats,
+    protection: exports.ProtectionStats,
+    warnings: exports.ArticleHumanizeWarning.array(),
 });

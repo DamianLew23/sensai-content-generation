@@ -6836,3 +6836,447 @@ export declare const ArticleIntermediateResult: z.ZodObject<{
     };
 }>;
 export type ArticleIntermediateResult = z.infer<typeof ArticleIntermediateResult>;
+export declare const ArticleHumanizeWarning: z.ZodObject<{
+    kind: z.ZodEnum<["humanize_spans_missing", "humanize_language_probe", "humanize_low_burstiness", "humanize_retry_used", "humanize_retry_rejected_anchors"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+    context?: Record<string, string> | undefined;
+}>;
+export type ArticleHumanizeWarning = z.infer<typeof ArticleHumanizeWarning>;
+export declare const ArticleHumanizeReadability: z.ZodObject<{
+    wordsTotal: z.ZodNumber;
+    sentencesTotal: z.ZodNumber;
+    avgSentenceLength: z.ZodNumber;
+    longSentencesGtCap: z.ZodNumber;
+    strongSpans: z.ZodNumber;
+    boldTokenCount: z.ZodNumber;
+    boldShare: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    wordsTotal: number;
+    sentencesTotal: number;
+    avgSentenceLength: number;
+    longSentencesGtCap: number;
+    strongSpans: number;
+    boldTokenCount: number;
+    boldShare: number;
+}, {
+    wordsTotal: number;
+    sentencesTotal: number;
+    avgSentenceLength: number;
+    longSentencesGtCap: number;
+    strongSpans: number;
+    boldTokenCount: number;
+    boldShare: number;
+}>;
+export type ArticleHumanizeReadability = z.infer<typeof ArticleHumanizeReadability>;
+export declare const ArticleHumanizeSentenceStats: z.ZodObject<{
+    varianceInput: z.ZodNumber;
+    varianceOutput: z.ZodNumber;
+    cvOutput: z.ZodNumber;
+    minLength: z.ZodNumber;
+    maxLength: z.ZodNumber;
+    avgLength: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    varianceInput: number;
+    varianceOutput: number;
+    cvOutput: number;
+    minLength: number;
+    maxLength: number;
+    avgLength: number;
+}, {
+    varianceInput: number;
+    varianceOutput: number;
+    cvOutput: number;
+    minLength: number;
+    maxLength: number;
+    avgLength: number;
+}>;
+export type ArticleHumanizeSentenceStats = z.infer<typeof ArticleHumanizeSentenceStats>;
+export declare const ArticleHumanizeStats: z.ZodObject<{
+    inputLength: z.ZodNumber;
+    outputLength: z.ZodNumber;
+    ratio: z.ZodNumber;
+    sourcesBefore: z.ZodNumber;
+    sourcesAfter: z.ZodNumber;
+    emDashesReplaced: z.ZodNumber;
+    retryUsed: z.ZodBoolean;
+    retryAccepted: z.ZodBoolean;
+    readability: z.ZodObject<{
+        wordsTotal: z.ZodNumber;
+        sentencesTotal: z.ZodNumber;
+        avgSentenceLength: z.ZodNumber;
+        longSentencesGtCap: z.ZodNumber;
+        strongSpans: z.ZodNumber;
+        boldTokenCount: z.ZodNumber;
+        boldShare: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        wordsTotal: number;
+        sentencesTotal: number;
+        avgSentenceLength: number;
+        longSentencesGtCap: number;
+        strongSpans: number;
+        boldTokenCount: number;
+        boldShare: number;
+    }, {
+        wordsTotal: number;
+        sentencesTotal: number;
+        avgSentenceLength: number;
+        longSentencesGtCap: number;
+        strongSpans: number;
+        boldTokenCount: number;
+        boldShare: number;
+    }>;
+    sentence: z.ZodObject<{
+        varianceInput: z.ZodNumber;
+        varianceOutput: z.ZodNumber;
+        cvOutput: z.ZodNumber;
+        minLength: z.ZodNumber;
+        maxLength: z.ZodNumber;
+        avgLength: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        varianceInput: number;
+        varianceOutput: number;
+        cvOutput: number;
+        minLength: number;
+        maxLength: number;
+        avgLength: number;
+    }, {
+        varianceInput: number;
+        varianceOutput: number;
+        cvOutput: number;
+        minLength: number;
+        maxLength: number;
+        avgLength: number;
+    }>;
+    totalCostUsd: z.ZodString;
+    totalLatencyMs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    ratio: number;
+    emDashesReplaced: number;
+    retryUsed: boolean;
+    retryAccepted: boolean;
+    readability: {
+        wordsTotal: number;
+        sentencesTotal: number;
+        avgSentenceLength: number;
+        longSentencesGtCap: number;
+        strongSpans: number;
+        boldTokenCount: number;
+        boldShare: number;
+    };
+    sentence: {
+        varianceInput: number;
+        varianceOutput: number;
+        cvOutput: number;
+        minLength: number;
+        maxLength: number;
+        avgLength: number;
+    };
+}, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    ratio: number;
+    emDashesReplaced: number;
+    retryUsed: boolean;
+    retryAccepted: boolean;
+    readability: {
+        wordsTotal: number;
+        sentencesTotal: number;
+        avgSentenceLength: number;
+        longSentencesGtCap: number;
+        strongSpans: number;
+        boldTokenCount: number;
+        boldShare: number;
+    };
+    sentence: {
+        varianceInput: number;
+        varianceOutput: number;
+        cvOutput: number;
+        minLength: number;
+        maxLength: number;
+        avgLength: number;
+    };
+}>;
+export type ArticleHumanizeStats = z.infer<typeof ArticleHumanizeStats>;
+export declare const ArticleHumanizeResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        model: z.ZodString;
+        promptVersion: z.ZodString;
+        generatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }>;
+    htmlContent: z.ZodString;
+    stats: z.ZodObject<{
+        inputLength: z.ZodNumber;
+        outputLength: z.ZodNumber;
+        ratio: z.ZodNumber;
+        sourcesBefore: z.ZodNumber;
+        sourcesAfter: z.ZodNumber;
+        emDashesReplaced: z.ZodNumber;
+        retryUsed: z.ZodBoolean;
+        retryAccepted: z.ZodBoolean;
+        readability: z.ZodObject<{
+            wordsTotal: z.ZodNumber;
+            sentencesTotal: z.ZodNumber;
+            avgSentenceLength: z.ZodNumber;
+            longSentencesGtCap: z.ZodNumber;
+            strongSpans: z.ZodNumber;
+            boldTokenCount: z.ZodNumber;
+            boldShare: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        }, {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        }>;
+        sentence: z.ZodObject<{
+            varianceInput: z.ZodNumber;
+            varianceOutput: z.ZodNumber;
+            cvOutput: z.ZodNumber;
+            minLength: z.ZodNumber;
+            maxLength: z.ZodNumber;
+            avgLength: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        }, {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        }>;
+        totalCostUsd: z.ZodString;
+        totalLatencyMs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        ratio: number;
+        emDashesReplaced: number;
+        retryUsed: boolean;
+        retryAccepted: boolean;
+        readability: {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        };
+        sentence: {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        };
+    }, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        ratio: number;
+        emDashesReplaced: number;
+        retryUsed: boolean;
+        retryAccepted: boolean;
+        readability: {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        };
+        sentence: {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        };
+    }>;
+    protection: z.ZodObject<{
+        srcPlaceholdersTotal: z.ZodNumber;
+        srcPlaceholdersMissing: z.ZodNumber;
+        spansTotal: z.ZodNumber;
+        spansMissing: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["humanize_spans_missing", "humanize_language_probe", "humanize_low_burstiness", "humanize_retry_used", "humanize_retry_rejected_anchors"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        ratio: number;
+        emDashesReplaced: number;
+        retryUsed: boolean;
+        retryAccepted: boolean;
+        readability: {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        };
+        sentence: {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        };
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+        context: Record<string, string>;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        ratio: number;
+        emDashesReplaced: number;
+        retryUsed: boolean;
+        retryAccepted: boolean;
+        readability: {
+            wordsTotal: number;
+            sentencesTotal: number;
+            avgSentenceLength: number;
+            longSentencesGtCap: number;
+            strongSpans: number;
+            boldTokenCount: number;
+            boldShare: number;
+        };
+        sentence: {
+            varianceInput: number;
+            varianceOutput: number;
+            cvOutput: number;
+            minLength: number;
+            maxLength: number;
+            avgLength: number;
+        };
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "humanize_spans_missing" | "humanize_language_probe" | "humanize_low_burstiness" | "humanize_retry_used" | "humanize_retry_rejected_anchors";
+        context?: Record<string, string> | undefined;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}>;
+export type ArticleHumanizeResult = z.infer<typeof ArticleHumanizeResult>;
