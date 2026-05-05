@@ -11,15 +11,23 @@ import { KGAssemblyHandler } from "./kg-assembly.handler";
 import { OutlineGenerateHandler } from "./outline-generate.handler";
 import { OutlineDistributeHandler } from "./outline-distribute.handler";
 import { DraftGenerateHandler } from "./draft-generate.handler";
+import { DataEnrichHandler } from "./data-enrich.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
 import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
 import { DraftGeneratorModule } from "../tools/draft-generator/draft-generator.module";
+import { DataEnricherModule } from "../tools/data-enricher/data-enricher.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
 @Module({
-  imports: [ToolsModule, OutlineGeneratorModule, KGDistributorModule, DraftGeneratorModule],
+  imports: [
+    ToolsModule,
+    OutlineGeneratorModule,
+    KGDistributorModule,
+    DraftGeneratorModule,
+    DataEnricherModule,
+  ],
   providers: [
     BriefHandler,
     SerpFetchHandler,
@@ -33,6 +41,7 @@ import { loadEnv } from "../config/env";
     OutlineGenerateHandler,
     OutlineDistributeHandler,
     DraftGenerateHandler,
+    DataEnrichHandler,
     {
       provide: "YOUCOM_ENV",
       useFactory: () => loadEnv(),
@@ -66,6 +75,10 @@ import { loadEnv } from "../config/env";
       useFactory: () => loadEnv(),
     },
     {
+      provide: "DATA_ENRICH_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
       provide: STEP_HANDLERS,
       useFactory: (
         brief: BriefHandler,
@@ -80,6 +93,7 @@ import { loadEnv } from "../config/env";
         outlineGenerate: OutlineGenerateHandler,
         outlineDistribute: OutlineDistributeHandler,
         draftGenerate: DraftGenerateHandler,
+        dataEnrich: DataEnrichHandler,
       ): StepHandler[] => [
         brief,
         serp,
@@ -93,6 +107,7 @@ import { loadEnv } from "../config/env";
         outlineGenerate,
         outlineDistribute,
         draftGenerate,
+        dataEnrich,
       ],
       inject: [
         BriefHandler,
@@ -107,6 +122,7 @@ import { loadEnv } from "../config/env";
         OutlineGenerateHandler,
         OutlineDistributeHandler,
         DraftGenerateHandler,
+        DataEnrichHandler,
       ],
     },
   ],

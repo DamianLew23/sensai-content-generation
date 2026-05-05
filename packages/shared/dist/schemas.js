@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
-exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
+exports.DataEnrichmentResult = exports.EnrichmentStats = exports.EnrichmentMeta = exports.EnrichmentWarning = exports.ClaimVerification = exports.VerificationStatus = exports.ExtractedClaim = exports.ClaimTagName = exports.ClaimType = exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -724,4 +724,72 @@ exports.DraftGenerationResult = zod_1.z.object({
     imagePrompts: exports.DraftImagePrompt.array(),
     stats: exports.DraftStats,
     warnings: exports.DraftWarning.array(),
+});
+// ===== Plan 14 — Data Enrichment =====
+exports.ClaimType = zod_1.z.enum([
+    "statystyka",
+    "konkretna_data",
+    "trend",
+    "norma_medyczna",
+    "porownanie",
+    "datowane_zdarzenie",
+    "legislacja",
+    "organizacja",
+]);
+exports.ClaimTagName = zod_1.z.enum(["p", "li", "td"]);
+exports.ExtractedClaim = zod_1.z.object({
+    id: zod_1.z.number().int().positive(),
+    paragraphHtml: zod_1.z.string().min(1),
+    claimText: zod_1.z.string().min(1).max(500),
+    context: zod_1.z.string().min(1),
+    claimTypes: exports.ClaimType.array().min(1),
+    score: zod_1.z.number().int().nonnegative(),
+    h2Context: zod_1.z.string().min(1),
+    tagName: exports.ClaimTagName,
+    question: zod_1.z.string().optional(),
+});
+exports.VerificationStatus = zod_1.z.enum(["confirmed", "corrected", "unverified"]);
+exports.ClaimVerification = zod_1.z.object({
+    claimId: zod_1.z.number().int().positive(),
+    status: exports.VerificationStatus,
+    source: zod_1.z.string().default(""),
+    sourceUrl: zod_1.z.string().default(""),
+    correctedValue: zod_1.z.string().optional(),
+    note: zod_1.z.string().default(""),
+});
+exports.EnrichmentWarning = zod_1.z.object({
+    kind: zod_1.z.enum([
+        "enrich_no_claims_found",
+        "enrich_questions_failed",
+        "enrich_verify_failed",
+        "enrich_low_confirmation_rate",
+        "enrich_invalid_url_skipped",
+        "enrich_web_search_cost_untracked",
+    ]),
+    message: zod_1.z.string().min(1),
+    context: zod_1.z.record(zod_1.z.string()).default({}),
+});
+exports.EnrichmentMeta = zod_1.z.object({
+    keyword: zod_1.z.string().min(1),
+    language: zod_1.z.string().min(2).max(10),
+    verifyModel: zod_1.z.string().min(1),
+    questionModel: zod_1.z.string().min(1),
+    generatedAt: zod_1.z.string().datetime(),
+});
+exports.EnrichmentStats = zod_1.z.object({
+    totalClaimsFound: zod_1.z.number().int().nonnegative(),
+    claimsVerified: zod_1.z.number().int().nonnegative(),
+    sourcesAdded: zod_1.z.number().int().nonnegative(),
+    correctionsFlagged: zod_1.z.number().int().nonnegative(),
+    unverified: zod_1.z.number().int().nonnegative(),
+    totalCostUsd: zod_1.z.string(),
+    totalLatencyMs: zod_1.z.number().int().nonnegative(),
+});
+exports.DataEnrichmentResult = zod_1.z.object({
+    meta: exports.EnrichmentMeta,
+    htmlContent: zod_1.z.string().min(1),
+    claims: exports.ExtractedClaim.array(),
+    verifications: exports.ClaimVerification.array(),
+    stats: exports.EnrichmentStats,
+    warnings: exports.EnrichmentWarning.array(),
 });

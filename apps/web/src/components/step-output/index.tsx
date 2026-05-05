@@ -9,6 +9,7 @@ import { KGOutput } from "./kg";
 import { OutlineGenOutput } from "./outline";
 import { DistributeOutput } from "./distribute";
 import { DraftOutput } from "./draft";
+import { DataEnrichOutput } from "./data-enrich";
 import { SerpOutput } from "./serp";
 
 export function StepOutput({
@@ -46,6 +47,8 @@ export function StepOutput({
       return <DistributeOutput value={value} />;
     case "tool.draft.generate":
       return <DraftOutput value={value} />;
+    case "tool.data.enrich":
+      return <DataEnrichOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -63,6 +66,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.kg.assemble" ||
     type === "tool.outline.generate" ||
     type === "tool.outline.distribute" ||
-    type === "tool.draft.generate"
+    type === "tool.draft.generate" ||
+    type === "tool.data.enrich"
   );
 }

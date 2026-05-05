@@ -97,3 +97,54 @@ describe("OpenAIResponsesClient", () => {
     expect(args.text).toBeUndefined();
   });
 });
+
+describe("OpenAIResponsesClient.createBlock", () => {
+  function makeClient(create: ReturnType<typeof vi.fn>) {
+    const sdk = { responses: { create } } as any;
+    const cost = { record: vi.fn() } as any;
+    return new OpenAIResponsesClient(sdk, cost);
+  }
+
+  function fakeResponse() {
+    return {
+      id: "r1",
+      model: "gpt-5.2-2025-12-11",
+      output_text: "ok",
+      usage: { input_tokens: 10, output_tokens: 5 },
+    };
+  }
+
+  it("does NOT include tools when caller omits them", async () => {
+    const create = vi.fn().mockResolvedValue(fakeResponse());
+    const client = makeClient(create);
+
+    await client.createBlock({
+      ctx: { runId: "r", stepId: "s", attempt: 1 },
+      model: "gpt-5.2",
+      system: "sys",
+      input: "hi",
+    });
+
+    const params = create.mock.calls[0][0];
+    expect(params.tools).toBeUndefined();
+    expect(params.tool_choice).toBeUndefined();
+  });
+
+  it("forwards tools and tool_choice when provided", async () => {
+    const create = vi.fn().mockResolvedValue(fakeResponse());
+    const client = makeClient(create);
+
+    await client.createBlock({
+      ctx: { runId: "r", stepId: "s", attempt: 1 },
+      model: "gpt-5.2",
+      system: "sys",
+      input: "hi",
+      tools: [{ type: "web_search_preview" }],
+      toolChoice: "auto",
+    });
+
+    const params = create.mock.calls[0][0];
+    expect(params.tools).toEqual([{ type: "web_search_preview" }]);
+    expect(params.tool_choice).toBe("auto");
+  });
+});

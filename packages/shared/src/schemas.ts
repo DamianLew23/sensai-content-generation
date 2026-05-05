@@ -896,3 +896,90 @@ export const DraftGenerationResult = z.object({
   warnings: DraftWarning.array(),
 });
 export type DraftGenerationResult = z.infer<typeof DraftGenerationResult>;
+
+// ===== Plan 14 — Data Enrichment =====
+
+export const ClaimType = z.enum([
+  "statystyka",
+  "konkretna_data",
+  "trend",
+  "norma_medyczna",
+  "porownanie",
+  "datowane_zdarzenie",
+  "legislacja",
+  "organizacja",
+]);
+export type ClaimType = z.infer<typeof ClaimType>;
+
+export const ClaimTagName = z.enum(["p", "li", "td"]);
+export type ClaimTagName = z.infer<typeof ClaimTagName>;
+
+export const ExtractedClaim = z.object({
+  id: z.number().int().positive(),
+  paragraphHtml: z.string().min(1),
+  claimText: z.string().min(1).max(500),
+  context: z.string().min(1),
+  claimTypes: ClaimType.array().min(1),
+  score: z.number().int().nonnegative(),
+  h2Context: z.string().min(1),
+  tagName: ClaimTagName,
+  question: z.string().optional(),
+});
+export type ExtractedClaim = z.infer<typeof ExtractedClaim>;
+
+export const VerificationStatus = z.enum(["confirmed", "corrected", "unverified"]);
+export type VerificationStatus = z.infer<typeof VerificationStatus>;
+
+export const ClaimVerification = z.object({
+  claimId: z.number().int().positive(),
+  status: VerificationStatus,
+  source: z.string().default(""),
+  sourceUrl: z.string().default(""),
+  correctedValue: z.string().optional(),
+  note: z.string().default(""),
+});
+export type ClaimVerification = z.infer<typeof ClaimVerification>;
+
+export const EnrichmentWarning = z.object({
+  kind: z.enum([
+    "enrich_no_claims_found",
+    "enrich_questions_failed",
+    "enrich_verify_failed",
+    "enrich_low_confirmation_rate",
+    "enrich_invalid_url_skipped",
+    "enrich_web_search_cost_untracked",
+  ]),
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type EnrichmentWarning = z.infer<typeof EnrichmentWarning>;
+
+export const EnrichmentMeta = z.object({
+  keyword: z.string().min(1),
+  language: z.string().min(2).max(10),
+  verifyModel: z.string().min(1),
+  questionModel: z.string().min(1),
+  generatedAt: z.string().datetime(),
+});
+export type EnrichmentMeta = z.infer<typeof EnrichmentMeta>;
+
+export const EnrichmentStats = z.object({
+  totalClaimsFound: z.number().int().nonnegative(),
+  claimsVerified: z.number().int().nonnegative(),
+  sourcesAdded: z.number().int().nonnegative(),
+  correctionsFlagged: z.number().int().nonnegative(),
+  unverified: z.number().int().nonnegative(),
+  totalCostUsd: z.string(),
+  totalLatencyMs: z.number().int().nonnegative(),
+});
+export type EnrichmentStats = z.infer<typeof EnrichmentStats>;
+
+export const DataEnrichmentResult = z.object({
+  meta: EnrichmentMeta,
+  htmlContent: z.string().min(1),
+  claims: ExtractedClaim.array(),
+  verifications: ClaimVerification.array(),
+  stats: EnrichmentStats,
+  warnings: EnrichmentWarning.array(),
+});
+export type DataEnrichmentResult = z.infer<typeof DataEnrichmentResult>;
