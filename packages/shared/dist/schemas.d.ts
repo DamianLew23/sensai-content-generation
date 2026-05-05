@@ -6296,3 +6296,543 @@ export declare const DataEnrichmentResult: z.ZodObject<{
     }[];
 }>;
 export type DataEnrichmentResult = z.infer<typeof DataEnrichmentResult>;
+export declare const ArticlePostProductionMeta: z.ZodObject<{
+    keyword: z.ZodString;
+    language: z.ZodString;
+    model: z.ZodString;
+    promptVersion: z.ZodString;
+    generatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    model: string;
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    promptVersion: string;
+}, {
+    model: string;
+    keyword: string;
+    language: string;
+    generatedAt: string;
+    promptVersion: string;
+}>;
+export type ArticlePostProductionMeta = z.infer<typeof ArticlePostProductionMeta>;
+export declare const ProtectionStats: z.ZodObject<{
+    srcPlaceholdersTotal: z.ZodNumber;
+    srcPlaceholdersMissing: z.ZodNumber;
+    spansTotal: z.ZodNumber;
+    spansMissing: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    srcPlaceholdersTotal: number;
+    srcPlaceholdersMissing: number;
+    spansTotal: number;
+    spansMissing: number;
+}, {
+    srcPlaceholdersTotal: number;
+    srcPlaceholdersMissing: number;
+    spansTotal: number;
+    spansMissing: number;
+}>;
+export type ProtectionStats = z.infer<typeof ProtectionStats>;
+export declare const ArticleOptimizeWarning: z.ZodObject<{
+    kind: z.ZodEnum<["optimize_spans_missing", "optimize_anchors_unwrapped"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+    context?: Record<string, string> | undefined;
+}>;
+export type ArticleOptimizeWarning = z.infer<typeof ArticleOptimizeWarning>;
+export declare const ArticleOptimizeStats: z.ZodObject<{
+    inputLength: z.ZodNumber;
+    outputLength: z.ZodNumber;
+    sourcesBefore: z.ZodNumber;
+    sourcesAfter: z.ZodNumber;
+    anchorsRemoved: z.ZodNumber;
+    totalCostUsd: z.ZodString;
+    totalLatencyMs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    anchorsRemoved: number;
+}, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    anchorsRemoved: number;
+}>;
+export type ArticleOptimizeStats = z.infer<typeof ArticleOptimizeStats>;
+export declare const ArticleOptimizeResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        model: z.ZodString;
+        promptVersion: z.ZodString;
+        generatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }>;
+    htmlContent: z.ZodString;
+    stats: z.ZodObject<{
+        inputLength: z.ZodNumber;
+        outputLength: z.ZodNumber;
+        sourcesBefore: z.ZodNumber;
+        sourcesAfter: z.ZodNumber;
+        anchorsRemoved: z.ZodNumber;
+        totalCostUsd: z.ZodString;
+        totalLatencyMs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        anchorsRemoved: number;
+    }, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        anchorsRemoved: number;
+    }>;
+    protection: z.ZodObject<{
+        srcPlaceholdersTotal: z.ZodNumber;
+        srcPlaceholdersMissing: z.ZodNumber;
+        spansTotal: z.ZodNumber;
+        spansMissing: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["optimize_spans_missing", "optimize_anchors_unwrapped"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        anchorsRemoved: number;
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+        context: Record<string, string>;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        anchorsRemoved: number;
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "optimize_spans_missing" | "optimize_anchors_unwrapped";
+        context?: Record<string, string> | undefined;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}>;
+export type ArticleOptimizeResult = z.infer<typeof ArticleOptimizeResult>;
+export declare const FormattingCounts: z.ZodObject<{
+    strong: z.ZodNumber;
+    italic: z.ZodNumber;
+    blockquote: z.ZodNumber;
+    br: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    strong: number;
+    italic: number;
+    blockquote: number;
+    br: number;
+}, {
+    strong: number;
+    italic: number;
+    blockquote: number;
+    br: number;
+}>;
+export type FormattingCounts = z.infer<typeof FormattingCounts>;
+export declare const ArticleIntermediateWarning: z.ZodObject<{
+    kind: z.ZodEnum<["intermediate_spans_missing"]>;
+    message: z.ZodString;
+    context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    message: string;
+    kind: "intermediate_spans_missing";
+    context: Record<string, string>;
+}, {
+    message: string;
+    kind: "intermediate_spans_missing";
+    context?: Record<string, string> | undefined;
+}>;
+export type ArticleIntermediateWarning = z.infer<typeof ArticleIntermediateWarning>;
+export declare const ArticleIntermediateStats: z.ZodObject<{
+    inputLength: z.ZodNumber;
+    outputLength: z.ZodNumber;
+    growth: z.ZodNumber;
+    sourcesBefore: z.ZodNumber;
+    sourcesAfter: z.ZodNumber;
+    formattingBefore: z.ZodObject<{
+        strong: z.ZodNumber;
+        italic: z.ZodNumber;
+        blockquote: z.ZodNumber;
+        br: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    }, {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    }>;
+    formattingAfter: z.ZodObject<{
+        strong: z.ZodNumber;
+        italic: z.ZodNumber;
+        blockquote: z.ZodNumber;
+        br: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    }, {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    }>;
+    totalCostUsd: z.ZodString;
+    totalLatencyMs: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    growth: number;
+    formattingBefore: {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    };
+    formattingAfter: {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    };
+}, {
+    totalLatencyMs: number;
+    totalCostUsd: string;
+    inputLength: number;
+    outputLength: number;
+    sourcesBefore: number;
+    sourcesAfter: number;
+    growth: number;
+    formattingBefore: {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    };
+    formattingAfter: {
+        strong: number;
+        italic: number;
+        blockquote: number;
+        br: number;
+    };
+}>;
+export type ArticleIntermediateStats = z.infer<typeof ArticleIntermediateStats>;
+export declare const ArticleIntermediateResult: z.ZodObject<{
+    meta: z.ZodObject<{
+        keyword: z.ZodString;
+        language: z.ZodString;
+        model: z.ZodString;
+        promptVersion: z.ZodString;
+        generatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }, {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    }>;
+    htmlContent: z.ZodString;
+    stats: z.ZodObject<{
+        inputLength: z.ZodNumber;
+        outputLength: z.ZodNumber;
+        growth: z.ZodNumber;
+        sourcesBefore: z.ZodNumber;
+        sourcesAfter: z.ZodNumber;
+        formattingBefore: z.ZodObject<{
+            strong: z.ZodNumber;
+            italic: z.ZodNumber;
+            blockquote: z.ZodNumber;
+            br: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        }, {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        }>;
+        formattingAfter: z.ZodObject<{
+            strong: z.ZodNumber;
+            italic: z.ZodNumber;
+            blockquote: z.ZodNumber;
+            br: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        }, {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        }>;
+        totalCostUsd: z.ZodString;
+        totalLatencyMs: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        growth: number;
+        formattingBefore: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+        formattingAfter: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+    }, {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        growth: number;
+        formattingBefore: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+        formattingAfter: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+    }>;
+    protection: z.ZodObject<{
+        srcPlaceholdersTotal: z.ZodNumber;
+        srcPlaceholdersMissing: z.ZodNumber;
+        spansTotal: z.ZodNumber;
+        spansMissing: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }, {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    }>;
+    warnings: z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<["intermediate_spans_missing"]>;
+        message: z.ZodString;
+        context: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        kind: "intermediate_spans_missing";
+        context: Record<string, string>;
+    }, {
+        message: string;
+        kind: "intermediate_spans_missing";
+        context?: Record<string, string> | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        growth: number;
+        formattingBefore: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+        formattingAfter: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "intermediate_spans_missing";
+        context: Record<string, string>;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}, {
+    stats: {
+        totalLatencyMs: number;
+        totalCostUsd: string;
+        inputLength: number;
+        outputLength: number;
+        sourcesBefore: number;
+        sourcesAfter: number;
+        growth: number;
+        formattingBefore: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+        formattingAfter: {
+            strong: number;
+            italic: number;
+            blockquote: number;
+            br: number;
+        };
+    };
+    meta: {
+        model: string;
+        keyword: string;
+        language: string;
+        generatedAt: string;
+        promptVersion: string;
+    };
+    warnings: {
+        message: string;
+        kind: "intermediate_spans_missing";
+        context?: Record<string, string> | undefined;
+    }[];
+    htmlContent: string;
+    protection: {
+        srcPlaceholdersTotal: number;
+        srcPlaceholdersMissing: number;
+        spansTotal: number;
+        spansMissing: number;
+    };
+}>;
+export type ArticleIntermediateResult = z.infer<typeof ArticleIntermediateResult>;

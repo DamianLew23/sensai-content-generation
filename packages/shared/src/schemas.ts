@@ -983,3 +983,91 @@ export const DataEnrichmentResult = z.object({
   warnings: EnrichmentWarning.array(),
 });
 export type DataEnrichmentResult = z.infer<typeof DataEnrichmentResult>;
+
+// ===== Plan 15 — Article Optimize + Intermediate =====
+
+export const ArticlePostProductionMeta = z.object({
+  keyword: z.string().min(1),
+  language: z.string().min(2).max(10),
+  model: z.string().min(1),
+  promptVersion: z.string().min(1),
+  generatedAt: z.string().datetime(),
+});
+export type ArticlePostProductionMeta = z.infer<typeof ArticlePostProductionMeta>;
+
+export const ProtectionStats = z.object({
+  srcPlaceholdersTotal: z.number().int().nonnegative(),
+  srcPlaceholdersMissing: z.number().int().nonnegative(),
+  spansTotal: z.number().int().nonnegative(),
+  spansMissing: z.number().int().nonnegative(),
+});
+export type ProtectionStats = z.infer<typeof ProtectionStats>;
+
+export const ArticleOptimizeWarning = z.object({
+  kind: z.enum([
+    "optimize_spans_missing",
+    "optimize_anchors_unwrapped",
+  ]),
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type ArticleOptimizeWarning = z.infer<typeof ArticleOptimizeWarning>;
+
+export const ArticleOptimizeStats = z.object({
+  inputLength: z.number().int().nonnegative(),
+  outputLength: z.number().int().nonnegative(),
+  sourcesBefore: z.number().int().nonnegative(),
+  sourcesAfter: z.number().int().nonnegative(),
+  anchorsRemoved: z.number().int().nonnegative(),
+  totalCostUsd: z.string(),
+  totalLatencyMs: z.number().int().nonnegative(),
+});
+export type ArticleOptimizeStats = z.infer<typeof ArticleOptimizeStats>;
+
+export const ArticleOptimizeResult = z.object({
+  meta: ArticlePostProductionMeta,
+  htmlContent: z.string().min(1),
+  stats: ArticleOptimizeStats,
+  protection: ProtectionStats,
+  warnings: ArticleOptimizeWarning.array(),
+});
+export type ArticleOptimizeResult = z.infer<typeof ArticleOptimizeResult>;
+
+export const FormattingCounts = z.object({
+  strong: z.number().int().nonnegative(),
+  italic: z.number().int().nonnegative(),
+  blockquote: z.number().int().nonnegative(),
+  br: z.number().int().nonnegative(),
+});
+export type FormattingCounts = z.infer<typeof FormattingCounts>;
+
+export const ArticleIntermediateWarning = z.object({
+  kind: z.enum([
+    "intermediate_spans_missing",
+  ]),
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type ArticleIntermediateWarning = z.infer<typeof ArticleIntermediateWarning>;
+
+export const ArticleIntermediateStats = z.object({
+  inputLength: z.number().int().nonnegative(),
+  outputLength: z.number().int().nonnegative(),
+  growth: z.number(),
+  sourcesBefore: z.number().int().nonnegative(),
+  sourcesAfter: z.number().int().nonnegative(),
+  formattingBefore: FormattingCounts,
+  formattingAfter: FormattingCounts,
+  totalCostUsd: z.string(),
+  totalLatencyMs: z.number().int().nonnegative(),
+});
+export type ArticleIntermediateStats = z.infer<typeof ArticleIntermediateStats>;
+
+export const ArticleIntermediateResult = z.object({
+  meta: ArticlePostProductionMeta,
+  htmlContent: z.string().min(1),
+  stats: ArticleIntermediateStats,
+  protection: ProtectionStats,
+  warnings: ArticleIntermediateWarning.array(),
+});
+export type ArticleIntermediateResult = z.infer<typeof ArticleIntermediateResult>;

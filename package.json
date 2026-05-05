@@ -18,7 +18,9 @@
     "smoke:plan-11": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-11.ts",
     "smoke:plan-12": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-12.ts",
     "smoke:plan-13": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-13.ts",
-    "smoke:plan-14": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-14.ts"
+    "smoke:plan-14": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-14.ts",
+    "smoke:plan-15-optimize": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-15-optimize.ts",
+    "smoke:plan-15-intermediate": "apps/api/node_modules/.bin/tsx --tsconfig apps/api/tsconfig.json scripts/smoke-plan-15-intermediate.ts"
   },
   "engines": {
     "node": ">=20.11",

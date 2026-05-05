@@ -12,11 +12,15 @@ import { OutlineGenerateHandler } from "./outline-generate.handler";
 import { OutlineDistributeHandler } from "./outline-distribute.handler";
 import { DraftGenerateHandler } from "./draft-generate.handler";
 import { DataEnrichHandler } from "./data-enrich.handler";
+import { ArticleOptimizeHandler } from "./article-optimize.handler";
+import { ArticleIntermediateHandler } from "./article-intermediate.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
 import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
 import { DraftGeneratorModule } from "../tools/draft-generator/draft-generator.module";
 import { DataEnricherModule } from "../tools/data-enricher/data-enricher.module";
+import { ArticleOptimizeModule } from "../tools/article-optimize/article-optimize.module";
+import { ArticleIntermediateModule } from "../tools/article-intermediate/article-intermediate.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
@@ -27,6 +31,8 @@ import { loadEnv } from "../config/env";
     KGDistributorModule,
     DraftGeneratorModule,
     DataEnricherModule,
+    ArticleOptimizeModule,
+    ArticleIntermediateModule,
   ],
   providers: [
     BriefHandler,
@@ -79,6 +85,16 @@ import { loadEnv } from "../config/env";
       useFactory: () => loadEnv(),
     },
     {
+      provide: "ARTICLE_OPTIMIZE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    {
+      provide: "ARTICLE_INTERMEDIATE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
+    ArticleOptimizeHandler,
+    ArticleIntermediateHandler,
+    {
       provide: STEP_HANDLERS,
       useFactory: (
         brief: BriefHandler,
@@ -94,6 +110,8 @@ import { loadEnv } from "../config/env";
         outlineDistribute: OutlineDistributeHandler,
         draftGenerate: DraftGenerateHandler,
         dataEnrich: DataEnrichHandler,
+        articleOptimize: ArticleOptimizeHandler,
+        articleIntermediate: ArticleIntermediateHandler,
       ): StepHandler[] => [
         brief,
         serp,
@@ -108,6 +126,8 @@ import { loadEnv } from "../config/env";
         outlineDistribute,
         draftGenerate,
         dataEnrich,
+        articleOptimize,
+        articleIntermediate,
       ],
       inject: [
         BriefHandler,
@@ -123,6 +143,8 @@ import { loadEnv } from "../config/env";
         OutlineDistributeHandler,
         DraftGenerateHandler,
         DataEnrichHandler,
+        ArticleOptimizeHandler,
+        ArticleIntermediateHandler,
       ],
     },
   ],

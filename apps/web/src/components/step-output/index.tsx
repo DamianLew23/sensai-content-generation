@@ -11,6 +11,8 @@ import { DistributeOutput } from "./distribute";
 import { DraftOutput } from "./draft";
 import { DataEnrichOutput } from "./data-enrich";
 import { SerpOutput } from "./serp";
+import { ArticleOptimizeOutput } from "./article-optimize";
+import { ArticleIntermediateOutput } from "./article-intermediate";
 
 export function StepOutput({
   type,
@@ -49,6 +51,10 @@ export function StepOutput({
       return <DraftOutput value={value} />;
     case "tool.data.enrich":
       return <DataEnrichOutput value={value} />;
+    case "tool.article.optimize":
+      return <ArticleOptimizeOutput value={value} />;
+    case "tool.article.intermediate":
+      return <ArticleIntermediateOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -67,6 +73,8 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.outline.generate" ||
     type === "tool.outline.distribute" ||
     type === "tool.draft.generate" ||
-    type === "tool.data.enrich"
+    type === "tool.data.enrich" ||
+    type === "tool.article.optimize" ||
+    type === "tool.article.intermediate"
   );
 }

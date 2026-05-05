@@ -192,6 +192,31 @@ async function main() {
     },
   );
 
+  // Plan 15 — Article Optimize + Intermediate. Terminal at `intermediate`.
+  const blogSeoIntermediate = await upsertTemplate(
+    db,
+    "Blog SEO — full pipeline + draft + enrich + optimize + intermediate",
+    1,
+    {
+      steps: [
+        { key: "fanout",       type: "tool.query.fanout",         auto: true,  dependsOn: [] },
+        { key: "deepResearch", type: "tool.youcom.research",      auto: true,  dependsOn: [] },
+        { key: "research",     type: "tool.serp.fetch",           auto: true,  dependsOn: [] },
+        { key: "scrape",       type: "tool.scrape",               auto: false, dependsOn: ["research"] },
+        { key: "clean",        type: "tool.content.clean",        auto: true,  dependsOn: ["scrape"] },
+        { key: "extract",      type: "tool.content.extract",      auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "entities",     type: "tool.entity.extract",       auto: true,  dependsOn: ["clean", "deepResearch"] },
+        { key: "kg",           type: "tool.kg.assemble",          auto: true,  dependsOn: ["extract", "entities"] },
+        { key: "outlineGen",   type: "tool.outline.generate",     auto: true,  dependsOn: ["fanout"] },
+        { key: "distribute",   type: "tool.outline.distribute",   auto: true,  dependsOn: ["outlineGen", "kg"] },
+        { key: "draftGen",     type: "tool.draft.generate",       auto: true,  dependsOn: ["distribute"] },
+        { key: "enrich",       type: "tool.data.enrich",          auto: true,  dependsOn: ["draftGen"] },
+        { key: "optimize",     type: "tool.article.optimize",     auto: true,  dependsOn: ["enrich"] },
+        { key: "intermediate", type: "tool.article.intermediate", auto: true,  dependsOn: ["optimize"] },
+      ],
+    },
+  );
+
   console.log("Seeded:");
   console.log(`  projectId: ${project.id}`);
   console.log(`  templates:`);
@@ -206,6 +231,7 @@ async function main() {
   console.log(`    "${blogSeoKg.name}" v${blogSeoKg.version}: ${blogSeoKg.id}`);
   console.log(`    "${blogSeoOutline.name}" v${blogSeoOutline.version}: ${blogSeoOutline.id}`);
   console.log(`    "${blogSeoEnrich.name}" v${blogSeoEnrich.version}: ${blogSeoEnrich.id}`);
+  console.log(`    "${blogSeoIntermediate.name}" v${blogSeoIntermediate.version}: ${blogSeoIntermediate.id}`);
 
   await pool.end();
 }
