@@ -56,6 +56,12 @@ export function validateResumeRequest(args: ValidateInput): { ok: true } {
       "Previous step output is not a SerpResult — cannot validate URLs",
     );
   }
+  if (!dto.input || !dto.input.urls) {
+    throw new ResumeValidationError(
+      "urls_not_in_serp", 400,
+      "Scrape resume requires input.urls",
+    );
+  }
   const allowed = new Set(parsed.data.items.map((i) => i.url));
   const seen = new Set<string>();
   const invalid: string[] = [];

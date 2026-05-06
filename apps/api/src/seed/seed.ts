@@ -28,6 +28,11 @@ async function main() {
     guidelines: "Cytuj konkretne liczby tylko gdy masz pewność. Unikaj clickbaitowych nagłówków.",
     defaultModels: { brief: "openai/gpt-5-mini" },
     promptOverrides: {},
+    productPitch: "",
+    domain: "",
+    keyTerms: [],
+    antiTerms: [],
+    competitors: [],
   };
 
   await db
