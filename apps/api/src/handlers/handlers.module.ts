@@ -14,6 +14,7 @@ import { DraftGenerateHandler } from "./draft-generate.handler";
 import { DataEnrichHandler } from "./data-enrich.handler";
 import { ArticleOptimizeHandler } from "./article-optimize.handler";
 import { ArticleIntermediateHandler } from "./article-intermediate.handler";
+import { ArticleHumanizeHandler } from "./article-humanize.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
 import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
@@ -21,6 +22,7 @@ import { DraftGeneratorModule } from "../tools/draft-generator/draft-generator.m
 import { DataEnricherModule } from "../tools/data-enricher/data-enricher.module";
 import { ArticleOptimizeModule } from "../tools/article-optimize/article-optimize.module";
 import { ArticleIntermediateModule } from "../tools/article-intermediate/article-intermediate.module";
+import { ArticleHumanizeModule } from "../tools/article-humanize/article-humanize.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
@@ -33,6 +35,7 @@ import { loadEnv } from "../config/env";
     DataEnricherModule,
     ArticleOptimizeModule,
     ArticleIntermediateModule,
+    ArticleHumanizeModule,
   ],
   providers: [
     BriefHandler,
@@ -92,8 +95,13 @@ import { loadEnv } from "../config/env";
       provide: "ARTICLE_INTERMEDIATE_HANDLER_ENV",
       useFactory: () => loadEnv(),
     },
+    {
+      provide: "ARTICLE_HUMANIZE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
     ArticleOptimizeHandler,
     ArticleIntermediateHandler,
+    ArticleHumanizeHandler,
     {
       provide: STEP_HANDLERS,
       useFactory: (
@@ -112,6 +120,7 @@ import { loadEnv } from "../config/env";
         dataEnrich: DataEnrichHandler,
         articleOptimize: ArticleOptimizeHandler,
         articleIntermediate: ArticleIntermediateHandler,
+        articleHumanize: ArticleHumanizeHandler,
       ): StepHandler[] => [
         brief,
         serp,
@@ -128,6 +137,7 @@ import { loadEnv } from "../config/env";
         dataEnrich,
         articleOptimize,
         articleIntermediate,
+        articleHumanize,
       ],
       inject: [
         BriefHandler,
@@ -145,6 +155,7 @@ import { loadEnv } from "../config/env";
         DataEnrichHandler,
         ArticleOptimizeHandler,
         ArticleIntermediateHandler,
+        ArticleHumanizeHandler,
       ],
     },
   ],

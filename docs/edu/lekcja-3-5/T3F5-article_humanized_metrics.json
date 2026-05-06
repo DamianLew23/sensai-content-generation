@@ -1,0 +1,35 @@
+{
+  "model": "gpt-5.2",
+  "level": "balanced",
+  "phase": "humanization_v3.3_file",
+  "sentence_variance": {
+    "original": 194.81,
+    "humanized": 101.31
+  },
+  "sentence_length_range": {
+    "min": 1,
+    "max": 120,
+    "avg": 10.9
+  },
+  "readability": {
+    "words_total": 2792,
+    "sentences_total": 240,
+    "avg_sentence_length": 11.63,
+    "long_sentences_gt_cap": 6,
+    "strong_spans": 64,
+    "bold_token_count": 197,
+    "bold_share": 0.0706
+  },
+  "length": {
+    "input": 21389,
+    "output": 22832,
+    "ratio": 1.067
+  },
+  "numbers_protected": 138,
+  "warnings": [],
+  "sources": {
+    "input_count": 6,
+    "output_count": 6,
+    "all_preserved": true
+  }
+}

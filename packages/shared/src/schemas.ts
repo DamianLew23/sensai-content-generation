@@ -1071,3 +1071,64 @@ export const ArticleIntermediateResult = z.object({
   warnings: ArticleIntermediateWarning.array(),
 });
 export type ArticleIntermediateResult = z.infer<typeof ArticleIntermediateResult>;
+
+// ===== Plan 16 — Article Humanize =====
+
+export const ArticleHumanizeWarning = z.object({
+  kind: z.enum([
+    "humanize_spans_missing",
+    "humanize_language_probe",
+    "humanize_low_burstiness",
+    "humanize_retry_used",
+    "humanize_retry_rejected_anchors",
+  ]),
+  message: z.string().min(1),
+  context: z.record(z.string()).default({}),
+});
+export type ArticleHumanizeWarning = z.infer<typeof ArticleHumanizeWarning>;
+
+export const ArticleHumanizeReadability = z.object({
+  wordsTotal: z.number().int().nonnegative(),
+  sentencesTotal: z.number().int().nonnegative(),
+  avgSentenceLength: z.number().nonnegative(),
+  longSentencesGtCap: z.number().int().nonnegative(),
+  strongSpans: z.number().int().nonnegative(),
+  boldTokenCount: z.number().int().nonnegative(),
+  boldShare: z.number().nonnegative(),
+});
+export type ArticleHumanizeReadability = z.infer<typeof ArticleHumanizeReadability>;
+
+export const ArticleHumanizeSentenceStats = z.object({
+  varianceInput: z.number().nonnegative(),
+  varianceOutput: z.number().nonnegative(),
+  cvOutput: z.number().nonnegative(),
+  minLength: z.number().int().nonnegative(),
+  maxLength: z.number().int().nonnegative(),
+  avgLength: z.number().nonnegative(),
+});
+export type ArticleHumanizeSentenceStats = z.infer<typeof ArticleHumanizeSentenceStats>;
+
+export const ArticleHumanizeStats = z.object({
+  inputLength: z.number().int().nonnegative(),
+  outputLength: z.number().int().nonnegative(),
+  ratio: z.number().nonnegative(),
+  sourcesBefore: z.number().int().nonnegative(),
+  sourcesAfter: z.number().int().nonnegative(),
+  emDashesReplaced: z.number().int().nonnegative(),
+  retryUsed: z.boolean(),
+  retryAccepted: z.boolean(),
+  readability: ArticleHumanizeReadability,
+  sentence: ArticleHumanizeSentenceStats,
+  totalCostUsd: z.string(),
+  totalLatencyMs: z.number().int().nonnegative(),
+});
+export type ArticleHumanizeStats = z.infer<typeof ArticleHumanizeStats>;
+
+export const ArticleHumanizeResult = z.object({
+  meta: ArticlePostProductionMeta,
+  htmlContent: z.string().min(1),
+  stats: ArticleHumanizeStats,
+  protection: ProtectionStats,
+  warnings: ArticleHumanizeWarning.array(),
+});
+export type ArticleHumanizeResult = z.infer<typeof ArticleHumanizeResult>;
