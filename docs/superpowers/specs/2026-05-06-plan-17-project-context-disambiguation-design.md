@@ -80,7 +80,23 @@ Directory: `apps/api/src/tools/topic-disambiguator/`, following the convention o
 
 **Audit trail:** standard `tool-call-recorder` (input snapshot + output snapshot in DB), consistent with all Plan 02+ handlers.
 
-**Mode:** `auto: false`. Operator reviews the seven output fields in UI, edits any of them, clicks "Approve & continue" — only then do `dependsOn` steps (`deepResearch`, `research`) become eligible to run.
+**Mode:** `auto: false`. Operator triggers the disambiguator via the existing `resume` endpoint (the same flow that today triggers `tool.scrape`). The handler runs, produces output, and the step completes.
+
+**Approval gate.** The orchestrator already exposes the `requiresApproval` field on `pipelineSteps` (set automatically when `auto: false`) and pauses the run in `awaiting_approval` status before each such step (`orchestrator.service.ts:84`). To gate research on a human review of the disambiguator output, the new template marks **`deepResearch` and `research` as `auto: false` as well**. The operator clicks resume three times in sequence:
+
+1. resume disambiguate → handler runs, output appears in the run timeline.
+2. (review output; if unhappy, edit `ProjectConfig` and re-run disambiguate via Plan 8 manual rerun + cascade reset).
+3. resume deepResearch (kicks off the 76 s you.com call).
+4. resume research (kicks off the SERP call; can run in parallel with deepResearch since both depend only on `disambiguate`).
+
+After both research steps complete, the rest of the pipeline cascades automatically (`auto: true`). The three-click trade-off keeps the gate explicit without inventing new orchestrator concepts.
+
+**Out of scope for Plan 17:** in-place editing of the disambiguator's output fields. Operators have two recovery paths if the output is wrong:
+
+- Edit `ProjectConfig` (e.g. add to `antiTerms` or refine `productPitch`) and re-run disambiguate via Plan 8 manual rerun. The `dependsOn` cascade resets `deepResearch`/`research` automatically.
+- Edit the `RunInput` topic and start a new run.
+
+In-place output edit could be added in a future plan if real usage shows it's needed (would require a PATCH-step-output endpoint + a "release downstream" mechanism distinct from the resume flow).
 
 **Prompt skeleton:**
 
@@ -159,20 +175,41 @@ Adds a "Kontekst produktu" section to the existing project config form:
 
 Validation is enforced server-side via the Zod schema from §1; the UI mirrors it for inline feedback.
 
-**`DisambiguateOutput` renderer** (`apps/web/src/components/.../DisambiguateOutput.tsx`):
+**`DisambiguateOutput` renderer** (`apps/web/src/components/step-output/disambiguate.tsx`):
 
-Follows the existing per-step renderer convention (`ArticleHumanizeOutput`, `ContentExtractOutput`, etc.). Shows:
+Follows the existing per-step renderer convention (`ArticleHumanizeOutput`, `ContentExtractOutput`, etc. in `apps/web/src/components/step-output/`). Read-only display of the eight output fields:
 
-- Seven editable inputs for output fields (`refinedTopic`, `mainKeyword`, `intent` as dropdown, `contentType`, `researchQuestion`, `serpQueries` as tag-input, `antiAngles` as tag-input).
-- `rationale` as readonly subtitle text.
-- "Approve & continue" button — persists (possibly edited) output and unblocks `dependsOn` steps.
-- Standard "Re-run" affordance from Plan 8 (manual rerun cascades dependsOn reset).
+- `refinedTopic`, `mainKeyword`, `intent`, `contentType`, `researchQuestion` — single-line text rows.
+- `serpQueries`, `antiAngles` — bullet lists.
+- `rationale` — paragraph at the bottom (greyed out).
 
-Registered in the existing component registry (or equivalent) keyed on step type `tool.topic.disambiguate`.
+Registered in `apps/web/src/components/step-output/index.tsx` (the central `StepOutput` switch + `hasRichRenderer` whitelist), keyed on step type `tool.topic.disambiguate`.
 
-### 6. Seed — new template
+The "resume" affordance for `auto: false` steps already exists in the run timeline UI; no new buttons are required for the approval gate. Re-running the disambiguator with edited `ProjectConfig` uses the existing Plan 8 manual rerun path.
+
+### 6. Resume-endpoint validation
+
+`apps/api/src/runs/resume-validation.ts` currently hardcodes a `SerpResult` validator on `prevStepOutput` because the only `auto: false` step today is `tool.scrape` (which needs URLs picked from the prior `tool.serp.fetch` output). Plan 17 introduces three new step types that resume without any operator-supplied input (`tool.topic.disambiguate`, `tool.youcom.research`, `tool.serp.fetch`).
+
+Change: `validateResumeRequest` switches on step type. For `tool.scrape` it keeps the existing URL/SERP validation. For `tool.topic.disambiguate`, `tool.youcom.research`, and `tool.serp.fetch` it returns `{ ok: true }` after the basic status checks — no body validation, since the resume request body is empty for those steps. Step types not in either bucket throw a fail-fast error so future `auto: false` step types must be explicitly opted in.
+
+The corresponding `ResumeStepDto` in `@sensai/shared` (`packages/shared/src/schemas.ts:150`) currently requires `input.urls` (a non-empty URL array). It is changed to make the entire `input` payload optional:
+
+```ts
+export const ResumeStepDto = z.object({
+  input: z.object({
+    urls: z.string().url().array().min(1).max(10),
+  }).optional(),
+});
+```
+
+Existing scrape resumes continue to send `{ input: { urls: [...] } }`; the new disambiguate / youcom / serp resumes send `{}`. The validator above rejects the wrong shape per step type, so the type-system relaxation is safe.
+
+### 7. Seed — new template
 
 `apps/api/src/seed/seed.ts` — adds one new template, leaves all existing templates untouched:
+
+Note `auto: false` on `disambiguate`, `deepResearch`, and `research` — three explicit approval gates that together implement "review disambiguator output before paying for research". All later steps remain `auto: true`.
 
 ```ts
 const blogSeoFullDisambiguate = await upsertTemplate(
@@ -182,8 +219,8 @@ const blogSeoFullDisambiguate = await upsertTemplate(
   {
     steps: [
       { key: "disambiguate", type: "tool.topic.disambiguate", auto: false, dependsOn: [] },
-      { key: "deepResearch", type: "tool.youcom.research",    auto: true,  dependsOn: ["disambiguate"] },
-      { key: "research",     type: "tool.serp.fetch",         auto: true,  dependsOn: ["disambiguate"] },
+      { key: "deepResearch", type: "tool.youcom.research",    auto: false, dependsOn: ["disambiguate"] },
+      { key: "research",     type: "tool.serp.fetch",         auto: false, dependsOn: ["disambiguate"] },
       { key: "scrape",       type: "tool.scrape",             auto: false, dependsOn: ["research"] },
       { key: "clean",        type: "tool.content.clean",      auto: true,  dependsOn: ["scrape"] },
       { key: "extract",      type: "tool.content.extract",    auto: true,  dependsOn: ["clean", "deepResearch"] },
