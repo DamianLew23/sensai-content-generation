@@ -124,6 +124,37 @@ export declare const ResearchBriefing: z.ZodObject<{
     }[];
 }>;
 export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
+export declare const DisambiguateIntent: z.ZodEnum<["informational", "navigational", "transactional", "commercial"]>;
+export type DisambiguateIntent = z.infer<typeof DisambiguateIntent>;
+export declare const DisambiguateOutput: z.ZodObject<{
+    refinedTopic: z.ZodString;
+    mainKeyword: z.ZodString;
+    intent: z.ZodEnum<["informational", "navigational", "transactional", "commercial"]>;
+    contentType: z.ZodString;
+    researchQuestion: z.ZodString;
+    serpQueries: z.ZodArray<z.ZodString, "many">;
+    antiAngles: z.ZodArray<z.ZodString, "many">;
+    rationale: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    refinedTopic: string;
+    mainKeyword: string;
+    intent: "informational" | "navigational" | "transactional" | "commercial";
+    contentType: string;
+    researchQuestion: string;
+    serpQueries: string[];
+    antiAngles: string[];
+    rationale: string;
+}, {
+    refinedTopic: string;
+    mainKeyword: string;
+    intent: "informational" | "navigational" | "transactional" | "commercial";
+    contentType: string;
+    researchQuestion: string;
+    serpQueries: string[];
+    antiAngles: string[];
+    rationale: string;
+}>;
+export type DisambiguateOutput = z.infer<typeof DisambiguateOutput>;
 export declare const ProjectConfig: z.ZodObject<{
     toneOfVoice: z.ZodDefault<z.ZodString>;
     targetAudience: z.ZodDefault<z.ZodString>;
@@ -134,21 +165,29 @@ export declare const ProjectConfig: z.ZodObject<{
         draft: z.ZodOptional<z.ZodString>;
         edit: z.ZodOptional<z.ZodString>;
         seo: z.ZodOptional<z.ZodString>;
+        disambiguate: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         research?: string | undefined;
         brief?: string | undefined;
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
+        disambiguate?: string | undefined;
     }, {
         research?: string | undefined;
         brief?: string | undefined;
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
+        disambiguate?: string | undefined;
     }>>;
     researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
     promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    productPitch: z.ZodDefault<z.ZodString>;
+    domain: z.ZodDefault<z.ZodString>;
+    keyTerms: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    antiTerms: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    competitors: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     toneOfVoice: string;
     targetAudience: string;
@@ -159,8 +198,14 @@ export declare const ProjectConfig: z.ZodObject<{
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
+        disambiguate?: string | undefined;
     };
     promptOverrides: Record<string, string>;
+    productPitch: string;
+    domain: string;
+    keyTerms: string[];
+    antiTerms: string[];
+    competitors: string[];
     researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
 }, {
     toneOfVoice?: string | undefined;
@@ -172,9 +217,15 @@ export declare const ProjectConfig: z.ZodObject<{
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
+        disambiguate?: string | undefined;
     } | undefined;
     researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
     promptOverrides?: Record<string, string> | undefined;
+    productPitch?: string | undefined;
+    domain?: string | undefined;
+    keyTerms?: string[] | undefined;
+    antiTerms?: string[] | undefined;
+    competitors?: string[] | undefined;
 }>;
 export type ProjectConfig = z.infer<typeof ProjectConfig>;
 export declare const RunInput: z.ZodObject<{
@@ -423,21 +474,21 @@ export declare const ScrapeResult: z.ZodObject<{
 }>;
 export type ScrapeResult = z.infer<typeof ScrapeResult>;
 export declare const ResumeStepDto: z.ZodObject<{
-    input: z.ZodObject<{
+    input: z.ZodOptional<z.ZodObject<{
         urls: z.ZodArray<z.ZodString, "many">;
     }, "strip", z.ZodTypeAny, {
         urls: string[];
     }, {
         urls: string[];
-    }>;
+    }>>;
 }, "strip", z.ZodTypeAny, {
-    input: {
+    input?: {
         urls: string[];
-    };
+    } | undefined;
 }, {
-    input: {
+    input?: {
         urls: string[];
-    };
+    } | undefined;
 }>;
 export type ResumeStepDto = z.infer<typeof ResumeStepDto>;
 export declare const CleanedPage: z.ZodObject<{
@@ -984,13 +1035,13 @@ export declare const RelationToMain: z.ZodObject<{
     score: z.ZodNumber;
     rationale: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    rationale: string;
     entityId: string;
     score: number;
-    rationale: string;
 }, {
+    rationale: string;
     entityId: string;
     score: number;
-    rationale: string;
 }>;
 export type RelationToMain = z.infer<typeof RelationToMain>;
 export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
@@ -1066,13 +1117,13 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
         score: z.ZodNumber;
         rationale: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }, {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     metadata: {
@@ -1101,9 +1152,9 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
         evidence: string;
     }[];
     relationToMain: {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }[];
 }, {
     metadata: {
@@ -1132,9 +1183,9 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
         evidence: string;
     }[];
     relationToMain: {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }[];
 }>, {
     metadata: {
@@ -1163,9 +1214,9 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
         evidence: string;
     }[];
     relationToMain: {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }[];
 }, {
     metadata: {
@@ -1194,9 +1245,9 @@ export declare const EntityExtractionResult: z.ZodEffects<z.ZodObject<{
         evidence: string;
     }[];
     relationToMain: {
+        rationale: string;
         entityId: string;
         score: number;
-        rationale: string;
     }[];
 }>;
 export type EntityExtractionResult = z.infer<typeof EntityExtractionResult>;

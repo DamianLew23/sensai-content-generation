@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.KGRelationship = exports.KGMeta = exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
-exports.ArticleHumanizeWarning = exports.ArticleIntermediateResult = exports.ArticleIntermediateStats = exports.ArticleIntermediateWarning = exports.FormattingCounts = exports.ArticleOptimizeResult = exports.ArticleOptimizeStats = exports.ArticleOptimizeWarning = exports.ProtectionStats = exports.ArticlePostProductionMeta = exports.DataEnrichmentResult = exports.EnrichmentStats = exports.EnrichmentMeta = exports.EnrichmentWarning = exports.ClaimVerification = exports.VerificationStatus = exports.ExtractedClaim = exports.ClaimTagName = exports.ClaimType = exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = void 0;
-exports.ArticleHumanizeResult = exports.ArticleHumanizeStats = exports.ArticleHumanizeSentenceStats = exports.ArticleHumanizeReadability = void 0;
+exports.KGCounts = exports.FanOutPaaCall = exports.FanOutClassifyCall = exports.FanOutIntentsCall = exports.QueryFanOutResult = exports.QueryFanOutMetadata = exports.PaaMapping = exports.FanOutIntent = exports.FanOutArea = exports.FanOutClassification = exports.IntentName = exports.EntityExtractionResult = exports.RelationToMain = exports.EntityRelation = exports.Entity = exports.EntityExtractionMetadata = exports.ContextAnalysis = exports.RelationType = exports.EntityType = exports.RerunPreview = exports.ExtractionResult = exports.Ideation = exports.IdeationType = exports.DataPoint = exports.Fact = exports.Priority = exports.FactCategory = exports.ExtractionMetadata = exports.CleanedScrapeResult = exports.CleaningStats = exports.DroppedPage = exports.DroppedPageReason = exports.CleanedPage = exports.ResumeStepDto = exports.ScrapeResult = exports.ScrapeFailure = exports.ScrapeAttempt = exports.ScrapePage = exports.StartRunDto = exports.RunInput = exports.ProjectConfig = exports.DisambiguateOutput = exports.DisambiguateIntent = exports.ResearchBriefing = exports.ResearchSource = exports.ResearchEffort = exports.TemplateStepsDef = exports.StepDef = exports.StepStatus = exports.RunStatus = void 0;
+exports.ArticleIntermediateStats = exports.ArticleIntermediateWarning = exports.FormattingCounts = exports.ArticleOptimizeResult = exports.ArticleOptimizeStats = exports.ArticleOptimizeWarning = exports.ProtectionStats = exports.ArticlePostProductionMeta = exports.DataEnrichmentResult = exports.EnrichmentStats = exports.EnrichmentMeta = exports.EnrichmentWarning = exports.ClaimVerification = exports.VerificationStatus = exports.ExtractedClaim = exports.ClaimTagName = exports.ClaimType = exports.DraftGenerationResult = exports.DraftStats = exports.DraftMeta = exports.DraftWarning = exports.DraftImagePrompt = exports.DraftBlockStats = exports.PassageTrigger = exports.DistributionResult = exports.UnusedKGItems = exports.DistributionStats = exports.CoverageBlock = exports.DistributionWarning = exports.DistributionWarningKind = exports.SectionWithKG = exports.ContextSectionWithKG = exports.FullSectionWithKG = exports.IntroSectionWithKG = exports.OutlineGenerationResult = exports.OutlineGenWarning = exports.OutlineGenWarningKind = exports.OutlineSection = exports.ContextSection = exports.FullSection = exports.IntroSection = exports.OutlineH3 = exports.H3Format = exports.SectionVariant = exports.SectionType = exports.KnowledgeGraph = exports.KGAssemblyWarning = exports.KGMeasurable = exports.KGRelationship = exports.KGMeta = void 0;
+exports.ArticleHumanizeResult = exports.ArticleHumanizeStats = exports.ArticleHumanizeSentenceStats = exports.ArticleHumanizeReadability = exports.ArticleHumanizeWarning = exports.ArticleIntermediateResult = void 0;
 const zod_1 = require("zod");
 exports.RunStatus = zod_1.z.enum([
     "pending",
@@ -73,6 +73,22 @@ exports.ResearchBriefing = zod_1.z.object({
     content: zod_1.z.string(),
     sources: exports.ResearchSource.array(),
 });
+exports.DisambiguateIntent = zod_1.z.enum([
+    "informational",
+    "navigational",
+    "transactional",
+    "commercial",
+]);
+exports.DisambiguateOutput = zod_1.z.object({
+    refinedTopic: zod_1.z.string().min(3),
+    mainKeyword: zod_1.z.string().min(1),
+    intent: exports.DisambiguateIntent,
+    contentType: zod_1.z.string().min(1),
+    researchQuestion: zod_1.z.string().min(3),
+    serpQueries: zod_1.z.array(zod_1.z.string().min(1)).min(1).max(4),
+    antiAngles: zod_1.z.array(zod_1.z.string()),
+    rationale: zod_1.z.string(),
+});
 exports.ProjectConfig = zod_1.z.object({
     toneOfVoice: zod_1.z.string().default(""),
     targetAudience: zod_1.z.string().default(""),
@@ -84,10 +100,17 @@ exports.ProjectConfig = zod_1.z.object({
         draft: zod_1.z.string().optional(),
         edit: zod_1.z.string().optional(),
         seo: zod_1.z.string().optional(),
+        disambiguate: zod_1.z.string().optional(),
     })
         .default({}),
     researchEffort: exports.ResearchEffort.optional(),
     promptOverrides: zod_1.z.record(zod_1.z.string()).default({}),
+    // Plan 17 — domain context for topic disambiguation
+    productPitch: zod_1.z.string().default(""),
+    domain: zod_1.z.string().default(""),
+    keyTerms: zod_1.z.array(zod_1.z.string()).default([]),
+    antiTerms: zod_1.z.array(zod_1.z.string()).default([]),
+    competitors: zod_1.z.array(zod_1.z.string()).default([]),
 });
 exports.RunInput = zod_1.z.object({
     topic: zod_1.z.string().min(3),
@@ -126,9 +149,11 @@ exports.ScrapeResult = zod_1.z.object({
     failures: exports.ScrapeFailure.array(),
 });
 exports.ResumeStepDto = zod_1.z.object({
-    input: zod_1.z.object({
+    input: zod_1.z
+        .object({
         urls: zod_1.z.string().url().array().min(1).max(10),
-    }),
+    })
+        .optional(),
 });
 exports.CleanedPage = zod_1.z.object({
     url: zod_1.z.string().url(),
