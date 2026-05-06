@@ -4,7 +4,10 @@ import { OpenAIResponsesClient } from "../../llm/openai-responses.client";
 import { tokenizeHybrid } from "../article-protect/article-protect.tokenize";
 import { restoreHybrid } from "../article-protect/article-protect.restore";
 import { SOURCE_CITATION_RE } from "../article-protect/article-protect.regex";
-import { extractPlainText } from "../article-protect/article-protect.guards";
+import {
+  extractNumberSet,
+  extractPlainText,
+} from "../article-protect/article-protect.guards";
 import {
   buildHumanizeSystemPrompt,
   buildHumanizeRetryPrompt,
@@ -216,6 +219,45 @@ export class ArticleHumanizeClient {
     const outputLength = finalText.length;
     const sourcesAfter = countMatches(finalHtml, SOURCE_CITATION_RE);
     const ratio = inputLength > 0 ? outputLength / inputLength : 0;
+
+    // ---------- HARD-FAIL GUARDS (5) ----------
+    // GUARD 1: <h1> required.
+    if (!/<h1\b[^>]*>/i.test(finalHtml)) {
+      throw new Error("article.humanize: hard fail — missing <h1>");
+    }
+
+    // GUARD 2: no <a> tags.
+    if (/<a\b[^>]*>/i.test(finalHtml)) {
+      throw new Error("article.humanize: hard fail — <a> anchor added");
+    }
+
+    // GUARD 3: length ratio bounds (two-sided).
+    if (
+      ratio < this.env.ARTICLE_HUMANIZE_MIN_LEN_RATIO ||
+      ratio > this.env.ARTICLE_HUMANIZE_MAX_LEN_RATIO
+    ) {
+      throw new Error(
+        `article.humanize: hard fail — length ratio ${ratio.toFixed(3)} outside [${this.env.ARTICLE_HUMANIZE_MIN_LEN_RATIO}, ${this.env.ARTICLE_HUMANIZE_MAX_LEN_RATIO}]`,
+      );
+    }
+
+    // GUARD 4: numbers preserved.
+    const inputNumbers = extractNumberSet(inputText);
+    const outputNumbers = extractNumberSet(finalText);
+    const lostNumbers = [...inputNumbers].filter((v) => !outputNumbers.has(v));
+    if (lostNumbers.length > 0) {
+      throw new Error(
+        `article.humanize: hard fail — lost numbers: ${lostNumbers.slice(0, 5).join(", ")}`,
+      );
+    }
+
+    // GUARD 5: source citation count.
+    if (sourcesAfter < sourcesBefore) {
+      throw new Error(
+        `article.humanize: hard fail — sources count dropped ${sourcesBefore} → ${sourcesAfter}`,
+      );
+    }
+    // ---------- END GUARDS ----------
 
     const sentence = computeSentenceStats(finalText);
     sentence.varianceInput = inputVariance;

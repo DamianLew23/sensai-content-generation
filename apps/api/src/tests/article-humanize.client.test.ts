@@ -180,3 +180,116 @@ describe("ArticleHumanizeClient.humanize — retry trigger", () => {
     expect(llm.createBlock).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("ArticleHumanizeClient.humanize — hard-fail guards", () => {
+  function llmReturning(html: string) {
+    return {
+      createBlock: vi.fn(async () => ({
+        id: "r",
+        outputText: html,
+        model: "gpt-5.2",
+        promptTokens: 1,
+        completionTokens: 1,
+        costUsd: "0",
+        latencyMs: 1,
+      })),
+    } as any;
+  }
+
+  it("throws when <h1> missing", async () => {
+    const inputHtml = "<h1>T</h1><p>x.</p>";
+    const llm = llmReturning("<p>no heading</p>");
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/missing.*h1/i);
+  });
+
+  it("throws when <a> tags appear in output", async () => {
+    const inputHtml = "<h1>T</h1><p>x.</p>";
+    const llm = llmReturning('<h1>T</h1><p><a href="x">x</a>.</p>');
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/anchor|<a>/i);
+  });
+
+  it("throws when length ratio exceeds upper bound", async () => {
+    const inputHtml = "<h1>T</h1><p>" + "x".repeat(100) + "</p>";
+    // 250 chars of x — ratio 2.5x, way over 1.20.
+    const out = "<h1>T</h1><p>" + "x".repeat(250) + "</p>";
+    const llm = llmReturning(out);
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/length ratio/i);
+  });
+
+  it("throws when length ratio drops below lower bound", async () => {
+    const inputHtml = "<h1>T</h1><p>" + "x".repeat(200) + "</p>";
+    // 50 chars — ratio ≈ 0.25, way below 0.80.
+    const out = "<h1>T</h1><p>" + "x".repeat(50) + "</p>";
+    const llm = llmReturning(out);
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/length ratio/i);
+  });
+
+  it("throws when numbers are lost", async () => {
+    // Input/output lengths must be similar so the length-ratio guard does not
+    // fire first (guard order is h1 → anchor → ratio → numbers → sources).
+    const inputHtml =
+      "<h1>Tytuł testowy artykułu</h1><p>Spada o 20% w 2024.</p>";
+    const llm = llmReturning(
+      "<h1>Tytuł testowy artykułu</h1><p>Spada wyraźnie w 2024.</p>",
+    );
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/lost.*number/i);
+  });
+
+  it("throws when source citation count drops", async () => {
+    // Source has no numbers (no year) so the number guard does not fire first.
+    const inputHtml =
+      "<h1>Tytuł</h1><p>Tekst dłuższy o pewnym temacie (Źródło: WHO — who.int).</p>";
+    const llm = llmReturning(
+      "<h1>Tytuł</h1><p>Tekst dłuższy o pewnym temacie i jeszcze trochę więcej.</p>",
+    );
+    const client = new ArticleHumanizeClient(llm, stubEnv as any);
+    await expect(
+      client.humanize({
+        ctx: { runId: "r", stepId: "s", attempt: 1 },
+        keyword: "k",
+        language: "pl",
+        htmlContent: inputHtml,
+      }),
+    ).rejects.toThrow(/source.*lost|placeholder|sources count/i);
+  });
+});
