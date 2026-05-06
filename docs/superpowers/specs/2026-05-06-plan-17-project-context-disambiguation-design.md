@@ -165,15 +165,9 @@ Block is omitted entirely when `antiAngles` is empty (i.e. for runs without disa
 
 ### 5. UI
 
-**Project edit form** (`apps/web/src/components/...`):
+**Project context entry — seed-only for MVP.** The web app today exposes no project edit form (`/projects` is read-only via `projects.controller.ts`). For Plan 17 the new `ProjectConfig` fields are populated by editing `apps/api/src/seed/seed.ts` and re-running `pnpm seed`, matching the existing pattern. Plan 17 adds a second seeded project (`click2docs`) with a fully populated `ProjectConfig` so the smoke test has a realistic fixture and operators can run end-to-end against it.
 
-Adds a "Kontekst produktu" section to the existing project config form:
-
-- `productPitch` — `<textarea>` (2-3 rows)
-- `domain` — `<input type="text">`
-- `keyTerms`, `antiTerms`, `competitors` — tag-input controls (type + Enter adds a tag, click X removes)
-
-Validation is enforced server-side via the Zod schema from §1; the UI mirrors it for inline feedback.
+A full project CRUD UI is out of scope for Plan 17. It can be added in a follow-up plan if real usage shows it's needed.
 
 **`DisambiguateOutput` renderer** (`apps/web/src/components/step-output/disambiguate.tsx`):
 
@@ -247,8 +241,8 @@ Each step is its own commit, mirroring the project's per-plan commit style:
 3. **Orchestrator helper** — `getResolvedRunInput` + unit tests for both branches.
 4. **Downstream integration** — single-line source-of-RunInput swap in `youcom-research.handler.ts`, `serp-fetch.handler.ts`, `query-fanout.handler.ts`, plus `antiAngles` block in `brief.prompt.ts`. Each change paired with a regression test confirming pre-Plan-17 templates still work.
 5. **Seed update** — `blogSeoFullDisambiguate` in `seed.ts`, re-run seed locally.
-6. **UI — project config form** — "Kontekst produktu" section with five fields.
-7. **UI — `DisambiguateOutput` renderer** — component + registry registration.
+6. **Seed — `click2docs` project** — second seeded project with realistic `ProjectConfig` (`productPitch`, `domain`, `keyTerms`, `antiTerms`, `competitors`) so smoke and end-to-end runs have a fixture.
+7. **UI — `DisambiguateOutput` renderer** — read-only component + registration in the `step-output/index.tsx` switch and `hasRichRenderer` whitelist.
 8. **Smoke A** — offline regression script (see §Smoke).
 9. **Smoke B** — manual full-pipeline run by user before merge.
 
