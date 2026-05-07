@@ -100,7 +100,6 @@ exports.ProjectConfig = zod_1.z.object({
         draft: zod_1.z.string().optional(),
         edit: zod_1.z.string().optional(),
         seo: zod_1.z.string().optional(),
-        disambiguate: zod_1.z.string().optional(),
     })
         .default({}),
     researchEffort: exports.ResearchEffort.optional(),

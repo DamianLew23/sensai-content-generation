@@ -165,21 +165,18 @@ export declare const ProjectConfig: z.ZodObject<{
         draft: z.ZodOptional<z.ZodString>;
         edit: z.ZodOptional<z.ZodString>;
         seo: z.ZodOptional<z.ZodString>;
-        disambiguate: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         research?: string | undefined;
         brief?: string | undefined;
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
-        disambiguate?: string | undefined;
     }, {
         research?: string | undefined;
         brief?: string | undefined;
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
-        disambiguate?: string | undefined;
     }>>;
     researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
     promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -198,7 +195,6 @@ export declare const ProjectConfig: z.ZodObject<{
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
-        disambiguate?: string | undefined;
     };
     promptOverrides: Record<string, string>;
     productPitch: string;
@@ -217,7 +213,6 @@ export declare const ProjectConfig: z.ZodObject<{
         draft?: string | undefined;
         edit?: string | undefined;
         seo?: string | undefined;
-        disambiguate?: string | undefined;
     } | undefined;
     researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
     promptOverrides?: Record<string, string> | undefined;

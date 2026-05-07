@@ -112,7 +112,6 @@ export const ProjectConfig = z.object({
       draft: z.string().optional(),
       edit: z.string().optional(),
       seo: z.string().optional(),
-      disambiguate: z.string().optional(),
     })
     .default({}),
   researchEffort: ResearchEffort.optional(),

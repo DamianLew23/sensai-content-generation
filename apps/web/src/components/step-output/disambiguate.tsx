@@ -42,15 +42,15 @@ export function DisambiguateOutput({ value }: { value: unknown }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <Metric label="SERP queries" value={serpQueries.length} />
+        <Metric label="Zapytania SERP" value={serpQueries.length} />
         <Metric label="Anti-angles" value={antiAngles.length} />
-        <Metric label="Content type" value={contentType} />
-        <Metric label="Main keyword" value={mainKeyword} />
+        <Metric label="Typ treści" value={contentType} />
+        <Metric label="Słowo kluczowe" value={mainKeyword} />
       </div>
 
       <section className="rounded-lg border bg-card p-3">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Refined topic
+          Doprecyzowany temat
         </h3>
         <p className="text-sm font-medium">{refinedTopic}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
@@ -61,14 +61,14 @@ export function DisambiguateOutput({ value }: { value: unknown }) {
 
       <section className="rounded-lg border bg-card p-3">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Research question (you.com)
+          Pytanie badawcze (you.com)
         </h3>
         <p className="text-sm">{researchQuestion}</p>
       </section>
 
       <section className="rounded-lg border bg-card p-3">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          SERP queries ({serpQueries.length})
+          Zapytania SERP ({serpQueries.length})
         </h3>
         {serpQueries.length === 0 ? (
           <p className="text-xs text-muted-foreground">Brak.</p>
@@ -86,7 +86,7 @@ export function DisambiguateOutput({ value }: { value: unknown }) {
 
       <section className="rounded-lg border bg-card p-3">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Anti-angles (downstream guards) ({antiAngles.length})
+          Anti-angles (guardy downstream) ({antiAngles.length})
         </h3>
         {antiAngles.length === 0 ? (
           <p className="text-xs text-muted-foreground">Brak.</p>
@@ -101,7 +101,7 @@ export function DisambiguateOutput({ value }: { value: unknown }) {
 
       <section className="rounded-lg border bg-muted/20 p-3">
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Rationale
+          Uzasadnienie
         </h3>
         <p className="text-xs italic text-muted-foreground">{rationale}</p>
       </section>

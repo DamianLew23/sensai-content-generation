@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   getResolvedRunInput,
   getDisambiguateOutput,
@@ -58,5 +58,14 @@ describe("getDisambiguateOutput", () => {
     expect(parsed?.researchQuestion).toBe(disambiguateOutput.researchQuestion);
     expect(parsed?.serpQueries).toHaveLength(2);
     expect(parsed?.antiAngles).toContain("urządzenia fizyczne");
+  });
+
+  it("warns and returns null when DisambiguateOutput appears under a non-canonical step key", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const result = getDisambiguateOutput({ wrongKey: disambiguateOutput });
+    expect(result).toBeNull();
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0][0]).toMatch(/expected/i);
+    warn.mockRestore();
   });
 });

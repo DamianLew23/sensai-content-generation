@@ -47,7 +47,7 @@ async function main() {
       "firmy SaaS (10-200 osób), product managerowie, działy Customer Success, twórcy dokumentacji produktu",
     guidelines:
       "Cytuj konkretne liczby tylko gdy masz pewność. Unikaj clickbaitowych nagłówków. Zawsze osadzaj przykłady w kontekście aplikacji webowych.",
-    defaultModels: { brief: "openai/gpt-5-mini", disambiguate: "openai/gpt-5-mini" },
+    defaultModels: { brief: "openai/gpt-5-mini" },
     promptOverrides: {},
     productPitch:
       "click2docs.pl to SaaS, który automatycznie generuje instrukcje obsługi aplikacji webowych na podstawie nagrań kliknięć użytkownika. Operator nagrywa workflow w aplikacji, click2docs produkuje gotową instrukcję krok-po-kroku z screenshotami i tekstem.",
