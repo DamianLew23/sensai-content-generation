@@ -37,12 +37,20 @@ export default function HomePage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Sens.ai Content Generation</h1>
-        <Link
-          href="/runs/new"
-          className="rounded bg-primary px-4 py-2 text-sm text-primary-foreground"
-        >
-          + Nowy run
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/projects/new"
+            className="rounded border px-4 py-2 text-sm hover:bg-muted/50"
+          >
+            + Nowy projekt
+          </Link>
+          <Link
+            href="/runs/new"
+            className="rounded bg-primary px-4 py-2 text-sm text-primary-foreground"
+          >
+            + Nowy run
+          </Link>
+        </div>
       </header>
 
       <section>

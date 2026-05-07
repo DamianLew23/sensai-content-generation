@@ -1,5 +1,6 @@
-import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
+import { CreateProjectDto } from "@sensai/shared";
 
 @Controller("projects")
 export class ProjectsController {
@@ -13,5 +14,11 @@ export class ProjectsController {
   @Get(":id")
   get(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.svc.findById(id);
+  }
+
+  @Post()
+  create(@Body() body: unknown) {
+    const dto = CreateProjectDto.parse(body);
+    return this.svc.create(dto);
   }
 }

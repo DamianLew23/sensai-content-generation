@@ -1,4 +1,4 @@
-import type { StartRunDto } from "@sensai/shared";
+import type { CreateProjectDto, StartRunDto } from "@sensai/shared";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL!;
 const TOKEN = process.env.NEXT_PUBLIC_API_TOKEN!;
@@ -65,6 +65,11 @@ export interface Run {
 export const api = {
   projects: {
     list: () => apiFetch<Project[]>("/projects"),
+    create: (dto: CreateProjectDto) =>
+      apiFetch<Project>("/projects", {
+        method: "POST",
+        body: JSON.stringify(dto),
+      }),
   },
   templates: {
     list: () => apiFetch<Template[]>("/templates"),

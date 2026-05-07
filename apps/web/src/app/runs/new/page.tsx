@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useProjects, useTemplates, useStartRun } from "@/lib/hooks";
 
 export default function NewRunPage() {
   const router = useRouter();
+  const params = useSearchParams();
   const projects = useProjects();
   const templates = useTemplates();
   const start = useStartRun();
 
-  const [projectId, setProjectId] = useState("");
+  const [projectId, setProjectId] = useState(params.get("projectId") ?? "");
   const [templateId, setTemplateId] = useState("");
   const [topic, setTopic] = useState("");
   const [mainKeyword, setMainKeyword] = useState("");

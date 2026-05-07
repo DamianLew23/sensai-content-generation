@@ -115,6 +115,19 @@ export const StartRunDto = z.object({
 });
 export type StartRunDto = z.infer<typeof StartRunDto>;
 
+export const ProjectSlug = z
+  .string()
+  .min(2)
+  .max(64)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug must be kebab-case (a-z, 0-9, '-')");
+
+export const CreateProjectDto = z.object({
+  slug: ProjectSlug,
+  name: z.string().min(2).max(120),
+  config: ProjectConfig,
+});
+export type CreateProjectDto = z.infer<typeof CreateProjectDto>;
+
 export const ScrapePage = z.object({
   url: z.string().url(),
   title: z.string(),
