@@ -241,6 +241,98 @@ export declare const StartRunDto: z.ZodObject<{
     };
 }>;
 export type StartRunDto = z.infer<typeof StartRunDto>;
+export declare const ProjectSlug: z.ZodString;
+export declare const CreateProjectDto: z.ZodObject<{
+    slug: z.ZodString;
+    name: z.ZodString;
+    config: z.ZodObject<{
+        toneOfVoice: z.ZodDefault<z.ZodString>;
+        targetAudience: z.ZodDefault<z.ZodString>;
+        guidelines: z.ZodDefault<z.ZodString>;
+        defaultModels: z.ZodDefault<z.ZodObject<{
+            research: z.ZodOptional<z.ZodString>;
+            brief: z.ZodOptional<z.ZodString>;
+            draft: z.ZodOptional<z.ZodString>;
+            edit: z.ZodOptional<z.ZodString>;
+            seo: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        }, {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        }>>;
+        researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
+        promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        toneOfVoice: string;
+        targetAudience: string;
+        guidelines: string;
+        defaultModels: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        };
+        promptOverrides: Record<string, string>;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+    }, {
+        toneOfVoice?: string | undefined;
+        targetAudience?: string | undefined;
+        guidelines?: string | undefined;
+        defaultModels?: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        } | undefined;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+        promptOverrides?: Record<string, string> | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    slug: string;
+    name: string;
+    config: {
+        toneOfVoice: string;
+        targetAudience: string;
+        guidelines: string;
+        defaultModels: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        };
+        promptOverrides: Record<string, string>;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+    };
+}, {
+    slug: string;
+    name: string;
+    config: {
+        toneOfVoice?: string | undefined;
+        targetAudience?: string | undefined;
+        guidelines?: string | undefined;
+        defaultModels?: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        } | undefined;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+        promptOverrides?: Record<string, string> | undefined;
+    };
+}>;
+export type CreateProjectDto = z.infer<typeof CreateProjectDto>;
 export declare const ScrapePage: z.ZodObject<{
     url: z.ZodString;
     title: z.ZodString;
