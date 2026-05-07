@@ -15,6 +15,7 @@ import { DataEnrichHandler } from "./data-enrich.handler";
 import { ArticleOptimizeHandler } from "./article-optimize.handler";
 import { ArticleIntermediateHandler } from "./article-intermediate.handler";
 import { ArticleHumanizeHandler } from "./article-humanize.handler";
+import { DisambiguateTopicHandler } from "./disambiguate-topic.handler";
 import { ToolsModule } from "../tools/tools.module";
 import { OutlineGeneratorModule } from "../tools/outline-generator/outline-generator.module";
 import { KGDistributorModule } from "../tools/kg-distributor/kg-distributor.module";
@@ -23,6 +24,7 @@ import { DataEnricherModule } from "../tools/data-enricher/data-enricher.module"
 import { ArticleOptimizeModule } from "../tools/article-optimize/article-optimize.module";
 import { ArticleIntermediateModule } from "../tools/article-intermediate/article-intermediate.module";
 import { ArticleHumanizeModule } from "../tools/article-humanize/article-humanize.module";
+import { TopicDisambiguatorModule } from "../tools/topic-disambiguator/topic-disambiguator.module";
 import { STEP_HANDLERS, type StepHandler } from "../orchestrator/step-handler";
 import { loadEnv } from "../config/env";
 
@@ -36,6 +38,7 @@ import { loadEnv } from "../config/env";
     ArticleOptimizeModule,
     ArticleIntermediateModule,
     ArticleHumanizeModule,
+    TopicDisambiguatorModule,
   ],
   providers: [
     BriefHandler,
@@ -99,9 +102,14 @@ import { loadEnv } from "../config/env";
       provide: "ARTICLE_HUMANIZE_HANDLER_ENV",
       useFactory: () => loadEnv(),
     },
+    {
+      provide: "DISAMBIGUATE_HANDLER_ENV",
+      useFactory: () => loadEnv(),
+    },
     ArticleOptimizeHandler,
     ArticleIntermediateHandler,
     ArticleHumanizeHandler,
+    DisambiguateTopicHandler,
     {
       provide: STEP_HANDLERS,
       useFactory: (
@@ -121,6 +129,7 @@ import { loadEnv } from "../config/env";
         articleOptimize: ArticleOptimizeHandler,
         articleIntermediate: ArticleIntermediateHandler,
         articleHumanize: ArticleHumanizeHandler,
+        disambiguateTopic: DisambiguateTopicHandler,
       ): StepHandler[] => [
         brief,
         serp,
@@ -138,6 +147,7 @@ import { loadEnv } from "../config/env";
         articleOptimize,
         articleIntermediate,
         articleHumanize,
+        disambiguateTopic,
       ],
       inject: [
         BriefHandler,
@@ -156,6 +166,7 @@ import { loadEnv } from "../config/env";
         ArticleOptimizeHandler,
         ArticleIntermediateHandler,
         ArticleHumanizeHandler,
+        DisambiguateTopicHandler,
       ],
     },
   ],
