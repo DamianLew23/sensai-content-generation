@@ -2,6 +2,7 @@ export interface FanoutIntentsUserArgs {
   keyword: string;
   language: string;
   maxAreas: number;
+  seedQueries?: string[];
 }
 
 export interface FanoutClassifyUserArgs {
@@ -52,10 +53,20 @@ Każdy obszar ma:
 - Nie używaj na siłę wszystkich 6 intencji — tylko te, które realnie pasują.
 - Numeracja id obszarów MUSI być globalnie unikalna (A1, A2, A3 ... niezależnie od intencji).`;
 
-const intentsUser = (args: FanoutIntentsUserArgs): string =>
-  `Słowo kluczowe: "${args.keyword}"
+const intentsUser = (args: FanoutIntentsUserArgs): string => {
+  const seedQueries = args.seedQueries ?? [];
+  const base = `Słowo kluczowe: "${args.keyword}"
 Język outputu: ${args.language}
 Maksymalna liczba obszarów na intencję: ${args.maxAreas}`;
+  if (seedQueries.length === 0) return base;
+  const seedsBlock = seedQueries.map((q) => `- ${q}`).join("\n");
+  return `${base}
+
+## Sugerowane warianty od operatora (z disambiguatora):
+${seedsBlock}
+
+Wykorzystaj je jako punkt wyjścia, ale możesz wygenerować szersze wachlarze.`;
+};
 
 const classifySystem = `Jesteś ekspertem semantyki w języku polskim. Sklasyfikuj każdy obszar/temat jako MICRO (sekcja w artykule głównym) lub MACRO (osobny artykuł).
 

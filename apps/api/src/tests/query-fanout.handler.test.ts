@@ -6,6 +6,7 @@ import type {
   FanOutIntentsCall,
   FanOutPaaCall,
 } from "@sensai/shared";
+import { queryFanoutPrompt } from "../prompts/query-fanout.prompt";
 
 const env = {
   QUERY_FANOUT_LANGUAGE: "pl",
@@ -439,5 +440,91 @@ describe("QueryFanOutHandler", () => {
 
     await handler.execute(makeCtx());
     expect(parseFloat(capturedCost!)).toBeCloseTo(0.035, 3);
+  });
+});
+
+describe("QueryFanOutHandler — Plan 17 disambiguator integration", () => {
+  let fanout: {
+    generateIntents: ReturnType<typeof vi.fn>;
+    classify: ReturnType<typeof vi.fn>;
+    assignPaa: ReturnType<typeof vi.fn>;
+  };
+  let dfs: { paaFetch: ReturnType<typeof vi.fn> };
+  let cache: { getOrSet: ReturnType<typeof vi.fn> };
+  let handler: QueryFanOutHandler;
+
+  beforeEach(() => {
+    fanout = {
+      generateIntents: vi.fn(),
+      classify: vi.fn(),
+      assignPaa: vi.fn(),
+    };
+    dfs = { paaFetch: vi.fn() };
+    cache = { getOrSet: vi.fn() };
+    handler = new QueryFanOutHandler(
+      fanout as any,
+      dfs as any,
+      cache as any,
+      { ...env, QUERY_FANOUT_PAA_ENABLED: false },
+    );
+
+    cache.getOrSet.mockImplementationOnce(
+      async (opts: any) => (await opts.fetcher()).result,
+    );
+    fanout.generateIntents.mockResolvedValueOnce({ result: intentsResult, ...stats });
+    fanout.classify.mockResolvedValueOnce({ result: classifyResult, ...stats });
+  });
+
+  it("uses raw RunInput.topic when no disambiguate output is present", async () => {
+    await handler.execute(makeCtx());
+
+    expect(fanout.generateIntents).toHaveBeenCalledOnce();
+    const args = fanout.generateIntents.mock.calls[0][0];
+    expect(args.keyword).toBe("Jak obniżyć kortyzol po 40tce?");
+    expect(args.seedQueries ?? []).toEqual([]);
+
+    // prompt builder should NOT emit the operator-suggested section
+    const prompt = queryFanoutPrompt.intents.user({
+      keyword: args.keyword,
+      language: "pl",
+      maxAreas: 5,
+      seedQueries: args.seedQueries ?? [],
+    });
+    expect(prompt).not.toContain("Sugerowane warianty od operatora");
+  });
+
+  it("uses refinedTopic and passes serpQueries[1..] as seed variants", async () => {
+    const ctx = makeCtx({
+      previousOutputs: {
+        disambiguate: {
+          refinedTopic: "Jak obniżyć kortyzol u kobiet 40+ naturalnie",
+          mainKeyword: "kortyzol kobiety 40+",
+          intent: "informational",
+          contentType: "guide",
+          researchQuestion: "Jak skutecznie obniżyć kortyzol u kobiet po 40 roku życia?",
+          serpQueries: ["primary kw", "seed A", "seed B"],
+          antiAngles: [],
+          rationale: "ok",
+        },
+      },
+    });
+
+    await handler.execute(ctx);
+
+    expect(fanout.generateIntents).toHaveBeenCalledOnce();
+    const args = fanout.generateIntents.mock.calls[0][0];
+    expect(args.keyword).toContain("Jak obniżyć kortyzol u kobiet 40+ naturalnie");
+    expect(args.seedQueries).toEqual(["seed A", "seed B"]);
+
+    const prompt = queryFanoutPrompt.intents.user({
+      keyword: args.keyword,
+      language: "pl",
+      maxAreas: 5,
+      seedQueries: args.seedQueries,
+    });
+    expect(prompt).toContain("Sugerowane warianty od operatora");
+    expect(prompt).toContain("seed A");
+    expect(prompt).toContain("seed B");
+    expect(prompt).not.toContain("primary kw");
   });
 });
