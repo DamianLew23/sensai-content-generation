@@ -14,6 +14,7 @@ import { SerpOutput } from "./serp";
 import { ArticleOptimizeOutput } from "./article-optimize";
 import { ArticleIntermediateOutput } from "./article-intermediate";
 import { ArticleHumanizeOutput } from "./article-humanize";
+import { DisambiguateOutput } from "./disambiguate";
 
 export function StepOutput({
   type,
@@ -58,6 +59,8 @@ export function StepOutput({
       return <ArticleIntermediateOutput value={value} />;
     case "tool.article.humanize":
       return <ArticleHumanizeOutput value={value} />;
+    case "tool.topic.disambiguate":
+      return <DisambiguateOutput value={value} />;
     default:
       return <JsonFallback value={value} />;
   }
@@ -79,6 +82,7 @@ export function hasRichRenderer(type: string): boolean {
     type === "tool.data.enrich" ||
     type === "tool.article.optimize" ||
     type === "tool.article.intermediate" ||
-    type === "tool.article.humanize"
+    type === "tool.article.humanize" ||
+    type === "tool.topic.disambiguate"
   );
 }
