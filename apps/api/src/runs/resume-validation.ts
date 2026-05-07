@@ -25,6 +25,13 @@ interface ValidateInput {
   dto: ResumeStepDto;
 }
 
+const SCRAPE_TYPE = "tool.scrape";
+const NO_INPUT_TYPES = new Set([
+  "tool.topic.disambiguate",
+  "tool.youcom.research",
+  "tool.serp.fetch",
+]);
+
 export function validateResumeRequest(args: ValidateInput): { ok: true } {
   const { run, step, prevStepOutput, dto } = args;
 
@@ -49,6 +56,23 @@ export function validateResumeRequest(args: ValidateInput): { ok: true } {
     );
   }
 
+  const stepType = (step as { type?: string }).type;
+
+  if (stepType === SCRAPE_TYPE) {
+    return validateScrapeResume(prevStepOutput, dto);
+  }
+
+  if (stepType && NO_INPUT_TYPES.has(stepType)) {
+    return { ok: true };
+  }
+
+  throw new ResumeValidationError(
+    "step_not_awaiting", 400,
+    `Unsupported step type for resume: "${stepType ?? "<missing>"}"`,
+  );
+}
+
+function validateScrapeResume(prevStepOutput: unknown, dto: ResumeStepDto): { ok: true } {
   const parsed = SerpResult.safeParse(prevStepOutput);
   if (!parsed.success) {
     throw new ResumeValidationError(
@@ -80,6 +104,5 @@ export function validateResumeRequest(args: ValidateInput): { ok: true } {
       { invalid },
     );
   }
-
   return { ok: true };
 }
