@@ -1,0 +1,35 @@
+{
+  "totalMs": 18078,
+  "output": {
+    "refinedTopic": "Jak napisać instrukcję aplikacji (user guide) dla aplikacji webowej SaaS — praktyczny przewodnik tworzenia dokumentacji produktu i materiałów onboardingowych na podstawie zachowań użytkowników.",
+    "mainKeyword": "instrukcja aplikacji",
+    "intent": "informational",
+    "contentType": "how-to guide",
+    "researchQuestion": "Jak napisać skuteczną instrukcję aplikacji (user guide) dla aplikacji webowej SaaS, która wspiera onboarding i dokumentację produktu, wykorzystując nagrania kliknięć użytkowników i dobre praktyki UX?",
+    "serpQueries": [
+      "jak napisać instrukcję aplikacji webowej user guide onboarding dokumentacja produktu",
+      "przykład instrukcji aplikacji dla SaaS jak stworzyć user guide onboarding",
+      "tworzenie dokumentacji produktu i user guide dla aplikacji webowej krok po kroku",
+      "best practices instrukcja aplikacji onboarding dokumentacja produktu dla SaaS"
+    ],
+    "antiAngles": [
+      "urządzenia fizyczne",
+      "AGD",
+      "sprzęt",
+      "instrukcja obsługi pralki",
+      "DTR",
+      "instrukcja obsługi urządzeń",
+      "manuale sprzętowe",
+      "instrukcje serwisowe dla maszyn",
+      "dokumentacja techniczna urządzeń fizycznych",
+      "poradniki dotyczące instalacji sprzętu"
+    ],
+    "rationale": "Temat został zawężony do aplikacji webowych i SaaS, z naciskiem na user guide, onboarding i dokumentację produktu, aby odpowiadać potrzebom product managerów i firm SaaS korzystających z narzędzi automatyzujących tworzenie instrukcji. Wykluczono wszelkie interpretacje dotyczące sprzętu i urządzeń fizycznych, które nie są częścią niszy projektu."
+  },
+  "passes": {
+    "refinedHitsAppDomain": true,
+    "antiAnglesIncludeAtLeastOneAntiTerm": true,
+    "serpQueriesAvoidAntiTerms": true,
+    "refinedTopicAvoidsAntiTerms": true
+  }
+}
