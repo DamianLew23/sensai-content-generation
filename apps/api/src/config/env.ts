@@ -139,6 +139,10 @@ const EnvSchema = z.object({
     .transform((v) => (typeof v === "boolean" ? v : v.toLowerCase() === "true"))
     .default(true),
   ARTICLE_HUMANIZE_LANG_PROBE_THRESHOLD: z.coerce.number().int().nonnegative().default(8),
+  // ----- Plan 17 — Topic Disambiguator -----
+  DISAMBIGUATE_MODEL: z.string().default("openai/gpt-5-mini"),
+  DISAMBIGUATE_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(14),
+  DISAMBIGUATE_MAX_INPUT_CHARS: z.coerce.number().int().min(1000).default(20_000),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),
   OUTLINE_COVERAGE_MAX_WARNING: z.coerce.number().min(0).max(100).default(95),
   MAX_COST_PER_RUN_USD: z.string().default("5"),
