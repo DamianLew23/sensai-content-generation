@@ -1,16 +1,15 @@
 {
-  "totalMs": 18078,
+  "totalMs": 21285,
   "output": {
-    "refinedTopic": "Jak napisać instrukcję aplikacji (user guide) dla aplikacji webowej SaaS — praktyczny przewodnik tworzenia dokumentacji produktu i materiałów onboardingowych na podstawie zachowań użytkowników.",
+    "refinedTopic": "Jak napisać instrukcję aplikacji (user guide) dla aplikacji webowej, która efektywnie wspiera onboarding użytkownika i stanowi spójną część dokumentacji produktu.",
     "mainKeyword": "instrukcja aplikacji",
     "intent": "informational",
     "contentType": "how-to guide",
-    "researchQuestion": "Jak napisać skuteczną instrukcję aplikacji (user guide) dla aplikacji webowej SaaS, która wspiera onboarding i dokumentację produktu, wykorzystując nagrania kliknięć użytkowników i dobre praktyki UX?",
+    "researchQuestion": "Jak krok po kroku napisać skuteczną instrukcję aplikacji (user guide) dla aplikacji webowej, która usprawnia onboarding nowych użytkowników i jest integralną częścią dokumentacji produktu?",
     "serpQueries": [
       "jak napisać instrukcję aplikacji webowej user guide onboarding dokumentacja produktu",
-      "przykład instrukcji aplikacji dla SaaS jak stworzyć user guide onboarding",
-      "tworzenie dokumentacji produktu i user guide dla aplikacji webowej krok po kroku",
-      "best practices instrukcja aplikacji onboarding dokumentacja produktu dla SaaS"
+      "przykład instrukcji aplikacji (user guide) do onboardingu użytkownika w SaaS",
+      "best practices instrukcja aplikacji dokumentacja produktu onboarding"
     ],
     "antiAngles": [
       "urządzenia fizyczne",
@@ -18,13 +17,13 @@
       "sprzęt",
       "instrukcja obsługi pralki",
       "DTR",
-      "instrukcja obsługi urządzeń",
+      "instrukcja obsługi sprzętu",
       "manuale sprzętowe",
-      "instrukcje serwisowe dla maszyn",
-      "dokumentacja techniczna urządzeń fizycznych",
-      "poradniki dotyczące instalacji sprzętu"
+      "instrukcja montażu urządzeń fizycznych",
+      "produkty fizyczne",
+      "instrukcje serwisowe dla maszyn"
     ],
-    "rationale": "Temat został zawężony do aplikacji webowych i SaaS, z naciskiem na user guide, onboarding i dokumentację produktu, aby odpowiadać potrzebom product managerów i firm SaaS korzystających z narzędzi automatyzujących tworzenie instrukcji. Wykluczono wszelkie interpretacje dotyczące sprzętu i urządzeń fizycznych, które nie są częścią niszy projektu."
+    "rationale": "Temat skupia się konkretne na dokumentacji cyfrowej dla aplikacji webowych i potrzebach SaaS (onboarding, dokumentacja produktu, user guide), co odpowiada grupie docelowej click2docs i odcina się od instrukcji dla sprzętu/AGD. Zestaw zapytań i anti-angles zabezpiecza research przed wejściem w niszę urządzeń fizycznych."
   },
   "passes": {
     "refinedHitsAppDomain": true,
