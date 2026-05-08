@@ -72,6 +72,11 @@ export default function NewProjectPage() {
         defaultModels,
         ...(researchEffort ? { researchEffort } : {}),
         promptOverrides,
+        productPitch: "",
+        domain: "",
+        keyTerms: [],
+        antiTerms: [],
+        competitors: [],
       },
     };
 

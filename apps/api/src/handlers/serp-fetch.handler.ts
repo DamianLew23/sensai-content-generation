@@ -4,6 +4,7 @@ import type { RunInput } from "@sensai/shared";
 import { DataForSeoClient } from "../tools/dataforseo/dataforseo.client";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { SerpFetchParams, type SerpItem, type SerpResult } from "../tools/dataforseo/serp.types";
+import { getDisambiguateOutput, getResolvedRunInput } from "../orchestrator/run-input-resolver";
 
 @Injectable()
 export class SerpFetchHandler implements StepHandler {
@@ -15,13 +16,18 @@ export class SerpFetchHandler implements StepHandler {
   ) {}
 
   async execute(ctx: StepContext): Promise<StepResult> {
-    const input = ctx.run.input as RunInput;
-    if (!input.mainKeyword || input.mainKeyword.trim().length === 0) {
-      throw new Error("mainKeyword is required for tool.serp.fetch");
+    const dis = getDisambiguateOutput(ctx.previousOutputs);
+    const resolved = getResolvedRunInput(ctx.run.input as RunInput, ctx.previousOutputs);
+
+    const keyword = dis?.serpQueries[0]?.trim() || resolved.mainKeyword?.trim();
+    if (!keyword || keyword.length === 0) {
+      throw new Error(
+        "mainKeyword (or disambiguate.serpQueries[0]) is required for tool.serp.fetch",
+      );
     }
 
     const params = SerpFetchParams.parse({
-      keyword: input.mainKeyword.trim(),
+      keyword,
       locationCode: 2616, // Poland
       languageCode: "pl",
       depth: 10,

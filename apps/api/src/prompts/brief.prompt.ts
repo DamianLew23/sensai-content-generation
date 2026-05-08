@@ -58,16 +58,27 @@ function formatDeepResearch(r: ResearchBriefing): string {
 }
 
 export const briefPrompt = {
-  system(project: ProjectRow) {
+  system(project: ProjectRow, antiAngles: string[] = []) {
     const cfg = project.config as ProjectConfig;
-    return [
+    const lines: Array<string | false> = [
       `Jesteś starszym redaktorem i strategiem contentu marki "${project.name}".`,
       cfg.toneOfVoice && `Tone of voice: ${cfg.toneOfVoice}`,
       cfg.targetAudience && `Grupa docelowa: ${cfg.targetAudience}`,
       cfg.guidelines && `Wytyczne brandowe: ${cfg.guidelines}`,
       `Twoim zadaniem jest przygotowanie krótkiego briefu artykułu na podstawie tematu od użytkownika.`,
       `Zwróć odpowiedź wyłącznie jako obiekt JSON zgodny ze schematem.`,
-    ].filter(Boolean).join("\n\n");
+    ];
+    if (antiAngles.length > 0) {
+      lines.push(
+        [
+          "## KRYTYCZNE — UNIKAJ tych interpretacji tematu (są z innej niszy niż projekt):",
+          ...antiAngles.map((a) => `- ${a}`),
+          "",
+          "Jeśli zaproponowany kąt sugeruje którąkolwiek z powyższych interpretacji, ODRZUĆ go i wybierz inny.",
+        ].join("\n"),
+      );
+    }
+    return lines.filter(Boolean).join("\n\n");
   },
   user(
     input: RunInput,

@@ -13,6 +13,7 @@ const step = {
   stepOrder: 2,
   status: "pending",
   requiresApproval: true,
+  type: "tool.scrape",
 } as any;
 
 const prevStepOutput = {
@@ -71,5 +72,59 @@ describe("validateResumeRequest", () => {
       code: "urls_not_in_serp",
       httpStatus: 400,
     }));
+  });
+});
+
+describe("validateResumeRequest — Plan 17 step types (no input validation)", () => {
+  const baseRun = { status: "awaiting_approval", currentStepOrder: 1 } as any;
+  const baseStep = { status: "pending", requiresApproval: true, stepOrder: 1 } as any;
+
+  for (const stepType of [
+    "tool.topic.disambiguate",
+    "tool.youcom.research",
+    "tool.serp.fetch",
+  ]) {
+    it(`accepts an empty resume payload for ${stepType}`, () => {
+      const res = validateResumeRequest({
+        run: baseRun,
+        step: { ...baseStep, type: stepType },
+        prevStepOutput: undefined,
+        dto: {},
+      } as any);
+      expect(res.ok).toBe(true);
+    });
+  }
+
+  it("still rejects scrape resume when URLs are missing from SERP", () => {
+    expect(() =>
+      validateResumeRequest({
+        run: baseRun,
+        step: { ...baseStep, type: "tool.scrape" },
+        prevStepOutput: { items: [{ title: "t", url: "https://allowed.com", description: "", position: 1 }] },
+        dto: { input: { urls: ["https://NOT-allowed.com"] } },
+      } as any),
+    ).toThrow();
+  });
+
+  it("rejects scrape resume when input is missing entirely", () => {
+    expect(() =>
+      validateResumeRequest({
+        run: baseRun,
+        step: { ...baseStep, type: "tool.scrape" },
+        prevStepOutput: { items: [{ title: "t", url: "https://allowed.com", description: "", position: 1 }] },
+        dto: {},
+      } as any),
+    ).toThrow();
+  });
+
+  it("rejects unknown step types fail-fast", () => {
+    expect(() =>
+      validateResumeRequest({
+        run: baseRun,
+        step: { ...baseStep, type: "tool.unknown" },
+        prevStepOutput: undefined,
+        dto: {},
+      } as any),
+    ).toThrow(/unsupported|unknown/i);
   });
 });

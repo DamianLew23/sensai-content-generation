@@ -11,6 +11,10 @@ import {
   type RunInput,
 } from "@sensai/shared";
 import type { Env } from "../config/env";
+import {
+  getResolvedRunInput,
+  getDisambiguateOutput,
+} from "../orchestrator/run-input-resolver";
 
 const FANOUT_TTL_DAYS = 7;
 const PAA_TTL_DAYS = 30;
@@ -44,7 +48,13 @@ export class QueryFanOutHandler implements StepHandler {
   ) {}
 
   async execute(ctx: StepContext): Promise<StepResult> {
-    const keyword = this.composeKeyword(ctx.run.input as RunInput);
+    const resolved = getResolvedRunInput(
+      ctx.run.input as RunInput,
+      ctx.previousOutputs,
+    );
+    const dis = getDisambiguateOutput(ctx.previousOutputs);
+    const seedQueries = dis?.serpQueries.slice(1) ?? [];
+    const keyword = this.composeKeyword(resolved);
     const language = this.env.QUERY_FANOUT_LANGUAGE;
     const model = this.env.QUERY_FANOUT_MODEL;
 
@@ -58,6 +68,7 @@ export class QueryFanOutHandler implements StepHandler {
         paaEnabled: this.env.QUERY_FANOUT_PAA_ENABLED,
         paaDepth: this.env.QUERY_FANOUT_PAA_DEPTH,
         paaMax: this.env.QUERY_FANOUT_PAA_MAX_QUESTIONS,
+        seedQueries,
       },
       ttlSeconds: FANOUT_TTL_DAYS * 24 * 3600,
       runId: ctx.run.id,
@@ -74,6 +85,7 @@ export class QueryFanOutHandler implements StepHandler {
         const intentsCall = await this.fanout.generateIntents({
           ctx: { runId: ctx.run.id, stepId: ctx.step.id, attempt: ctx.attempt },
           keyword,
+          seedQueries,
         });
         totalCost += parseFloat(intentsCall.costUsd ?? "0");
 

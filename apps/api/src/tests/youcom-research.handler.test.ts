@@ -176,3 +176,67 @@ describe("YoucomResearchHandler", () => {
     expect(Number.isInteger(capturedLatency)).toBe(true);
   });
 });
+
+const validDisambiguateOutput = {
+  refinedTopic: "Jak napisać instrukcję obsługi aplikacji webowej",
+  mainKeyword: "instrukcja aplikacji",
+  intent: "informational" as const,
+  contentType: "how-to guide",
+  researchQuestion: "Specific you.com question",
+  serpQueries: ["instrukcja aplikacji webowej", "user guide aplikacji"],
+  antiAngles: ["urządzenia AGD", "instrukcja pralki"],
+  rationale: "Skupiamy się na aplikacjach.",
+};
+
+describe("YoucomResearchHandler — Plan 17 disambiguator integration", () => {
+  let client: { research: ReturnType<typeof vi.fn> };
+  let cache: { getOrSet: ReturnType<typeof vi.fn> };
+  let handler: YoucomResearchHandler;
+
+  beforeEach(() => {
+    client = { research: vi.fn() };
+    cache = { getOrSet: vi.fn() };
+    handler = new YoucomResearchHandler(client as any, cache as unknown as ToolCacheService, env);
+  });
+
+  it("uses disambiguate.researchQuestion as the prompt input when present", async () => {
+    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
+    client.research.mockResolvedValueOnce({
+      output: { content: "x", content_type: "text", sources: [] },
+    });
+
+    const ctx = makeCtx({
+      run: {
+        id: "run-1",
+        input: { topic: "Jak napisać instrukcję", mainKeyword: "instrukcja" },
+      } as any,
+      previousOutputs: { disambiguate: validDisambiguateOutput },
+    });
+    await handler.execute(ctx);
+
+    expect(client.research).toHaveBeenCalledOnce();
+    const clientCall = client.research.mock.calls[0][0];
+    expect(clientCall.input).toContain("Specific you.com question");
+    expect(clientCall.input).not.toContain("Jak napisać instrukcję");
+  });
+
+  it("falls back to legacy prompt.user(runInput, override) when no disambiguate output is present", async () => {
+    cache.getOrSet.mockImplementationOnce(async (opts: any) => (await opts.fetcher()).result);
+    client.research.mockResolvedValueOnce({
+      output: { content: "x", content_type: "text", sources: [] },
+    });
+
+    const ctx = makeCtx({
+      run: {
+        id: "run-1",
+        input: { topic: "Jak napisać instrukcję", mainKeyword: "instrukcja" },
+      } as any,
+      previousOutputs: {},
+    });
+    await handler.execute(ctx);
+
+    expect(client.research).toHaveBeenCalledOnce();
+    const clientCall = client.research.mock.calls[0][0];
+    expect(clientCall.input).toContain("Jak napisać instrukcję");
+  });
+});

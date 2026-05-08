@@ -81,6 +81,26 @@ export const ResearchBriefing = z.object({
 });
 export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
 
+export const DisambiguateIntent = z.enum([
+  "informational",
+  "navigational",
+  "transactional",
+  "commercial",
+]);
+export type DisambiguateIntent = z.infer<typeof DisambiguateIntent>;
+
+export const DisambiguateOutput = z.object({
+  refinedTopic: z.string().min(3),
+  mainKeyword: z.string().min(1),
+  intent: DisambiguateIntent,
+  contentType: z.string().min(1),
+  researchQuestion: z.string().min(3),
+  serpQueries: z.array(z.string().min(1)).min(1).max(4),
+  antiAngles: z.array(z.string()),
+  rationale: z.string(),
+});
+export type DisambiguateOutput = z.infer<typeof DisambiguateOutput>;
+
 export const ProjectConfig = z.object({
   toneOfVoice: z.string().default(""),
   targetAudience: z.string().default(""),
@@ -96,6 +116,12 @@ export const ProjectConfig = z.object({
     .default({}),
   researchEffort: ResearchEffort.optional(),
   promptOverrides: z.record(z.string()).default({}),
+  // Plan 17 — domain context for topic disambiguation
+  productPitch: z.string().default(""),
+  domain: z.string().default(""),
+  keyTerms: z.array(z.string()).default([]),
+  antiTerms: z.array(z.string()).default([]),
+  competitors: z.array(z.string()).default([]),
 });
 export type ProjectConfig = z.infer<typeof ProjectConfig>;
 
@@ -161,9 +187,11 @@ export const ScrapeResult = z.object({
 export type ScrapeResult = z.infer<typeof ScrapeResult>;
 
 export const ResumeStepDto = z.object({
-  input: z.object({
-    urls: z.string().url().array().min(1).max(10),
-  }),
+  input: z
+    .object({
+      urls: z.string().url().array().min(1).max(10),
+    })
+    .optional(),
 });
 export type ResumeStepDto = z.infer<typeof ResumeStepDto>;
 

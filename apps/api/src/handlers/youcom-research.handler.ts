@@ -6,6 +6,7 @@ import { youcomCostUsd } from "../tools/youcom/youcom.types";
 import { youcomResearchPrompt } from "../prompts/youcom-research.prompt";
 import { ResearchBriefing, type ProjectConfig, type ResearchEffort, type RunInput } from "@sensai/shared";
 import type { Env } from "../config/env";
+import { getDisambiguateOutput, getResolvedRunInput } from "../orchestrator/run-input-resolver";
 
 const MAX_INPUT_CHARS = 40_000;
 const TTL_DAYS = 14;
@@ -32,11 +33,16 @@ export class YoucomResearchHandler implements StepHandler {
 
   async execute(ctx: StepContext): Promise<StepResult> {
     const cfg = ctx.project.config as ProjectConfig;
-    const runInput = ctx.run.input as RunInput;
+    const resolved = getResolvedRunInput(ctx.run.input as RunInput, ctx.previousOutputs);
+    const dis = getDisambiguateOutput(ctx.previousOutputs);
 
     const effort: ResearchEffort = cfg.researchEffort ?? this.env.YOUCOM_DEFAULT_EFFORT;
     const override = cfg.promptOverrides?.[this.type];
-    const promptString = youcomResearchPrompt.user(runInput, override);
+    // Prefer the disambiguator's researchQuestion (a full-sentence question shaped for you.com)
+    // when available; fall back to the legacy prompt.user(resolved, override) otherwise.
+    const promptString = dis?.researchQuestion
+      ? dis.researchQuestion
+      : youcomResearchPrompt.user(resolved, override);
 
     this.logger.log(
       {

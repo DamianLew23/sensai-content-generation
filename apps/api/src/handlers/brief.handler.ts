@@ -5,6 +5,10 @@ import type { StepContext, StepHandler, StepResult } from "../orchestrator/step-
 import type { ProjectConfig, RunInput } from "@sensai/shared";
 import { ScrapeResult, ResearchBriefing } from "@sensai/shared";
 import { SerpResult } from "../tools/dataforseo/serp.types";
+import {
+  getResolvedRunInput,
+  getDisambiguateOutput,
+} from "../orchestrator/run-input-resolver";
 
 @Injectable()
 export class BriefHandler implements StepHandler {
@@ -14,7 +18,9 @@ export class BriefHandler implements StepHandler {
 
   async execute(ctx: StepContext): Promise<StepResult> {
     const cfg = ctx.project.config as ProjectConfig;
-    const input = ctx.run.input as RunInput;
+    const resolved = getResolvedRunInput(ctx.run.input as RunInput, ctx.previousOutputs);
+    const dis = getDisambiguateOutput(ctx.previousOutputs);
+    const antiAngles = dis?.antiAngles ?? [];
     const model = cfg.defaultModels?.brief;
 
     const research = SerpResult.safeParse(ctx.previousOutputs.research);
@@ -33,8 +39,8 @@ export class BriefHandler implements StepHandler {
         attempt: ctx.attempt,
         model,
       },
-      system: briefPrompt.system(ctx.project),
-      prompt: briefPrompt.user(input, serpContext, scrapePages, deepResearch),
+      system: briefPrompt.system(ctx.project, antiAngles),
+      prompt: briefPrompt.user(resolved, serpContext, scrapePages, deepResearch),
       schema: briefPrompt.schema,
     });
     return { output: res.object };

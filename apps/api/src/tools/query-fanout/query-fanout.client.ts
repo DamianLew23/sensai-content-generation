@@ -43,12 +43,14 @@ export class QueryFanOutClient {
   async generateIntents(args: {
     ctx: QueryFanOutCallContext;
     keyword: string;
+    seedQueries?: string[];
   }): Promise<IntentsCallResult> {
     const system = queryFanoutPrompt.intents.system(this.env.QUERY_FANOUT_MAX_AREAS_PER_INTENT);
     const user = queryFanoutPrompt.intents.user({
       keyword: args.keyword,
       language: this.env.QUERY_FANOUT_LANGUAGE,
       maxAreas: this.env.QUERY_FANOUT_MAX_AREAS_PER_INTENT,
+      seedQueries: args.seedQueries ?? [],
     });
 
     const res = await this.llm.generateObject({
