@@ -44,8 +44,20 @@ export class SerpFetchHandler implements StepHandler {
 
     // Fetch each query in parallel. Each call goes through the cache so reruns
     // are free. Cache key is sha256 over the params object (per-query).
-    const perQueryRows = await Promise.all(
+    const settled = await Promise.allSettled(
       queries.map((kw) => this.fetchOneQuery(ctx, kw)),
+    );
+    const failures = settled.filter((s) => s.status === "rejected");
+    if (failures.length === settled.length) {
+      // Every query failed — surface the first error so the run fails visibly
+      // (e.g. DataForSEO down, credentials expired, network).
+      const first = failures[0] as PromiseRejectedResult;
+      throw first.reason instanceof Error
+        ? first.reason
+        : new Error(String(first.reason));
+    }
+    const perQueryRows: RawSerpRow[][] = settled.map((s) =>
+      s.status === "fulfilled" ? s.value : [],
     );
 
     // Build a flat lookup table from canonical URL → richest available row,
@@ -114,7 +126,7 @@ export class SerpFetchHandler implements StepHandler {
 
     return this.cache.getOrSet<RawSerpRow[]>({
       tool: "dataforseo",
-      method: "serp.organic.live",
+      method: "serp.organic.live.v2",
       params,
       ttlSeconds: CACHE_TTL_SECONDS,
       runId: ctx.run.id,
