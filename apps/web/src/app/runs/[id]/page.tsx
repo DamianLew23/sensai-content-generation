@@ -14,7 +14,14 @@ import {
   getStepProgress,
 } from "@/lib/run-display";
 import { ApproveScrapeForm } from "./approve-scrape-form";
+import { ApproveStepButton } from "./approve-step-button";
 import { RerunStepPanel } from "./rerun-step-panel";
+
+const NO_INPUT_APPROVAL_TYPES = new Set([
+  "tool.topic.disambiguate",
+  "tool.youcom.research",
+  "tool.serp.fetch",
+]);
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-muted text-muted-foreground",
@@ -59,6 +66,10 @@ export default function RunDetailPage() {
   const currentStep = run.data?.steps.find((s) => s.stepOrder === run.data?.currentStepOrder);
   const isAwaitingScrape =
     run.data?.status === "awaiting_approval" && currentStep?.type === "tool.scrape";
+  const isAwaitingNoInput =
+    run.data?.status === "awaiting_approval" &&
+    !!currentStep?.type &&
+    NO_INPUT_APPROVAL_TYPES.has(currentStep.type);
 
   const prevOutput = isAwaitingScrape
     ? run.data?.steps.find((s) => s.stepOrder === currentStep!.stepOrder - 1)?.output
@@ -171,6 +182,15 @@ export default function RunDetailPage() {
               runId={run.data.id}
               stepId={currentStep.id}
               serpItems={serpItems}
+            />
+          )}
+
+          {isAwaitingNoInput && currentStep && (
+            <ApproveStepButton
+              runId={run.data.id}
+              stepId={currentStep.id}
+              stepKey={currentStep.stepKey}
+              stepType={currentStep.type}
             />
           )}
 

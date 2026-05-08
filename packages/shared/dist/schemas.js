@@ -72,6 +72,8 @@ exports.ResearchSource = zod_1.z.object({
 exports.ResearchBriefing = zod_1.z.object({
     content: zod_1.z.string(),
     sources: exports.ResearchSource.array(),
+    query: zod_1.z.string().optional(),
+    effort: exports.ResearchEffort.optional(),
 });
 exports.DisambiguateIntent = zod_1.z.enum([
     "informational",

@@ -264,15 +264,18 @@ async function main() {
   );
 
   // Plan 16 — Full Pipeline + Humanize. Terminal at `humanize`.
+  // v2: dodano `disambiguate` jako pierwszy step (Plan 17), aby SERP/youcom/fanout
+  // operowały na wzbogaconym kontekstem projektu zapytaniu, nie na surowym mainKeyword.
   const blogSeoHumanize = await upsertTemplate(
     db,
     "Blog SEO — full pipeline + draft + enrich + optimize + intermediate + humanize",
-    1,
+    2,
     {
       steps: [
-        { key: "fanout",       type: "tool.query.fanout",         auto: true,  dependsOn: [] },
-        { key: "deepResearch", type: "tool.youcom.research",      auto: true,  dependsOn: [] },
-        { key: "research",     type: "tool.serp.fetch",           auto: true,  dependsOn: [] },
+        { key: "disambiguate", type: "tool.topic.disambiguate",   auto: false, dependsOn: [] },
+        { key: "fanout",       type: "tool.query.fanout",         auto: true,  dependsOn: ["disambiguate"] },
+        { key: "deepResearch", type: "tool.youcom.research",      auto: true,  dependsOn: ["disambiguate"] },
+        { key: "research",     type: "tool.serp.fetch",           auto: true,  dependsOn: ["disambiguate"] },
         { key: "scrape",       type: "tool.scrape",               auto: false, dependsOn: ["research"] },
         { key: "clean",        type: "tool.content.clean",        auto: true,  dependsOn: ["scrape"] },
         { key: "extract",      type: "tool.content.extract",      auto: true,  dependsOn: ["clean", "deepResearch"] },

@@ -116,6 +116,6 @@ export class YoucomResearchHandler implements StepHandler {
       "youcom-research done",
     );
 
-    return { output: briefing };
+    return { output: { ...briefing, query: promptString, effort } };
   }
 }

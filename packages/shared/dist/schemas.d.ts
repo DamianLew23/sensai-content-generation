@@ -108,6 +108,8 @@ export declare const ResearchBriefing: z.ZodObject<{
         title?: string | undefined;
         snippets?: string[] | undefined;
     }>, "many">;
+    query: z.ZodOptional<z.ZodString>;
+    effort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
 }, "strip", z.ZodTypeAny, {
     content: string;
     sources: {
@@ -115,6 +117,8 @@ export declare const ResearchBriefing: z.ZodObject<{
         snippets: string[];
         title?: string | undefined;
     }[];
+    query?: string | undefined;
+    effort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
 }, {
     content: string;
     sources: {
@@ -122,6 +126,8 @@ export declare const ResearchBriefing: z.ZodObject<{
         title?: string | undefined;
         snippets?: string[] | undefined;
     }[];
+    query?: string | undefined;
+    effort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
 }>;
 export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
 export declare const DisambiguateIntent: z.ZodEnum<["informational", "navigational", "transactional", "commercial"]>;

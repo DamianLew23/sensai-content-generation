@@ -100,10 +100,12 @@ export class RunsService {
     }
 
     await this.db.transaction(async (tx) => {
-      await tx
-        .update(pipelineSteps)
-        .set({ input: parsed.input })
-        .where(eq(pipelineSteps.id, stepId));
+      if (parsed.input !== undefined) {
+        await tx
+          .update(pipelineSteps)
+          .set({ input: parsed.input })
+          .where(eq(pipelineSteps.id, stepId));
+      }
       await tx
         .update(pipelineRuns)
         .set({ status: "running" })

@@ -82,7 +82,7 @@ export const api = {
         method: "POST",
         body: JSON.stringify(dto),
       }),
-    resume: (runId: string, stepId: string, dto: { input: { urls: string[] } }) =>
+    resume: (runId: string, stepId: string, dto: { input?: { urls: string[] } }) =>
       apiFetch<Run & { steps: Step[] }>(`/runs/${runId}/steps/${stepId}/resume`, {
         method: "POST",
         body: JSON.stringify(dto),

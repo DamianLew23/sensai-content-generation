@@ -5,7 +5,20 @@ import remarkGfm from "remark-gfm";
 import { domainOf, EmptyOutput, formatBytes, Metric } from "./shared";
 
 type Source = { url: string; title?: string; snippets?: string[] };
-type Briefing = { content: string; sources: Source[] };
+type Effort = "lite" | "standard" | "deep" | "exhaustive";
+type Briefing = {
+  content: string;
+  sources: Source[];
+  query?: string;
+  effort?: Effort;
+};
+
+const EFFORT_LABEL: Record<Effort, string> = {
+  lite: "Lite",
+  standard: "Standard",
+  deep: "Deep",
+  exhaustive: "Exhaustive",
+};
 
 function isBriefing(v: unknown): v is Briefing {
   if (!v || typeof v !== "object") return false;
@@ -15,14 +28,22 @@ function isBriefing(v: unknown): v is Briefing {
 
 export function DeepResearchOutput({ value }: { value: unknown }) {
   if (!isBriefing(value)) return <EmptyOutput />;
-  const { content, sources } = value;
+  const { content, sources, query, effort } = value;
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Metric label="Źródeł" value={sources.length} />
         <Metric label="Treść" value={formatBytes(content.length)} />
+        {effort && <Metric label="Głębokość" value={EFFORT_LABEL[effort]} />}
       </div>
+
+      {query && (
+        <section className="rounded-lg border bg-card p-4">
+          <h3 className="mb-2 text-sm font-medium">Zapytanie</h3>
+          <p className="whitespace-pre-wrap text-sm text-muted-foreground">{query}</p>
+        </section>
+      )}
 
       <article className="rounded-lg border bg-card p-5">
         <MarkdownBody text={content} />

@@ -78,6 +78,8 @@ export type ResearchSource = z.infer<typeof ResearchSource>;
 export const ResearchBriefing = z.object({
   content: z.string(),
   sources: ResearchSource.array(),
+  query: z.string().optional(),
+  effort: ResearchEffort.optional(),
 });
 export type ResearchBriefing = z.infer<typeof ResearchBriefing>;
 
