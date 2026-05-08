@@ -1,10 +1,18 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
-import type { CreateProjectDto, StartRunDto } from "@sensai/shared";
+import type { CreateProjectDto, StartRunDto, UpdateProjectDto } from "@sensai/shared";
 
 export function useProjects() {
   return useQuery({ queryKey: ["projects"], queryFn: () => api.projects.list() });
+}
+
+export function useProject(id: string | undefined) {
+  return useQuery({
+    queryKey: ["project", id],
+    queryFn: () => api.projects.get(id!),
+    enabled: !!id,
+  });
 }
 
 export function useCreateProject() {
@@ -13,6 +21,17 @@ export function useCreateProject() {
     mutationFn: (dto: CreateProjectDto) => api.projects.create(dto),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useUpdateProject(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: UpdateProjectDto) => api.projects.update(id, dto),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["project", id] });
     },
   });
 }

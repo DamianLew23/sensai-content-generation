@@ -71,13 +71,13 @@ export default function RunDetailPage() {
     !!currentStep?.type &&
     NO_INPUT_APPROVAL_TYPES.has(currentStep.type);
 
-  const prevOutput = isAwaitingScrape
-    ? run.data?.steps.find((s) => s.stepOrder === currentStep!.stepOrder - 1)?.output
+  const serpOutput = isAwaitingScrape
+    ? run.data?.steps.find((s) => s.type === "tool.serp.fetch" && s.status === "completed")?.output
     : null;
 
   const serpItems: Array<{ title: string; url: string; description: string; position: number }> =
-    prevOutput && typeof prevOutput === "object" && Array.isArray((prevOutput as any).items)
-      ? (prevOutput as any).items
+    serpOutput && typeof serpOutput === "object" && Array.isArray((serpOutput as any).items)
+      ? (serpOutput as any).items
       : [];
 
   return (

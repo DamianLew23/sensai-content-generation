@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
 import { projects } from "../db/schema";
-import type { CreateProjectDto } from "@sensai/shared";
+import type { CreateProjectDto, UpdateProjectDto } from "@sensai/shared";
 
 @Injectable()
 export class ProjectsService {
@@ -31,6 +31,19 @@ export class ProjectsService {
       .insert(projects)
       .values({ slug: dto.slug, name: dto.name, config: dto.config })
       .returning();
+    return row;
+  }
+
+  async update(id: string, dto: UpdateProjectDto) {
+    const patch: { name?: string; config?: unknown } = {};
+    if (dto.name !== undefined) patch.name = dto.name;
+    if (dto.config !== undefined) patch.config = dto.config;
+    const [row] = await this.db
+      .update(projects)
+      .set(patch)
+      .where(eq(projects.id, id))
+      .returning();
+    if (!row) throw new NotFoundException(`Project ${id} not found`);
     return row;
   }
 }

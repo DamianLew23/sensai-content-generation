@@ -156,6 +156,16 @@ export const CreateProjectDto = z.object({
 });
 export type CreateProjectDto = z.infer<typeof CreateProjectDto>;
 
+export const UpdateProjectDto = z
+  .object({
+    name: z.string().min(2).max(120).optional(),
+    config: ProjectConfig.optional(),
+  })
+  .refine((v) => v.name !== undefined || v.config !== undefined, {
+    message: "At least one of name, config must be provided",
+  });
+export type UpdateProjectDto = z.infer<typeof UpdateProjectDto>;
+
 export const ScrapePage = z.object({
   url: z.string().url(),
   title: z.string(),

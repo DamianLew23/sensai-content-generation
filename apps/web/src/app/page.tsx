@@ -40,10 +40,10 @@ export default function HomePage() {
         <h1 className="text-2xl font-semibold">Sens.ai Content Generation</h1>
         <div className="flex items-center gap-2">
           <Link
-            href="/projects/new"
+            href="/projects"
             className="rounded border px-4 py-2 text-sm hover:bg-muted/50"
           >
-            + Nowy projekt
+            Projekty
           </Link>
           <Link
             href="/runs/new"

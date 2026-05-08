@@ -410,6 +410,161 @@ export declare const CreateProjectDto: z.ZodObject<{
     };
 }>;
 export type CreateProjectDto = z.infer<typeof CreateProjectDto>;
+export declare const UpdateProjectDto: z.ZodEffects<z.ZodObject<{
+    name: z.ZodOptional<z.ZodString>;
+    config: z.ZodOptional<z.ZodObject<{
+        toneOfVoice: z.ZodDefault<z.ZodString>;
+        targetAudience: z.ZodDefault<z.ZodString>;
+        guidelines: z.ZodDefault<z.ZodString>;
+        defaultModels: z.ZodDefault<z.ZodObject<{
+            research: z.ZodOptional<z.ZodString>;
+            brief: z.ZodOptional<z.ZodString>;
+            draft: z.ZodOptional<z.ZodString>;
+            edit: z.ZodOptional<z.ZodString>;
+            seo: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        }, {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        }>>;
+        researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
+        promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+        productPitch: z.ZodDefault<z.ZodString>;
+        domain: z.ZodDefault<z.ZodString>;
+        keyTerms: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        antiTerms: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        competitors: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        toneOfVoice: string;
+        targetAudience: string;
+        guidelines: string;
+        defaultModels: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        };
+        promptOverrides: Record<string, string>;
+        productPitch: string;
+        domain: string;
+        keyTerms: string[];
+        antiTerms: string[];
+        competitors: string[];
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+    }, {
+        toneOfVoice?: string | undefined;
+        targetAudience?: string | undefined;
+        guidelines?: string | undefined;
+        defaultModels?: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        } | undefined;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+        promptOverrides?: Record<string, string> | undefined;
+        productPitch?: string | undefined;
+        domain?: string | undefined;
+        keyTerms?: string[] | undefined;
+        antiTerms?: string[] | undefined;
+        competitors?: string[] | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    name?: string | undefined;
+    config?: {
+        toneOfVoice: string;
+        targetAudience: string;
+        guidelines: string;
+        defaultModels: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        };
+        promptOverrides: Record<string, string>;
+        productPitch: string;
+        domain: string;
+        keyTerms: string[];
+        antiTerms: string[];
+        competitors: string[];
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+    } | undefined;
+}, {
+    name?: string | undefined;
+    config?: {
+        toneOfVoice?: string | undefined;
+        targetAudience?: string | undefined;
+        guidelines?: string | undefined;
+        defaultModels?: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        } | undefined;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+        promptOverrides?: Record<string, string> | undefined;
+        productPitch?: string | undefined;
+        domain?: string | undefined;
+        keyTerms?: string[] | undefined;
+        antiTerms?: string[] | undefined;
+        competitors?: string[] | undefined;
+    } | undefined;
+}>, {
+    name?: string | undefined;
+    config?: {
+        toneOfVoice: string;
+        targetAudience: string;
+        guidelines: string;
+        defaultModels: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        };
+        promptOverrides: Record<string, string>;
+        productPitch: string;
+        domain: string;
+        keyTerms: string[];
+        antiTerms: string[];
+        competitors: string[];
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+    } | undefined;
+}, {
+    name?: string | undefined;
+    config?: {
+        toneOfVoice?: string | undefined;
+        targetAudience?: string | undefined;
+        guidelines?: string | undefined;
+        defaultModels?: {
+            research?: string | undefined;
+            brief?: string | undefined;
+            draft?: string | undefined;
+            edit?: string | undefined;
+            seo?: string | undefined;
+        } | undefined;
+        researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
+        promptOverrides?: Record<string, string> | undefined;
+        productPitch?: string | undefined;
+        domain?: string | undefined;
+        keyTerms?: string[] | undefined;
+        antiTerms?: string[] | undefined;
+        competitors?: string[] | undefined;
+    } | undefined;
+}>;
+export type UpdateProjectDto = z.infer<typeof UpdateProjectDto>;
 export declare const ScrapePage: z.ZodObject<{
     url: z.ZodString;
     title: z.ZodString;
