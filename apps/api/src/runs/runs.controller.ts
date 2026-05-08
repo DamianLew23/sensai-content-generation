@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
 import { RunsService } from "./runs.service";
 import { StartRunDto } from "@sensai/shared";
 
@@ -25,6 +25,11 @@ export class RunsController {
   @Post(":id/cancel")
   cancel(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.svc.cancel(id);
+  }
+
+  @Delete(":id")
+  remove(@Param("id", new ParseUUIDPipe()) id: string) {
+    return this.svc.delete(id);
   }
 
   @Post(":id/steps/:stepId/resume")

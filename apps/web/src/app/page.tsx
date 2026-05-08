@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useMemo } from "react";
-import { useProjects, useRuns, useTemplates } from "@/lib/hooks";
+import { useDeleteRun, useProjects, useRuns, useTemplates } from "@/lib/hooks";
 import {
   formatDateTime,
   formatDuration,
@@ -23,6 +23,7 @@ export default function HomePage() {
   const runs = useRuns();
   const projects = useProjects();
   const templates = useTemplates();
+  const deleteRun = useDeleteRun();
 
   const projectsById = useMemo(
     () => new Map((projects.data ?? []).map((p) => [p.id, p])),
@@ -103,6 +104,29 @@ export default function HomePage() {
                             krok {progress.current}/{progress.total}
                           </span>
                         )}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (deleteRun.isPending) return;
+                            const title = getRunTitle(r);
+                            if (
+                              !window.confirm(
+                                `Usunąć run „${title}"? Tej operacji nie można cofnąć.`,
+                              )
+                            )
+                              return;
+                            deleteRun.mutate(r.id, {
+                              onError: (err) =>
+                                window.alert(`Nie udało się usunąć: ${String(err)}`),
+                            });
+                          }}
+                          disabled={deleteRun.isPending}
+                          className="text-xs text-red-600 hover:underline disabled:opacity-50"
+                        >
+                          Usuń
+                        </button>
                       </div>
                     </div>
                     <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">

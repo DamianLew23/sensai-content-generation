@@ -98,5 +98,7 @@ export const api = {
       ),
     cancel: (id: string) =>
       apiFetch<Run & { steps: Step[] }>(`/runs/${id}/cancel`, { method: "POST" }),
+    delete: (id: string) =>
+      apiFetch<{ id: string; deleted: true }>(`/runs/${id}`, { method: "DELETE" }),
   },
 };

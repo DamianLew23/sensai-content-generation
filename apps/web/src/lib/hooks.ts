@@ -50,6 +50,17 @@ export function useStartRun() {
   });
 }
 
+export function useDeleteRun() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.runs.delete(id),
+    onSuccess: (_data, id) => {
+      qc.removeQueries({ queryKey: ["run", id] });
+      qc.invalidateQueries({ queryKey: ["runs"] });
+    },
+  });
+}
+
 export function useCancelRun() {
   const qc = useQueryClient();
   return useMutation({

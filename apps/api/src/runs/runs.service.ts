@@ -117,6 +117,19 @@ export class RunsService {
     return this.get(runId);
   }
 
+  async delete(runId: string) {
+    const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
+    if (!run) throw new NotFoundException(`Run ${runId} not found`);
+    if (run.status === "running") {
+      throw new ConflictException({
+        code: "RUN_IS_RUNNING",
+        message: "Anuluj run zanim go usuniesz",
+      });
+    }
+    await this.db.delete(pipelineRuns).where(eq(pipelineRuns.id, runId));
+    return { id: runId, deleted: true };
+  }
+
   async cancel(runId: string) {
     const [run] = await this.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId));
     if (!run) throw new NotFoundException(`Run ${runId} not found`);
