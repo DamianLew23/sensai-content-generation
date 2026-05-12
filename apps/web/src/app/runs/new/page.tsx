@@ -1,15 +1,25 @@
 "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { useProjects, useTemplates, useStartRun } from "@/lib/hooks";
+import { useEffect, useRef, useState } from "react";
+import { useProjects, useRun, useTemplates, useStartRun } from "@/lib/hooks";
+
+type RunInputLike = {
+  topic?: string;
+  mainKeyword?: string;
+  strategicValue?: string;
+  uniqueInsight?: string;
+  additionalKeywords?: string[];
+};
 
 export default function NewRunPage() {
   const router = useRouter();
   const params = useSearchParams();
+  const fromRunId = params.get("fromRunId") ?? undefined;
   const projects = useProjects();
   const templates = useTemplates();
   const start = useStartRun();
+  const sourceRun = useRun(fromRunId);
 
   const [projectId, setProjectId] = useState(params.get("projectId") ?? "");
   const [templateId, setTemplateId] = useState("");
@@ -19,6 +29,23 @@ export default function NewRunPage() {
   const [uniqueInsight, setUniqueInsight] = useState("");
   const [additionalKeywords, setAdditionalKeywords] = useState<string[]>([]);
   const [keywordDraft, setKeywordDraft] = useState("");
+
+  const prefilledRef = useRef(false);
+  useEffect(() => {
+    if (prefilledRef.current) return;
+    if (!fromRunId || !sourceRun.data) return;
+    const input = (sourceRun.data.input ?? {}) as RunInputLike;
+    setProjectId(sourceRun.data.projectId);
+    setTemplateId(sourceRun.data.templateId);
+    setTopic(input.topic ?? "");
+    setMainKeyword(input.mainKeyword ?? "");
+    setStrategicValue(input.strategicValue ?? "");
+    setUniqueInsight(input.uniqueInsight ?? "");
+    setAdditionalKeywords(
+      Array.isArray(input.additionalKeywords) ? input.additionalKeywords : [],
+    );
+    prefilledRef.current = true;
+  }, [fromRunId, sourceRun.data]);
 
   function addKeyword(raw: string) {
     const value = raw.trim();
@@ -69,6 +96,24 @@ export default function NewRunPage() {
         ← Wróć
       </Link>
       <h1 className="text-2xl font-semibold">Nowy run</h1>
+
+      {fromRunId && (
+        <div className="rounded border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-900">
+          {sourceRun.isLoading && "Wczytuję dane źródłowego runa…"}
+          {sourceRun.error && (
+            <span className="text-red-700">
+              Nie udało się wczytać źródłowego runa: {String(sourceRun.error)}
+            </span>
+          )}
+          {sourceRun.data && (
+            <>
+              Duplikat runa{" "}
+              <span className="font-mono">{sourceRun.data.id.slice(0, 8)}</span>. Możesz edytować
+              dane przed startem.
+            </>
+          )}
+        </div>
+      )}
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-1">

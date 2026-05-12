@@ -116,6 +116,12 @@ export default function RunDetailPage() {
                 >
                   {run.data.status}
                 </span>
+                <Link
+                  href={`/runs/new?fromRunId=${run.data.id}`}
+                  className="rounded border px-2 py-1 text-xs font-medium hover:bg-muted/50"
+                >
+                  Duplikuj
+                </Link>
                 {isCancellable && (
                   <button
                     type="button"
