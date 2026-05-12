@@ -1,0 +1,174 @@
+{
+  "totalMs": 6572,
+  "queries": [
+    "jak napisać instrukcję obsługi aplikacji webowej",
+    "jak stworzyć instrukcję obsługi aplikacji webowej",
+    "instrukcja obsługi aplikacji webowej krok po kroku"
+  ],
+  "itemCount": 15,
+  "passes": {
+    "queriesEcho": true,
+    "itemsAtMost15": true,
+    "itemsAtLeast5": true,
+    "positionsAreSequential": true,
+    "scoresMonotonicNonIncreasing": true,
+    "canonicalUrlsUnique": true,
+    "atLeastOneCrossQueryHit": true
+  },
+  "items": [
+    {
+      "title": "Systemy do tworzenia instrukcji krok po kroku dla klientów",
+      "url": "https://www.reddit.com/r/webdev/comments/17vnlum/systems_to_create_step_by_step_instructions_for/?tl=pl",
+      "description": "Do aplikacji webowych używam rozszerzenia Tango lub Scribe. To w zupełności wystarcza. Pozwala na przechwytywanie fragmentów i dodawanie do nich ...",
+      "position": 1,
+      "fusedScore": 0.032018442622950824,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej",
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Jak stworzyć instrukcję obsługi? [Poradnik krok po kroku]",
+      "url": "https://projektowanieinstrukcji.pl/jak-stworzyc-instrukcje-obslugi/",
+      "description": "23 lut 2025 — Jak stworzyć instrukcję obsługi? Poznaj 5 kluczowych etapów: analiza produktu, struktura, treść, grafika i testowanie.",
+      "position": 2,
+      "fusedScore": 0.03200204813108039,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej",
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Projektowanie aplikacji webowych od A do Z - MadeByRogal",
+      "url": "https://madebyrogal.com/projektowanie-aplikacji-webowych-od-a-do-z-kompletny-przewodnik-krok-po-kroku/",
+      "description": "18 sie 2025 — Jeśli chcesz stworzyć skuteczną aplikację internetową zacznij od określenia dokładnego problemu jaki ona będzie rozwiązywać i określ grupę ...",
+      "position": 3,
+      "fusedScore": 0.0304147465437788,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej",
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    },
+    {
+      "title": "Dokumentacja aplikacji webowej – co musi zawierać? - Develos",
+      "url": "https://develos.pl/blog/dokumentacja-aplikacji-webowej-co-musi-zawiera-,23",
+      "description": "29 maj 2024 — Co powinna zawierać dokumentacja aplikacji webowej? · ogólny opis — krótki przegląd celu, głównych funkcji i założeń aplikacji; · instrukcje ...",
+      "position": 4,
+      "fusedScore": 0.030303030303030304,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej",
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Jak przebiega tworzenie aplikacji webowej krok po kroku?",
+      "url": "https://boringowl.io/blog/jak-przebiega-tworzenie-aplikacji-webowej-krok-po-kroku",
+      "description": "22 mar 2025 — Krok 1: Zbieranie wymagań i analiza potrzeb użytkownika. Krok 2: Tworzenie specyfikacji funkcjonalnej i technicznej. Krok 3: Projektowanie UX ...",
+      "position": 5,
+      "fusedScore": 0.01639344262295082,
+      "sourceQueries": [
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    },
+    {
+      "title": "Jak napisać dobrą dokumentację techniczną aplikacji ...",
+      "url": "https://medium.com/blog-transparent-data/jak-napisa%C4%87-dobr%C4%85-dokumentacj%C4%99-techniczn%C4%85-aplikacji-porady-i-konkretne-przyk%C5%82ady-5708ae2ea4ef",
+      "description": "Co musi się znaleźć w dokumentacji: · wstęp, czyli opis sposobu działania (konkretnie: co robi ta appka), · sposób instalacji aplikacji i ...",
+      "position": 6,
+      "fusedScore": 0.01639344262295082,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Narzędzie do tworzenia instrukcji krok po kroku - GuideJar",
+      "url": "https://palikowski.net/blog/2025/02/20/narzedzie-do-tworzenia-instrukcji-krok-po-kroku-guidejar/",
+      "description": "20 lut 2025 — Jak wygląda tworzenie instrukcji krok po kroku w GuideJar? Jest to banalnie proste. Najpierw odpalasz tryb „nagrywania” – za pomocą wtyczki do ...",
+      "position": 7,
+      "fusedScore": 0.016129032258064516,
+      "sourceQueries": [
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Tworzenie Aplikacji Webowych: Kompletny Przewodnik",
+      "url": "https://giraffestudioapps.com/tworzenie-aplikacji-webowych/",
+      "description": "8 sie 2024 — W tym przewodniku przeprowadzimy Cię krok po kroku przez proces tworzenia aplikacji webowej, zaczynając od podstawowych koncepcji, aż po ...",
+      "position": 8,
+      "fusedScore": 0.015873015873015872,
+      "sourceQueries": [
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    },
+    {
+      "title": "Jak napisać prostą i zrozumiałą specyfikację aplikacji ...",
+      "url": "https://otwartakultura.org/jak-napisac-prosta-i-zrozumiala-specyfikacje-aplikacji-webowej-lub-mobilnej/",
+      "description": "Jak napisać prostą i zrozumiałą specyfikację aplikacji webowej lub mobilnej · “Dobra specyfikacja musi mieć co najmniej kilkadziesiąt stron.” · “Najlepiej, żeby ...",
+      "position": 9,
+      "fusedScore": 0.015873015873015872,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Aplikacje webowe – czym są, jak działają i jak je tworzyć?",
+      "url": "https://devstockacademy.pl/blog/programowanie-i-technologie-webowe/aplikacje-webowe-czym-sa-jak-dzialaja-i-jak-je-tworzyc/?srsltid=AfmBOoqdIY5garsQCMHZEytxhh82elRlAbsO4nHeAn9M-97Ua_opP97e",
+      "description": "18 mar 2025 — Krok 4: Kodowanie i testowanie. Tworzymy aplikacje, pisząc czysty kod i testując go na bieżąco. Aplikacje webowe oferują elastyczność – możesz ...",
+      "position": 10,
+      "fusedScore": 0.015625,
+      "sourceQueries": [
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    },
+    {
+      "title": "Wdrożenie aplikacji webowej - Kluczowe etapy",
+      "url": "https://kamee.pl/blog/122.wdrozenie-aplikacji-webowej-kluczowe-etapy-kamee",
+      "description": "Wraz z gotową aplikacją klient otrzymuje od spółki Kamee dokumentację tworzenia aplikacji, kod oraz instrukcję obsługi. Umożliwia to dokonywanie modyfikacji ...",
+      "position": 11,
+      "fusedScore": 0.015625,
+      "sourceQueries": [
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Jak napisać instrukcję obsługi? Najważniejsze zasady",
+      "url": "https://contentwriter.pl/jak-napisac-instrukcje-obslugi/",
+      "description": "27 mar 2023 — 8 najważniejszych zasad pisania instrukcji obsługi · Pisz językiem prostym i zwięzłym · Podawaj dokładne wskazówki · Zachowaj chronologię · Stosuj ...",
+      "position": 12,
+      "fusedScore": 0.015384615384615385,
+      "sourceQueries": [
+        "jak napisać instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Samouczek: tworzenie aplikacji - Visual Studio (Windows)",
+      "url": "https://learn.microsoft.com/pl-pl/visualstudio/ide/walkthrough-building-an-application?view=visualstudio",
+      "description": "25 lut 2026 — Użyj programu Visual Studio Code, aby tworzyć aplikacje konsolowe języka C#, które implementują tablice, pętle foreach i instrukcje if.",
+      "position": 13,
+      "fusedScore": 0.015384615384615385,
+      "sourceQueries": [
+        "jak stworzyć instrukcję obsługi aplikacji webowej"
+      ]
+    },
+    {
+      "title": "Tworzenie aplikacji webowych – kompleksowy przewodnik ...",
+      "url": "https://www.wirtualnesuwalki.pl/artykul/3237,tworzenie-aplikacji-webowych-kompleksowy-przewodnik-krok-po-kroku",
+      "description": "31 sty 2026 — Proces tworzenia aplikacji webowych można podzielić na kilka kluczowych etapów. Każdy z nich odgrywa istotną rolę w zapewnieniu, że końcowy ...",
+      "position": 14,
+      "fusedScore": 0.015384615384615385,
+      "sourceQueries": [
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    },
+    {
+      "title": "ASP.NET Core - Tworzenie aplikacji webowych #1",
+      "url": "https://www.youtube.com/watch?v=Pqs6wxnwb9E",
+      "description": "",
+      "position": 15,
+      "fusedScore": 0.015151515151515152,
+      "sourceQueries": [
+        "instrukcja obsługi aplikacji webowej krok po kroku"
+      ]
+    }
+  ]
+}
