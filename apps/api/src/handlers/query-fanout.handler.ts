@@ -18,6 +18,7 @@ import {
 
 const FANOUT_TTL_DAYS = 7;
 const PAA_TTL_DAYS = 30;
+const MAX_SEED_QUERIES = 8;
 
 const LOCATION_CODES: Record<string, number> = {
   pl: 2616,
@@ -53,7 +54,10 @@ export class QueryFanOutHandler implements StepHandler {
       ctx.previousOutputs,
     );
     const dis = getDisambiguateOutput(ctx.previousOutputs);
-    const seedQueries = dis?.serpQueries.slice(1) ?? [];
+    const seedQueries = this.composeSeedQueries(
+      dis?.serpQueries,
+      resolved.additionalKeywords,
+    );
     const keyword = this.composeKeyword(resolved);
     const language = this.env.QUERY_FANOUT_LANGUAGE;
     const model = this.env.QUERY_FANOUT_MODEL;
@@ -173,7 +177,51 @@ export class QueryFanOutHandler implements StepHandler {
       },
     });
 
-    return { output: result };
+    // Rebuild 3 stage prompts for step.input preview.
+    const intentsForClassify = result.intents.map((i) => ({
+      name: i.name,
+      areas: i.areas.map((a) => ({
+        id: a.id,
+        topic: a.topic,
+        question: a.question,
+        ymyl: a.ymyl,
+      })),
+    }));
+    const paaQuestions = [
+      ...result.paaMapping.map((m) => m.question),
+      ...result.unmatchedPaa,
+    ];
+    const flatAreas = result.intents.flatMap((i) =>
+      i.areas.map((a) => ({ id: a.id, topic: a.topic, question: a.question })),
+    );
+
+    const stage1 = this.fanout.buildIntentsPrompt({ keyword, seedQueries });
+    const stage2 = this.fanout.buildClassifyPrompt({
+      keyword,
+      intents: intentsForClassify,
+    });
+    const userBlocks: Array<{ label: string; body: string }> = [
+      { label: "Stage 1: generateIntents — user", body: stage1.user },
+      { label: "Stage 2: classify — user", body: stage2.user },
+    ];
+    if (result.metadata.paaUsed && paaQuestions.length > 0) {
+      const stage3 = this.fanout.buildPaaPrompt({
+        keyword,
+        areas: flatAreas,
+        paaQuestions,
+      });
+      userBlocks.push({ label: "Stage 3: assignPaa — user", body: stage3.user });
+    }
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        system: stage1.system,
+        userBlocks,
+        userNote: `3-etapowy pipeline LLM: każdy etap używa swojego system promptu, ale dla zwięzłości pokazujemy tylko system promptu z etapu 1 (generateIntents). User prompty pokazane per-etap niżej.`,
+      },
+    };
   }
 
   private async fetchPaaCached(
@@ -220,5 +268,27 @@ export class QueryFanOutHandler implements StepHandler {
     if (input.mainKeyword) kw += ` (${input.mainKeyword})`;
     if (input.intent) kw += ` — ${input.intent}`;
     return kw;
+  }
+
+  private composeSeedQueries(
+    serpQueries: string[] | undefined,
+    additionalKeywords: string[] | undefined,
+  ): string[] {
+    // serpQueries[0] is typically the mainKeyword itself — `keyword` already
+    // carries it, so we drop it from the seed list to avoid duplicating.
+    const fromDisambiguate = serpQueries?.slice(1) ?? [];
+    const merged = [...fromDisambiguate, ...(additionalKeywords ?? [])];
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const q of merged) {
+      const trimmed = q.trim();
+      if (!trimmed) continue;
+      const key = trimmed.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(trimmed);
+      if (out.length >= MAX_SEED_QUERIES) break;
+    }
+    return out;
   }
 }

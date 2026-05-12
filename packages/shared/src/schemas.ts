@@ -133,6 +133,9 @@ export const RunInput = z.object({
   intent: z.string().optional(),
   contentType: z.string().optional(),
   h1Title: z.string().min(3).max(300).optional(),
+  strategicValue: z.string().optional(),
+  uniqueInsight: z.string().optional(),
+  additionalKeywords: z.array(z.string().min(1)).max(20).optional(),
 });
 export type RunInput = z.infer<typeof RunInput>;
 

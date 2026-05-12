@@ -9,14 +9,19 @@ import type {
 import {
   ArticleHumanizeResult,
   ArticleIntermediateResult,
+  type RunInput,
 } from "@sensai/shared";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { ArticleHumanizeClient } from "../tools/article-humanize/article-humanize.client";
+import {
+  articleContextHash,
+  pickArticleContext,
+} from "../prompts/article-context";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<Env, "ARTICLE_HUMANIZE_MODEL" | "ARTICLE_HUMANIZE_TTL_DAYS">;
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 
 @Injectable()
 export class ArticleHumanizeHandler implements StepHandler {
@@ -36,12 +41,14 @@ export class ArticleHumanizeHandler implements StepHandler {
     }
     const intermediate = ArticleIntermediateResult.parse(prev);
     const inputHash = sha256(intermediate.htmlContent);
+    const articleContext = pickArticleContext(ctx.run.input as RunInput);
 
     const result = await this.cache.getOrSet<ArticleHumanizeResult>({
       tool: "article",
       method: "humanize",
       params: {
         inputHash,
+        articleContextHash: articleContextHash(articleContext),
         model: this.env.ARTICLE_HUMANIZE_MODEL,
         promptVersion: PROMPT_VERSION,
       },
@@ -55,6 +62,7 @@ export class ArticleHumanizeHandler implements StepHandler {
           keyword: intermediate.meta.keyword,
           language: intermediate.meta.language,
           htmlContent: intermediate.htmlContent,
+          articleContext,
         });
 
         const result: ArticleHumanizeResult = {
@@ -116,7 +124,20 @@ export class ArticleHumanizeHandler implements StepHandler {
       "article.humanize done",
     );
 
-    return { output: result };
+    const previewSystem = this.client.previewSystem({
+      language: intermediate.meta.language,
+      articleContext,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: previewSystem,
+        userNote: `User input = HTML z poprzedniego kroku (${intermediate.htmlContent.length} zn., po tokenizacji [[SRC_xxx]] / spanów).`,
+      },
+    };
   }
 }
 

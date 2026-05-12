@@ -86,12 +86,36 @@ export const briefPrompt = {
     scrapePages?: ScrapePage[],
     deepResearch?: ResearchBriefing,
   ) {
-    const lines = [
+    const lines: Array<string | false | undefined> = [
       `Temat artykułu: ${input.topic}`,
       input.mainKeyword && `Główne słowo kluczowe: ${input.mainKeyword}`,
       input.intent && `Intent użytkownika: ${input.intent}`,
       input.contentType && `Typ treści: ${input.contentType}`,
-    ].filter(Boolean);
+    ];
+    if (input.strategicValue) {
+      lines.push(
+        "",
+        "## Wartość strategiczna artykułu",
+        input.strategicValue,
+        "Brief musi wspierać tę wartość — successCriteria i angle mają realizować ten cel biznesowy.",
+      );
+    }
+    if (input.uniqueInsight) {
+      lines.push(
+        "",
+        "## Unikalny insight / teza do obrony",
+        input.uniqueInsight,
+        "To jest oryginalny kąt, którego artykuł musi bronić. Twój `angle` powinien być spójny z tą tezą (lub jej silnym rozwinięciem) — NIE wybieraj kąta, który ją osłabia ani nie sprowadza do mainstreamu.",
+      );
+    }
+    if (input.additionalKeywords && input.additionalKeywords.length > 0) {
+      lines.push(
+        "",
+        "## Dodatkowe słowa kluczowe (LSI / wariacje)",
+        ...input.additionalKeywords.map((k) => `- ${k}`),
+        "Uwzględnij je przy doborze filarów (pillars) i pain pointów — pokrycie tych fraz jest pożądane.",
+      );
+    }
     if (deepResearch && deepResearch.content.length > 0) {
       lines.push("", formatDeepResearch(deepResearch));
     }
@@ -102,7 +126,7 @@ export const briefPrompt = {
       lines.push("", formatScrapeContext(scrapePages));
     }
     lines.push("", "Przygotuj brief.");
-    return lines.join("\n");
+    return lines.filter((l): l is string => typeof l === "string").join("\n");
   },
   schema: BriefOutputSchema,
 };

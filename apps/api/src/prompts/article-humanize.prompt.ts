@@ -10,6 +10,11 @@
 //     is dropped — the H1 is already in the article HTML, and the article HTML
 //     is delivered via the `input` channel of OpenAIResponsesClient.createBlock.
 
+import {
+  articleContextBlock,
+  type ArticleContextFields,
+} from "./article-context";
+
 export interface HumanizePromptInput {
   language: string;
   asl_min: number;
@@ -18,6 +23,7 @@ export interface HumanizePromptInput {
   min_strong_per_block: number;
   max_strong_per_block: number;
   strong_words_per_block: number;
+  articleContext?: ArticleContextFields;
 }
 
 const LANGUAGE_LABEL: Record<string, string> = {
@@ -28,10 +34,14 @@ const LANGUAGE_LABEL: Record<string, string> = {
 
 export function buildHumanizeSystemPrompt(input: HumanizePromptInput): string {
   const langLabel = LANGUAGE_LABEL[input.language] ?? "Polish";
+  const ctxBlock = input.articleContext
+    ? articleContextBlock(input.articleContext, "edit")
+    : "";
+  const ctxSection = ctxBlock ? `\n${ctxBlock}\n` : "";
 
   return `You are an expert copy editor. Rewrite this ${langLabel} article so it reads like an experienced human author wrote it.
 Return ONLY the final HTML (no code fences, no explanations), in ${langLabel}.
-
+${ctxSection}
 ### OBJECTIVE
 Rewrite the text with authentic human voice — varied rhythm, natural word choices, concrete details. Apply ALL rules below SIMULTANEOUSLY in one holistic pass. Write like a skilled human author, not like a machine applying filters.
 

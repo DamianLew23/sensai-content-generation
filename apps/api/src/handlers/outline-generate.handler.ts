@@ -10,6 +10,10 @@ import { ToolCacheService } from "../tools/tool-cache.service";
 import { OutlineGeneratorClient } from "../tools/outline-generator/outline-generator.client";
 import { preprocessFanout } from "../tools/outline-generator/outline-generator.preprocess";
 import { postprocessOutline } from "../tools/outline-generator/outline-generator.postprocess";
+import {
+  articleContextHash,
+  pickArticleContext,
+} from "../prompts/article-context";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<
@@ -19,7 +23,7 @@ type HandlerEnv = Pick<
   | "OUTLINE_GENERATE_REASONING"
 >;
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 
 @Injectable()
 export class OutlineGenerateHandler implements StepHandler {
@@ -44,6 +48,7 @@ export class OutlineGenerateHandler implements StepHandler {
     const language = fanout.metadata.language;
     const userH1Title = input.h1Title;
     const userIntent = input.intent;
+    const articleContext = pickArticleContext(input);
 
     const fanoutHash = sha256(JSON.stringify(fanout));
 
@@ -56,6 +61,7 @@ export class OutlineGenerateHandler implements StepHandler {
         h1TitleProvided: !!userH1Title,
         userIntent: userIntent ?? null,
         fanoutHash,
+        articleContextHash: articleContextHash(articleContext),
         model: this.env.OUTLINE_GENERATE_MODEL,
         reasoning: this.env.OUTLINE_GENERATE_REASONING,
         promptVersion: PROMPT_VERSION,
@@ -75,6 +81,7 @@ export class OutlineGenerateHandler implements StepHandler {
           userH1Title,
           language,
           preprocessed,
+          articleContext,
         });
 
         const outlineResult = postprocessOutline({
@@ -115,7 +122,26 @@ export class OutlineGenerateHandler implements StepHandler {
       "outline.generate done",
     );
 
-    return { output: result };
+    // Rebuild prompts so the preview is available even on cache hits.
+    // preprocessFanout is deterministic and cheap.
+    const previewPreprocessed = preprocessFanout(fanout, userIntent);
+    const preview = this.client.buildPrompts({
+      keyword,
+      userH1Title,
+      language,
+      preprocessed: previewPreprocessed,
+      articleContext,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: preview.system,
+        user: preview.user,
+      },
+    };
   }
 
   private composeKeyword(input: RunInput): string {

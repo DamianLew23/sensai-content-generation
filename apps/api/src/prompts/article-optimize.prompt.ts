@@ -1,9 +1,15 @@
 // apps/api/src/prompts/article-optimize.prompt.ts
 
+import {
+  articleContextBlock,
+  type ArticleContextFields,
+} from "./article-context";
+
 export interface OptimizePromptInput {
   language: string;        // "pl" | "en" | …
   sourceCount: number;
   targetLength?: number;   // 0 or undefined = no limit
+  articleContext?: ArticleContextFields;
 }
 
 const LANGUAGE_LABEL: Record<string, string> = {
@@ -32,6 +38,11 @@ Keep each placeholder exactly where it is, at the end of its paragraph.
 `
       : "";
 
+  const ctxBlock = input.articleContext
+    ? articleContextBlock(input.articleContext, "edit")
+    : "";
+  const ctxSection = ctxBlock ? `\n\n${ctxBlock}\n` : "";
+
   return `You are an HTML optimization engine with copywriter expertise.
 
 Language: ${langLabel}
@@ -40,7 +51,7 @@ Language: ${langLabel}
 Return ONLY edited HTML. No explanations, no code fences. Start with <h1>.
 
 ${lengthBlock}
-${sourceBlock}
+${sourceBlock}${ctxSection}
 
 ### CRITICAL: PRESERVE DATA
 1. Source placeholders [[SRC_xxx]] — do NOT touch

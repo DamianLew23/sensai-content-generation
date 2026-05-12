@@ -116,6 +116,13 @@ export class YoucomResearchHandler implements StepHandler {
       "youcom-research done",
     );
 
-    return { output: { ...briefing, query: promptString, effort } };
+    return {
+      output: { ...briefing, query: promptString, effort },
+      input: {
+        kind: "llm.prompt",
+        user: promptString,
+        userNote: `Effort: ${effort}. Zapytanie zostało użyte jako single-turn input do you.com Research API (bez osobnego system promptu).`,
+      },
+    };
   }
 }

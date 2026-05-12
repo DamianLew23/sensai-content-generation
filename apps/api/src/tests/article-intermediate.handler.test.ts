@@ -74,6 +74,7 @@ describe("ArticleIntermediateHandler", () => {
         },
         cost: { costUsd: "0.0019", latencyMs: 4567 },
       }),
+      previewSystem: vi.fn().mockReturnValue("S"),
     } as any;
     const cache = {
       getOrSet: vi.fn(async (opts: any) => (await opts.fetcher()).result),

@@ -4,6 +4,7 @@ import type { Env } from "../../config/env";
 import { outlineGeneratePrompt } from "../../prompts/outline-generate.prompt";
 import { LLMOutlineCallResult } from "./outline-generator.types";
 import type { PreprocessedFanout } from "./outline-generator.types";
+import type { ArticleContextFields } from "../../prompts/article-context";
 
 type ClientEnv = Pick<Env, "OUTLINE_GENERATE_MODEL" | "OUTLINE_GENERATE_REASONING">;
 
@@ -15,6 +16,7 @@ export interface GenerateOutlineArgs {
   userH1Title: string | undefined;
   language: string;
   preprocessed: PreprocessedFanout;
+  articleContext?: ArticleContextFields;
 }
 
 type ReasoningEffort = "low" | "medium" | "high";
@@ -28,7 +30,7 @@ export class OutlineGeneratorClient {
     @Inject("OUTLINE_GENERATOR_ENV") private readonly env: ClientEnv,
   ) {}
 
-  async generate(args: GenerateOutlineArgs) {
+  buildPrompts(args: Omit<GenerateOutlineArgs, "ctx">): { system: string; user: string } {
     const primaryAreasForPrompt = args.preprocessed.primaryAreas.map((a) => ({
       id: a.id,
       topic: a.topic,
@@ -41,14 +43,21 @@ export class OutlineGeneratorClient {
       secondaryForPrompt[intent] = areas.map((a) => ({ id: a.id, topic: a.topic, question: a.question }));
     }
 
-    const userPrompt = outlineGeneratePrompt.user({
+    const user = outlineGeneratePrompt.user({
       keyword: args.keyword,
       userH1Title: args.userH1Title,
       language: args.language,
       primaryIntent: args.preprocessed.primaryIntent,
       primaryAreasJson: JSON.stringify(primaryAreasForPrompt, null, 2),
       secondaryAreasByIntentJson: JSON.stringify(secondaryForPrompt, null, 2),
+      articleContext: args.articleContext,
     });
+
+    return { system: outlineGeneratePrompt.system, user };
+  }
+
+  async generate(args: GenerateOutlineArgs) {
+    const { user: userPrompt } = this.buildPrompts(args);
 
     const res = await this.llm.generateObject({
       ctx: { ...args.ctx, model: this.env.OUTLINE_GENERATE_MODEL },

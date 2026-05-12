@@ -32,6 +32,9 @@ export class BriefHandler implements StepHandler {
     const deepResearchParsed = ResearchBriefing.safeParse(ctx.previousOutputs.deepResearch);
     const deepResearch = deepResearchParsed.success ? deepResearchParsed.data : undefined;
 
+    const system = briefPrompt.system(ctx.project, antiAngles);
+    const userPrompt = briefPrompt.user(resolved, serpContext, scrapePages, deepResearch);
+
     const res = await this.llm.generateObject({
       ctx: {
         runId: ctx.run.id,
@@ -39,10 +42,17 @@ export class BriefHandler implements StepHandler {
         attempt: ctx.attempt,
         model,
       },
-      system: briefPrompt.system(ctx.project, antiAngles),
-      prompt: briefPrompt.user(resolved, serpContext, scrapePages, deepResearch),
+      system,
+      prompt: userPrompt,
       schema: briefPrompt.schema,
     });
-    return { output: res.object };
+    return {
+      output: res.object,
+      input: {
+        kind: "llm.prompt",
+        system,
+        user: userPrompt,
+      },
+    };
   }
 }

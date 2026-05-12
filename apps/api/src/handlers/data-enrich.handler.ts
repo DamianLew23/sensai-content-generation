@@ -8,6 +8,8 @@ import type {
 import { DraftGenerationResult, DataEnrichmentResult } from "@sensai/shared";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { DataEnrichmentClient } from "../tools/data-enricher/data-enricher.client";
+import { dataEnrichQuestionsPrompt } from "../prompts/data-enrich-questions.prompt";
+import { dataEnrichVerifyPrompt } from "../prompts/data-enrich-verify.prompt";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<
@@ -119,7 +121,36 @@ export class DataEnrichHandler implements StepHandler {
       "data.enrich done",
     );
 
-    return { output: result };
+    // Rebuild prompts for the 2 LLM stages (questions + verify).
+    const claims = result.claims;
+    const stage1User = dataEnrichQuestionsPrompt.user({
+      keyword: draft.meta.keyword,
+      claims,
+      language: draft.meta.language,
+    });
+    const stage2User = dataEnrichVerifyPrompt.user({
+      keyword: draft.meta.keyword,
+      language: draft.meta.language,
+      claims,
+      today: new Date().toISOString().slice(0, 10),
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: dataEnrichQuestionsPrompt.system,
+        userBlocks: [
+          { label: "Stage 1: questions — user", body: stage1User },
+          {
+            label: "Stage 2: verify — user (system + web_search tool)",
+            body: stage2User,
+          },
+        ],
+        userNote: `2-etapowy pipeline: (1) ${this.env.DATA_ENRICH_QUESTION_MODEL} generuje pytania verifikacyjne; (2) ${this.env.DATA_ENRICH_VERIFY_MODEL} z web_search weryfikuje. System prompt powyżej to stage 1; stage 2 ma osobny system prompt (sprawdź data-enrich-verify.prompt.ts).`,
+      },
+    };
   }
 }
 

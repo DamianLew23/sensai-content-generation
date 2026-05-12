@@ -126,6 +126,9 @@ describe("QueryFanOutHandler", () => {
     generateIntents: ReturnType<typeof vi.fn>;
     classify: ReturnType<typeof vi.fn>;
     assignPaa: ReturnType<typeof vi.fn>;
+    buildIntentsPrompt: ReturnType<typeof vi.fn>;
+    buildClassifyPrompt: ReturnType<typeof vi.fn>;
+    buildPaaPrompt: ReturnType<typeof vi.fn>;
   };
   let dfs: { paaFetch: ReturnType<typeof vi.fn> };
   let cache: { getOrSet: ReturnType<typeof vi.fn> };
@@ -136,6 +139,9 @@ describe("QueryFanOutHandler", () => {
       generateIntents: vi.fn(),
       classify: vi.fn(),
       assignPaa: vi.fn(),
+      buildIntentsPrompt: vi.fn().mockReturnValue({ system: "S1", user: "U1" }),
+      buildClassifyPrompt: vi.fn().mockReturnValue({ system: "S2", user: "U2" }),
+      buildPaaPrompt: vi.fn().mockReturnValue({ system: "S3", user: "U3" }),
     };
     dfs = { paaFetch: vi.fn() };
     cache = { getOrSet: vi.fn() };
@@ -448,6 +454,9 @@ describe("QueryFanOutHandler — Plan 17 disambiguator integration", () => {
     generateIntents: ReturnType<typeof vi.fn>;
     classify: ReturnType<typeof vi.fn>;
     assignPaa: ReturnType<typeof vi.fn>;
+    buildIntentsPrompt: ReturnType<typeof vi.fn>;
+    buildClassifyPrompt: ReturnType<typeof vi.fn>;
+    buildPaaPrompt: ReturnType<typeof vi.fn>;
   };
   let dfs: { paaFetch: ReturnType<typeof vi.fn> };
   let cache: { getOrSet: ReturnType<typeof vi.fn> };
@@ -458,6 +467,9 @@ describe("QueryFanOutHandler — Plan 17 disambiguator integration", () => {
       generateIntents: vi.fn(),
       classify: vi.fn(),
       assignPaa: vi.fn(),
+      buildIntentsPrompt: vi.fn().mockReturnValue({ system: "S1", user: "U1" }),
+      buildClassifyPrompt: vi.fn().mockReturnValue({ system: "S2", user: "U2" }),
+      buildPaaPrompt: vi.fn().mockReturnValue({ system: "S3", user: "U3" }),
     };
     dfs = { paaFetch: vi.fn() };
     cache = { getOrSet: vi.fn() };
@@ -491,6 +503,73 @@ describe("QueryFanOutHandler — Plan 17 disambiguator integration", () => {
       seedQueries: args.seedQueries ?? [],
     });
     expect(prompt).not.toContain("Sugerowane warianty od operatora");
+  });
+
+  it("merges RunInput.additionalKeywords into seedQueries after disambiguate.serpQueries[1..], deduped + capped at 8", async () => {
+    const ctx = makeCtx({
+      run: {
+        id: "run-1",
+        input: {
+          topic: "Jak obniżyć kortyzol",
+          additionalKeywords: [
+            "seed A", // dedup against disambiguate
+            "extra 1",
+            "extra 2",
+            "extra 3",
+            "extra 4",
+            "extra 5",
+            "extra 6",
+            "extra 7", // should overflow past cap 8
+          ],
+        },
+      } as any,
+      previousOutputs: {
+        disambiguate: {
+          refinedTopic: "refined topic",
+          mainKeyword: "kw",
+          intent: "informational",
+          contentType: "guide",
+          researchQuestion: "research question",
+          serpQueries: ["primary kw", "seed A", "seed B"],
+          antiAngles: [],
+          rationale: "ok",
+        },
+      },
+    });
+
+    await handler.execute(ctx);
+
+    const args = fanout.generateIntents.mock.calls[0][0];
+    // Expected: seed A, seed B, then extras up to total 8 — "seed A" dedup'd.
+    expect(args.seedQueries).toEqual([
+      "seed A",
+      "seed B",
+      "extra 1",
+      "extra 2",
+      "extra 3",
+      "extra 4",
+      "extra 5",
+      "extra 6",
+    ]);
+    expect(args.seedQueries.length).toBe(8);
+  });
+
+  it("falls back to RunInput.additionalKeywords as seedQueries when no disambiguate output", async () => {
+    const ctx = makeCtx({
+      run: {
+        id: "run-1",
+        input: {
+          topic: "Jak obniżyć kortyzol",
+          additionalKeywords: ["alpha", "beta", " ALPHA "],
+        },
+      } as any,
+    });
+
+    await handler.execute(ctx);
+
+    const args = fanout.generateIntents.mock.calls[0][0];
+    // " ALPHA " is trimmed and case-folded to dedup against "alpha"
+    expect(args.seedQueries).toEqual(["alpha", "beta"]);
   });
 
   it("uses refinedTopic and passes serpQueries[1..] as seed variants", async () => {

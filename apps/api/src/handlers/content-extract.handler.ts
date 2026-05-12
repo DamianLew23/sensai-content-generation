@@ -114,7 +114,26 @@ export class ContentExtractHandler implements StepHandler {
       },
     });
 
-    return { output: result };
+    // Rebuild prompts for step.input preview (works even on cache hit).
+    const previewSystem = contentExtractPrompt.system;
+    const previewUser = contentExtractPrompt.user({
+      keyword,
+      language,
+      cleanedPages: clean.pages.map((p) => ({ url: p.url, markdown: p.markdown })),
+      deepResearch,
+      minFacts: this.env.CONTENT_EXTRACT_MIN_FACTS,
+      minData: this.env.CONTENT_EXTRACT_MIN_DATA,
+      minIdeations: this.env.CONTENT_EXTRACT_MIN_IDEATIONS,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        system: previewSystem,
+        user: previewUser,
+      },
+    };
   }
 
   private composeKeyword(input: RunInput): string {

@@ -10,6 +10,7 @@ import {
 } from "../article-protect/article-protect.guards";
 import { SOURCE_CITATION_RE } from "../article-protect/article-protect.regex";
 import { buildOptimizeSystemPrompt } from "../../prompts/article-optimize.prompt";
+import type { ArticleContextFields } from "../../prompts/article-context";
 import type { ArticleOptimizeWarning } from "@sensai/shared";
 import type { Env } from "../../config/env";
 
@@ -20,6 +21,7 @@ export interface OptimizeArgs {
   keyword: string;
   language: string;
   htmlContent: string;
+  articleContext?: ArticleContextFields;
 }
 
 export interface OptimizeResult {
@@ -60,6 +62,7 @@ export class ArticleOptimizeClient {
     const system = buildOptimizeSystemPrompt({
       language: args.language,
       sourceCount: sourcesBefore,
+      articleContext: args.articleContext,
     });
 
     const resp = await this.llm.createBlock({

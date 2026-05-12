@@ -40,6 +40,46 @@ export class QueryFanOutClient {
     @Inject("QUERY_FANOUT_ENV") private readonly env: ClientEnv,
   ) {}
 
+  buildIntentsPrompt(args: {
+    keyword: string;
+    seedQueries?: string[];
+  }): { system: string; user: string } {
+    const system = queryFanoutPrompt.intents.system(this.env.QUERY_FANOUT_MAX_AREAS_PER_INTENT);
+    const user = queryFanoutPrompt.intents.user({
+      keyword: args.keyword,
+      language: this.env.QUERY_FANOUT_LANGUAGE,
+      maxAreas: this.env.QUERY_FANOUT_MAX_AREAS_PER_INTENT,
+      seedQueries: args.seedQueries ?? [],
+    });
+    return { system, user };
+  }
+
+  buildClassifyPrompt(args: {
+    keyword: string;
+    intents: FanOutIntentsCall["intents"];
+  }): { system: string; user: string } {
+    const system = queryFanoutPrompt.classify.system;
+    const user = queryFanoutPrompt.classify.user({
+      keyword: args.keyword,
+      intentsJson: JSON.stringify(args.intents, null, 2),
+    });
+    return { system, user };
+  }
+
+  buildPaaPrompt(args: {
+    keyword: string;
+    areas: Array<{ id: string; topic: string; question: string }>;
+    paaQuestions: string[];
+  }): { system: string; user: string } {
+    const system = queryFanoutPrompt.paa.system;
+    const user = queryFanoutPrompt.paa.user({
+      keyword: args.keyword,
+      areasJson: JSON.stringify(args.areas, null, 2),
+      paaQuestions: args.paaQuestions,
+    });
+    return { system, user };
+  }
+
   async generateIntents(args: {
     ctx: QueryFanOutCallContext;
     keyword: string;

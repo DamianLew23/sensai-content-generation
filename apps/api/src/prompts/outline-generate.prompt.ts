@@ -1,4 +1,8 @@
 import type { IntentName } from "@sensai/shared";
+import {
+  articleContextBlock,
+  type ArticleContextFields,
+} from "./article-context";
 
 export interface OutlineGenerateUserArgs {
   keyword: string;
@@ -7,6 +11,7 @@ export interface OutlineGenerateUserArgs {
   primaryIntent: IntentName;
   primaryAreasJson: string;       // JSON-serialized PreprocessedArea[]
   secondaryAreasByIntentJson: string;  // JSON-serialized { [intent]: PreprocessedArea[] }
+  articleContext?: ArticleContextFields;
 }
 
 const system = `You are an expert in semantic article architecture. You build BLUF-sorted article outlines from query fan-out data.
@@ -87,7 +92,12 @@ Return JSON matching this schema:
 - Even if the user provides an H1, still emit one in your response.
 - \`groupedAreas\` must list every area topic from the corresponding secondary intent.`;
 
-const user = (args: OutlineGenerateUserArgs): string => `Main keyword: "${args.keyword}"
+const user = (args: OutlineGenerateUserArgs): string => {
+  const ctxBlock = args.articleContext
+    ? articleContextBlock(args.articleContext, "create")
+    : "";
+  const ctxPrefix = ctxBlock ? `${ctxBlock}\n\n` : "";
+  return `${ctxPrefix}Main keyword: "${args.keyword}"
 ${args.userH1Title ? `User-provided H1: "${args.userH1Title}"` : "User did not provide an H1 — generate one."}
 Language: ${args.language}
 Primary intent: ${args.primaryIntent}
@@ -97,6 +107,7 @@ ${args.primaryAreasJson}
 
 # Other intents and their areas (group each intent into one context H2)
 ${args.secondaryAreasByIntentJson}`;
+};
 
 export const outlineGeneratePrompt = {
   system,

@@ -55,7 +55,7 @@ const mkCache = () => ({
 
 describe("OutlineDistributeHandler", () => {
   it("happy path: parses inputs, calls LLM, runs merge+validate, returns DistributionResult", async () => {
-    const client = { distribute: vi.fn().mockResolvedValue(mkClientResult()) };
+    const client = { distribute: vi.fn().mockResolvedValue(mkClientResult()), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = mkCache();
     const handler = new OutlineDistributeHandler(client as any, cache as any, mkEnv());
     const r = await handler.execute(mkCtx() as any);
@@ -66,7 +66,7 @@ describe("OutlineDistributeHandler", () => {
   });
 
   it("throws when previousOutputs.outlineGen is missing", async () => {
-    const client = { distribute: vi.fn() };
+    const client = { distribute: vi.fn(), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = mkCache();
     const handler = new OutlineDistributeHandler(client as any, cache as any, mkEnv());
     await expect(handler.execute({ run: { id: "r", input: { topic: "x" } }, step: { id: "s" }, attempt: 1, project: {}, previousOutputs: { kg: mkKG() }, forceRefresh: false } as any))
@@ -74,7 +74,7 @@ describe("OutlineDistributeHandler", () => {
   });
 
   it("throws when previousOutputs.kg is missing", async () => {
-    const client = { distribute: vi.fn() };
+    const client = { distribute: vi.fn(), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = mkCache();
     const handler = new OutlineDistributeHandler(client as any, cache as any, mkEnv());
     await expect(handler.execute({ run: { id: "r", input: { topic: "x" } }, step: { id: "s" }, attempt: 1, project: {}, previousOutputs: { outlineGen: mkOutline() }, forceRefresh: false } as any))
@@ -83,7 +83,7 @@ describe("OutlineDistributeHandler", () => {
 
   it("emits warning when LLM returns unknown entity ID, does not throw", async () => {
     const bad = { result: { distribution: { "1": { entityIds: ["E99"], factIds: [], relationshipIds: [], ideationIds: [], measurableIds: [] } } }, model: "x", promptTokens: 0, completionTokens: 0, costUsd: "0", latencyMs: 0 };
-    const client = { distribute: vi.fn().mockResolvedValue(bad) };
+    const client = { distribute: vi.fn().mockResolvedValue(bad), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = mkCache();
     const handler = new OutlineDistributeHandler(client as any, cache as any, mkEnv());
     const r = await handler.execute(mkCtx() as any);

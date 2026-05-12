@@ -144,6 +144,7 @@ export class PipelineWorker implements OnModuleInit, OnModuleDestroy {
         .update(pipelineSteps)
         .set({
           output: result.output as any,
+          ...(result.input !== undefined ? { input: result.input as any } : {}),
           status: "completed",
           finishedAt: new Date(),
           error: null,

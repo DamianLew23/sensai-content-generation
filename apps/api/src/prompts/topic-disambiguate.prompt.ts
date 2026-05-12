@@ -64,6 +64,30 @@ export const topicDisambiguatePrompt = {
     if (input.mainKeyword) lines.push(`Sugerowane mainKeyword od operatora: ${input.mainKeyword}`);
     if (input.intent) lines.push(`Sugerowany intent: ${input.intent}`);
     if (input.contentType) lines.push(`Sugerowany contentType: ${input.contentType}`);
+    if (input.strategicValue) {
+      lines.push(
+        "",
+        "## Wartość strategiczna artykułu (po co go publikujemy)",
+        input.strategicValue,
+        "Doprecyzowanie tematu, serpQueries i antiAngles musi wspierać tę wartość.",
+      );
+    }
+    if (input.uniqueInsight) {
+      lines.push(
+        "",
+        "## Unikalny insight / teza, której artykuł ma bronić",
+        input.uniqueInsight,
+        "refinedTopic i researchQuestion powinny otwierać przestrzeń do rozwinięcia tej tezy (nie zawężaj jej do mainstreamowego ujęcia).",
+      );
+    }
+    if (input.additionalKeywords && input.additionalKeywords.length > 0) {
+      lines.push(
+        "",
+        "## Dodatkowe słowa kluczowe od operatora (LSI / wariacje)",
+        ...input.additionalKeywords.map((k) => `- ${k}`),
+        "Wpleć je w serpQueries jako warianty zapytań tam, gdzie pasują tematycznie.",
+      );
+    }
     return lines.join("\n");
   },
 

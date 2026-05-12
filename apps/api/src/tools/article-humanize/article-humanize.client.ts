@@ -26,6 +26,7 @@ import type {
   ArticleHumanizeReadability,
   ArticleHumanizeSentenceStats,
 } from "@sensai/shared";
+import type { ArticleContextFields } from "../../prompts/article-context";
 import type { Env } from "../../config/env";
 
 type ClientEnv = Pick<
@@ -49,6 +50,7 @@ export interface HumanizeArgs {
   keyword: string;
   language: string;
   htmlContent: string;
+  articleContext?: ArticleContextFields;
 }
 
 export interface HumanizeResult {
@@ -85,6 +87,22 @@ export class ArticleHumanizeClient {
     @Inject("ARTICLE_HUMANIZE_ENV") private readonly env: ClientEnv,
   ) {}
 
+  previewSystem(args: {
+    language: string;
+    articleContext?: ArticleContextFields;
+  }): string {
+    return buildHumanizeSystemPrompt({
+      language: args.language,
+      asl_min: this.env.ARTICLE_HUMANIZE_ASL_MIN,
+      asl_max: this.env.ARTICLE_HUMANIZE_ASL_MAX,
+      sentence_hard_cap: this.env.ARTICLE_HUMANIZE_SENTENCE_HARD_CAP,
+      min_strong_per_block: this.env.ARTICLE_HUMANIZE_MIN_STRONG_PER_BLOCK,
+      max_strong_per_block: this.env.ARTICLE_HUMANIZE_MAX_STRONG_PER_BLOCK,
+      strong_words_per_block: this.env.ARTICLE_HUMANIZE_STRONG_WORDS_PER_BLOCK,
+      articleContext: args.articleContext,
+    });
+  }
+
   async humanize(args: HumanizeArgs): Promise<HumanizeResult> {
     const inputText = extractPlainText(args.htmlContent);
     const inputLength = inputText.length;
@@ -102,6 +120,7 @@ export class ArticleHumanizeClient {
         min_strong_per_block: this.env.ARTICLE_HUMANIZE_MIN_STRONG_PER_BLOCK,
         max_strong_per_block: this.env.ARTICLE_HUMANIZE_MAX_STRONG_PER_BLOCK,
         strong_words_per_block: this.env.ARTICLE_HUMANIZE_STRONG_WORDS_PER_BLOCK,
+        articleContext: args.articleContext,
       }),
       htmlContent: args.htmlContent,
       phaseLabel: "humanize.phase1",

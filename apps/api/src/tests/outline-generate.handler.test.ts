@@ -55,7 +55,7 @@ const mkLLMResult = () => ({
 
 describe("OutlineGenerateHandler", () => {
   it("happy path: parses fanout, calls preprocess+LLM+postprocess, returns OutlineGenerationResult", async () => {
-    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()) };
+    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = {
       getOrSet: vi.fn().mockImplementation((opts: { fetcher: () => Promise<{ result: unknown }> }) =>
         opts.fetcher().then((r: { result: unknown }) => r.result),
@@ -77,7 +77,7 @@ describe("OutlineGenerateHandler", () => {
   });
 
   it("throws when previousOutputs.fanout is missing", async () => {
-    const client = { generate: vi.fn() };
+    const client = { generate: vi.fn(), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = { getOrSet: vi.fn() };
     const env = {
       OUTLINE_GENERATE_TTL_DAYS: 7,
@@ -97,7 +97,7 @@ describe("OutlineGenerateHandler", () => {
   });
 
   it("stamps h1Source=user when RunInput.h1Title is set", async () => {
-    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()) };
+    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = {
       getOrSet: vi.fn().mockImplementation((opts: { fetcher: () => Promise<{ result: unknown }> }) =>
         opts.fetcher().then((r: { result: unknown }) => r.result),
@@ -116,7 +116,7 @@ describe("OutlineGenerateHandler", () => {
   });
 
   it("stamps primaryIntentSource=user when RunInput.intent matches an existing intent", async () => {
-    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()) };
+    const client = { generate: vi.fn().mockResolvedValue(mkLLMResult()), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = {
       getOrSet: vi.fn().mockImplementation((opts: { fetcher: () => Promise<{ result: unknown }> }) =>
         opts.fetcher().then((r: { result: unknown }) => r.result),
@@ -159,7 +159,7 @@ describe("OutlineGenerateHandler", () => {
       ],
       warnings: [],
     };
-    const client = { generate: vi.fn() };
+    const client = { generate: vi.fn(), buildPrompts: vi.fn().mockReturnValue({ system: "S", user: "U" }) };
     const cache = { getOrSet: vi.fn().mockResolvedValue(cachedValue) };
     const env = {
       OUTLINE_GENERATE_TTL_DAYS: 7,

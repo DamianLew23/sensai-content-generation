@@ -13,6 +13,7 @@ const PER_QUERY_DEPTH = 10;
 const LOCATION_CODE_POLAND = 2616;
 const LANGUAGE_CODE = "pl";
 const CACHE_TTL_SECONDS = 7 * 86400;
+const MAX_TOTAL_QUERIES = 8;
 
 interface RawSerpRow {
   title: string;
@@ -35,7 +36,11 @@ export class SerpFetchHandler implements StepHandler {
     const dis = getDisambiguateOutput(ctx.previousOutputs);
     const resolved = getResolvedRunInput(ctx.run.input as RunInput, ctx.previousOutputs);
 
-    const queries = this.collectQueries(dis?.serpQueries, resolved.mainKeyword);
+    const queries = this.collectQueries(
+      dis?.serpQueries,
+      resolved.mainKeyword,
+      resolved.additionalKeywords,
+    );
     if (queries.length === 0) {
       throw new Error(
         "mainKeyword (or disambiguate.serpQueries[0]) is required for tool.serp.fetch",
@@ -98,12 +103,19 @@ export class SerpFetchHandler implements StepHandler {
     return { output: result };
   }
 
-  private collectQueries(serpQueries: string[] | undefined, mainKeyword: string | undefined): string[] {
-    const candidates = serpQueries && serpQueries.length > 0
+  private collectQueries(
+    serpQueries: string[] | undefined,
+    mainKeyword: string | undefined,
+    additionalKeywords: string[] | undefined,
+  ): string[] {
+    const base = serpQueries && serpQueries.length > 0
       ? serpQueries
       : (mainKeyword ? [mainKeyword] : []);
+    const candidates = [...base, ...(additionalKeywords ?? [])];
     const cleaned = candidates.map((q) => q.trim()).filter((q) => q.length > 0);
-    // Dedup query strings (case-insensitive) preserving first-seen order.
+    // Dedup query strings (case-insensitive) preserving first-seen order,
+    // then cap to MAX_TOTAL_QUERIES so operator-supplied keywords can't blow
+    // up DataForSEO cost.
     const seen = new Set<string>();
     const out: string[] = [];
     for (const q of cleaned) {
@@ -111,6 +123,7 @@ export class SerpFetchHandler implements StepHandler {
       if (!seen.has(key)) {
         seen.add(key);
         out.push(q);
+        if (out.length >= MAX_TOTAL_QUERIES) break;
       }
     }
     return out;

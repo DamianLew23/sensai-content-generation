@@ -5,10 +5,15 @@ import {
   DistributionResult,
   DraftGenerationResult,
   type DraftBlockStats,
+  type RunInput,
 } from "@sensai/shared";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { DraftGeneratorClient } from "../tools/draft-generator/draft-generator.client";
 import { assembleDraft } from "../tools/draft-generator/draft-generator.assemble";
+import {
+  articleContextHash,
+  pickArticleContext,
+} from "../prompts/article-context";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<
@@ -20,7 +25,7 @@ type HandlerEnv = Pick<
   | "DRAFT_GENERATE_TTL_DAYS"
 >;
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 
 @Injectable()
 export class DraftGenerateHandler implements StepHandler {
@@ -40,12 +45,14 @@ export class DraftGenerateHandler implements StepHandler {
     }
     const distribution = DistributionResult.parse(prev);
     const distHash = sha256(JSON.stringify(distribution));
+    const articleContext = pickArticleContext(ctx.run.input as RunInput);
 
     const result = await this.cache.getOrSet<DraftGenerationResult>({
       tool: "draft",
       method: "generate",
       params: {
         distHash,
+        articleContextHash: articleContextHash(articleContext),
         model: this.env.DRAFT_GENERATE_MODEL,
         useReasoning: this.env.DRAFT_GENERATE_USE_REASONING,
         reasoningEffort: this.env.DRAFT_GENERATE_REASONING_EFFORT,
@@ -60,6 +67,7 @@ export class DraftGenerateHandler implements StepHandler {
         const gen = await this.client.generate({
           ctx: { runId: ctx.run.id, stepId: ctx.step.id, attempt: ctx.attempt },
           distribution,
+          articleContext,
         });
 
         const html = assembleDraft({
@@ -136,7 +144,20 @@ export class DraftGenerateHandler implements StepHandler {
       "draft.generate done",
     );
 
-    return { output: result };
+    const preview = this.client.buildBlockPrompts({
+      distribution,
+      articleContext,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: preview.system,
+        userBlocks: preview.userBlocks,
+      },
+    };
   }
 }
 

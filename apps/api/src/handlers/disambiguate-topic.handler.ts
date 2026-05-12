@@ -118,7 +118,16 @@ export class DisambiguateTopicHandler implements StepHandler {
       "topic.disambiguate done",
     );
 
-    return { output: result };
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system,
+        user: userPrompt,
+        antiTerms: cfg.antiTerms,
+      },
+    };
   }
 }
 

@@ -24,6 +24,75 @@ export class KGDistributorClient {
     @Inject("KG_DISTRIBUTOR_ENV") private readonly env: ClientEnv,
   ) {}
 
+  buildPrompts(args: Omit<DistributeArgs, "ctx">): { system: string; user: string } {
+    const outlineForPrompt = args.outline.outline.map((s) => {
+      if (s.type === "intro") {
+        return { order: 0, type: "intro" as const, header: "INTRO" };
+      }
+      if (s.sectionVariant === "full") {
+        return {
+          order: s.order,
+          type: "h2" as const,
+          sectionVariant: "full" as const,
+          sourceIntent: s.sourceIntent,
+          header: s.header,
+          h3s: s.h3s.map((h) => h.header),
+        };
+      }
+      return {
+        order: s.order,
+        type: "h2" as const,
+        sectionVariant: "context" as const,
+        sourceIntent: s.sourceIntent,
+        header: s.header,
+        groupedAreas: s.groupedAreas,
+        contextNote: s.contextNote,
+      };
+    });
+
+    const entitiesForPrompt = args.kg.entities.map((e) => ({
+      id: e.id,
+      entity: e.entity,
+      domainType: e.domainType,
+      evidence: e.evidence,
+    }));
+    const factsForPrompt = args.kg.facts.map((f) => ({
+      id: f.id,
+      text: f.text,
+      category: f.category,
+    }));
+    const relsForPrompt = args.kg.relationships.map((r) => ({
+      id: r.id,
+      sourceName: r.sourceName,
+      type: r.type,
+      targetName: r.targetName,
+    }));
+    const ideasForPrompt = args.kg.ideations.map((i) => ({
+      id: i.id,
+      type: i.type,
+      title: i.title,
+      description: i.description,
+    }));
+    const measurablesForPrompt = args.kg.measurables.map((m) => ({
+      id: m.id,
+      definition: m.definition,
+      value: m.value,
+      unit: m.unit,
+      formatted: m.formatted,
+    }));
+
+    const user = outlineDistributePrompt.user({
+      outlineJson: JSON.stringify(outlineForPrompt, null, 2),
+      entitiesJson: JSON.stringify(entitiesForPrompt, null, 2),
+      factsJson: JSON.stringify(factsForPrompt, null, 2),
+      relationshipsJson: JSON.stringify(relsForPrompt, null, 2),
+      ideationsJson: JSON.stringify(ideasForPrompt, null, 2),
+      measurablesJson: JSON.stringify(measurablesForPrompt, null, 2),
+    });
+
+    return { system: outlineDistributePrompt.system, user };
+  }
+
   async distribute(args: DistributeArgs) {
     const outlineForPrompt = args.outline.outline.map((s) => {
       if (s.type === "intro") {

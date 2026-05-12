@@ -119,6 +119,9 @@ exports.RunInput = zod_1.z.object({
     intent: zod_1.z.string().optional(),
     contentType: zod_1.z.string().optional(),
     h1Title: zod_1.z.string().min(3).max(300).optional(),
+    strategicValue: zod_1.z.string().optional(),
+    uniqueInsight: zod_1.z.string().optional(),
+    additionalKeywords: zod_1.z.array(zod_1.z.string().min(1)).max(20).optional(),
 });
 exports.StartRunDto = zod_1.z.object({
     projectId: zod_1.z.string().uuid(),

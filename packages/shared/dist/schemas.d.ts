@@ -235,18 +235,27 @@ export declare const RunInput: z.ZodObject<{
     intent: z.ZodOptional<z.ZodString>;
     contentType: z.ZodOptional<z.ZodString>;
     h1Title: z.ZodOptional<z.ZodString>;
+    strategicValue: z.ZodOptional<z.ZodString>;
+    uniqueInsight: z.ZodOptional<z.ZodString>;
+    additionalKeywords: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     topic: string;
     mainKeyword?: string | undefined;
     intent?: string | undefined;
     contentType?: string | undefined;
     h1Title?: string | undefined;
+    strategicValue?: string | undefined;
+    uniqueInsight?: string | undefined;
+    additionalKeywords?: string[] | undefined;
 }, {
     topic: string;
     mainKeyword?: string | undefined;
     intent?: string | undefined;
     contentType?: string | undefined;
     h1Title?: string | undefined;
+    strategicValue?: string | undefined;
+    uniqueInsight?: string | undefined;
+    additionalKeywords?: string[] | undefined;
 }>;
 export type RunInput = z.infer<typeof RunInput>;
 export declare const StartRunDto: z.ZodObject<{
@@ -258,18 +267,27 @@ export declare const StartRunDto: z.ZodObject<{
         intent: z.ZodOptional<z.ZodString>;
         contentType: z.ZodOptional<z.ZodString>;
         h1Title: z.ZodOptional<z.ZodString>;
+        strategicValue: z.ZodOptional<z.ZodString>;
+        uniqueInsight: z.ZodOptional<z.ZodString>;
+        additionalKeywords: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
         topic: string;
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
         h1Title?: string | undefined;
+        strategicValue?: string | undefined;
+        uniqueInsight?: string | undefined;
+        additionalKeywords?: string[] | undefined;
     }, {
         topic: string;
         mainKeyword?: string | undefined;
         intent?: string | undefined;
         contentType?: string | undefined;
         h1Title?: string | undefined;
+        strategicValue?: string | undefined;
+        uniqueInsight?: string | undefined;
+        additionalKeywords?: string[] | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     projectId: string;
@@ -280,6 +298,9 @@ export declare const StartRunDto: z.ZodObject<{
         intent?: string | undefined;
         contentType?: string | undefined;
         h1Title?: string | undefined;
+        strategicValue?: string | undefined;
+        uniqueInsight?: string | undefined;
+        additionalKeywords?: string[] | undefined;
     };
 }, {
     projectId: string;
@@ -290,6 +311,9 @@ export declare const StartRunDto: z.ZodObject<{
         intent?: string | undefined;
         contentType?: string | undefined;
         h1Title?: string | undefined;
+        strategicValue?: string | undefined;
+        uniqueInsight?: string | undefined;
+        additionalKeywords?: string[] | undefined;
     };
 }>;
 export type StartRunDto = z.infer<typeof StartRunDto>;

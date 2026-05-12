@@ -8,9 +8,14 @@ import type {
 import {
   ArticleIntermediateResult,
   ArticleOptimizeResult,
+  type RunInput,
 } from "@sensai/shared";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { ArticleIntermediateClient } from "../tools/article-intermediate/article-intermediate.client";
+import {
+  articleContextHash,
+  pickArticleContext,
+} from "../prompts/article-context";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<
@@ -18,7 +23,7 @@ type HandlerEnv = Pick<
   "ARTICLE_INTERMEDIATE_MODEL" | "ARTICLE_INTERMEDIATE_TTL_DAYS"
 >;
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 
 @Injectable()
 export class ArticleIntermediateHandler implements StepHandler {
@@ -38,12 +43,14 @@ export class ArticleIntermediateHandler implements StepHandler {
     }
     const optimize = ArticleOptimizeResult.parse(prev);
     const inputHash = sha256(optimize.htmlContent);
+    const articleContext = pickArticleContext(ctx.run.input as RunInput);
 
     const result = await this.cache.getOrSet<ArticleIntermediateResult>({
       tool: "article",
       method: "intermediate",
       params: {
         inputHash,
+        articleContextHash: articleContextHash(articleContext),
         model: this.env.ARTICLE_INTERMEDIATE_MODEL,
         promptVersion: PROMPT_VERSION,
       },
@@ -57,6 +64,7 @@ export class ArticleIntermediateHandler implements StepHandler {
           keyword: optimize.meta.keyword,
           language: optimize.meta.language,
           htmlContent: optimize.htmlContent,
+          articleContext,
         });
 
         const result: ArticleIntermediateResult = {
@@ -111,7 +119,20 @@ export class ArticleIntermediateHandler implements StepHandler {
       "article.intermediate done",
     );
 
-    return { output: result };
+    const previewSystem = this.client.previewSystem({
+      language: optimize.meta.language,
+      articleContext,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: previewSystem,
+        userNote: `User input = HTML z poprzedniego kroku (${optimize.htmlContent.length} zn., po tokenizacji [[SRC_xxx]] / spanów).`,
+      },
+    };
   }
 }
 

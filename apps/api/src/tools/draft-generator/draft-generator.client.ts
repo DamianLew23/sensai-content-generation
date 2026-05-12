@@ -10,6 +10,7 @@ import type {
   DraftWarning,
 } from "@sensai/shared";
 import type { EnrichedSection } from "./draft-generator.types";
+import type { ArticleContextFields } from "../../prompts/article-context";
 import type { Env } from "../../config/env";
 
 type ClientEnv = Pick<
@@ -26,6 +27,7 @@ interface CallCtx { runId: string; stepId: string; attempt: number }
 interface GenerateArgs {
   ctx: CallCtx;
   distribution: DistributionResult;
+  articleContext?: ArticleContextFields;
 }
 
 export interface GenerateResult {
@@ -46,13 +48,11 @@ export class DraftGeneratorClient {
     @Inject("DRAFT_GENERATOR_ENV") private readonly env: ClientEnv,
   ) {}
 
-  async generate(args: GenerateArgs): Promise<GenerateResult> {
-    const { distribution, ctx } = args;
+  enrichSections(
+    distribution: DistributionResult,
+  ): { enriched: EnrichedSection[]; imagePrompts: DraftImagePrompt[] } {
     const lang = distribution.meta.language;
-    const useReasoning = this.env.DRAFT_GENERATE_USE_REASONING;
-
-    // 1. Enrich sections (passage format + ideation split)
-    const allImagePrompts: DraftImagePrompt[] = [];
+    const imagePrompts: DraftImagePrompt[] = [];
     const enriched: EnrichedSection[] = distribution.sections.map((s) => {
       const passageFormat = detectPassageFormat(
         s.type === "intro" ? null : s.header,
@@ -68,7 +68,7 @@ export class DraftGeneratorClient {
       const sectionHeader = (s as any).header ?? "Introduction";
       const ideations = (s as any).ideations ?? [];
       const split = splitIdeations(ideations, sectionHeader);
-      allImagePrompts.push(...split.external);
+      imagePrompts.push(...split.external);
 
       return {
         ...s,
@@ -78,6 +78,41 @@ export class DraftGeneratorClient {
         _externalIdeations: split.external,
       } as EnrichedSection;
     });
+    return { enriched, imagePrompts };
+  }
+
+  buildBlockPrompts(args: {
+    distribution: DistributionResult;
+    articleContext?: ArticleContextFields;
+  }): { system: string; userBlocks: Array<{ label: string; body: string }> } {
+    const { enriched } = this.enrichSections(args.distribution);
+    const userBlocks = enriched.map((section, i) => {
+      const user = draftGeneratePrompt.user({
+        blockNumber: i + 1,
+        currentSectionIndex: i,
+        allSections: enriched,
+        block: section,
+        keyword: args.distribution.meta.keyword,
+        h1Title: args.distribution.meta.h1Title,
+        language: args.distribution.meta.language,
+        articleContext: args.articleContext,
+      });
+      const label =
+        section.type === "intro"
+          ? `Blok ${i + 1}: intro`
+          : `Blok ${i + 1}: ${(section as any).header ?? "?"}`;
+      return { label, body: user };
+    });
+    return { system: draftGeneratePrompt.system, userBlocks };
+  }
+
+  async generate(args: GenerateArgs): Promise<GenerateResult> {
+    const { distribution, ctx } = args;
+    const lang = distribution.meta.language;
+    const useReasoning = this.env.DRAFT_GENERATE_USE_REASONING;
+
+    const { enriched, imagePrompts: allImagePrompts } =
+      this.enrichSections(distribution);
 
     // 2. Sequential LLM calls with chaining
     const warnings: DraftWarning[] = [];
@@ -105,6 +140,7 @@ export class DraftGeneratorClient {
         keyword: distribution.meta.keyword,
         h1Title: distribution.meta.h1Title,
         language: lang,
+        articleContext: args.articleContext,
       });
 
       const callArgs = {

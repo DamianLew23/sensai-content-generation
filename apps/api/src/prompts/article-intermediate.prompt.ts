@@ -1,8 +1,14 @@
 // apps/api/src/prompts/article-intermediate.prompt.ts
 
+import {
+  articleContextBlock,
+  type ArticleContextFields,
+} from "./article-context";
+
 export interface IntermediatePromptInput {
   language: string;
   maxLengthGrowth: number; // e.g. 0.10
+  articleContext?: ArticleContextFields;
 }
 
 const LANGUAGE_LABEL: Record<string, string> = {
@@ -16,11 +22,15 @@ export function buildIntermediateSystemPrompt(
 ): string {
   const langLabel = LANGUAGE_LABEL[input.language] ?? "Polish";
   const growthPct = `${Math.round(input.maxLengthGrowth * 100)}%`;
+  const ctxBlock = input.articleContext
+    ? articleContextBlock(input.articleContext, "edit")
+    : "";
+  const ctxSection = ctxBlock ? `\n\n${ctxBlock}\n` : "";
 
   return `You are an expert editor specializing in improving article flow, readability, and visual presentation.
 Your task is to enhance the logical flow, narrative structure, AND visual formatting of the article while preserving all content.
 
-Language: ${langLabel}
+Language: ${langLabel}${ctxSection}
 
 ### CRITICAL PRESERVATION RULES
 1. **Sources:** Keep ALL [[SRC_xxx]] placeholders exactly as they are. Do NOT modify, move, or delete them. They must stay at the end of their paragraph.

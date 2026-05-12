@@ -59,6 +59,9 @@ describe("DraftGenerateHandler.execute", () => {
         imagePrompts: [],
         warnings: [],
       }),
+      buildBlockPrompts: vi
+        .fn()
+        .mockReturnValue({ system: "S", userBlocks: [] }),
     } as unknown as DraftGeneratorClient;
 
     const cache = {

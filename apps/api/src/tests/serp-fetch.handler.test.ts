@@ -174,6 +174,82 @@ describe("SerpFetchHandler (Plan 18 — multi-query + RRF)", () => {
     expect(stubClient.serpOrganicLive).toHaveBeenCalledTimes(1);
   });
 
+  it("merges additionalKeywords from RunInput after disambiguate.serpQueries, deduped", async () => {
+    const { handler, stubClient } = makeHandler({
+      "q one": organic([{ title: "A", url: "https://a.example/1" }]),
+      "q two": organic([{ title: "B", url: "https://b.example/1" }]),
+      "extra alpha": organic([{ title: "X", url: "https://x.example/1" }]),
+      "extra beta": organic([{ title: "Y", url: "https://y.example/1" }]),
+    });
+    const out = await handler.execute({
+      ...ctxBase,
+      run: {
+        id: "r",
+        input: {
+          topic: "T",
+          mainKeyword: "kw raw",
+          additionalKeywords: ["extra alpha", "Q ONE", "extra beta"],
+        },
+      },
+      previousOutputs: {
+        disambiguate: {
+          refinedTopic: "refined topic", mainKeyword: "kw", intent: "informational",
+          contentType: "guide", researchQuestion: "what is the topic",
+          serpQueries: ["q one", "q two"],
+          antiAngles: [], rationale: "rationale text",
+        },
+      },
+    } as any);
+    // q one, q two, extra alpha, extra beta — "Q ONE" deduped against "q one"
+    expect(stubClient.serpOrganicLive).toHaveBeenCalledTimes(4);
+    expect((out.output as any).queries).toEqual([
+      "q one", "q two", "extra alpha", "extra beta",
+    ]);
+  });
+
+  it("caps total queries at 8 when disambiguate + additionalKeywords overflow", async () => {
+    const allQueries: Record<string, Row[]> = {};
+    for (let i = 1; i <= 12; i++) {
+      allQueries[`kw${i}`] = organic([{ title: `T${i}`, url: `https://kw${i}.example/` }]);
+    }
+    const { handler, stubClient } = makeHandler(allQueries);
+    await handler.execute({
+      ...ctxBase,
+      run: {
+        id: "r",
+        input: {
+          topic: "T",
+          mainKeyword: "kw1",
+          additionalKeywords: ["kw5", "kw6", "kw7", "kw8", "kw9", "kw10", "kw11", "kw12"],
+        },
+      },
+      previousOutputs: {
+        disambiguate: {
+          refinedTopic: "r", mainKeyword: "kw1", intent: "informational",
+          contentType: "guide", researchQuestion: "what is the topic",
+          serpQueries: ["kw1", "kw2", "kw3", "kw4"],
+          antiAngles: [], rationale: "r",
+        },
+      },
+    } as any);
+    expect(stubClient.serpOrganicLive).toHaveBeenCalledTimes(8);
+  });
+
+  it("falls back to mainKeyword + additionalKeywords when disambiguate is absent", async () => {
+    const { handler, stubClient } = makeHandler({
+      "kw raw": organic([{ title: "A", url: "https://a.example/" }]),
+      "extra": organic([{ title: "X", url: "https://x.example/" }]),
+    });
+    await handler.execute({
+      ...ctxBase,
+      run: { id: "r", input: { topic: "T", mainKeyword: "kw raw", additionalKeywords: ["extra"] } },
+      previousOutputs: {},
+    } as any);
+    expect(stubClient.serpOrganicLive).toHaveBeenCalledTimes(2);
+    const keywords = stubClient.serpOrganicLive.mock.calls.map((c: any[]) => c[0].keyword);
+    expect(keywords).toEqual(["kw raw", "extra"]);
+  });
+
   it("throws when neither disambiguate.serpQueries nor mainKeyword is present", async () => {
     const { handler } = makeHandler({});
     await expect(

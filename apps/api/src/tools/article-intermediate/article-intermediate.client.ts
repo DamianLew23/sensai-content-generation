@@ -13,6 +13,7 @@ import {
 } from "../article-protect/article-protect.guards";
 import { SOURCE_CITATION_RE } from "../article-protect/article-protect.regex";
 import { buildIntermediateSystemPrompt } from "../../prompts/article-intermediate.prompt";
+import type { ArticleContextFields } from "../../prompts/article-context";
 import type {
   ArticleIntermediateWarning,
   FormattingCounts,
@@ -29,6 +30,7 @@ export interface IntermediateArgs {
   keyword: string;
   language: string;
   htmlContent: string;
+  articleContext?: ArticleContextFields;
 }
 
 export interface IntermediateResult {
@@ -61,6 +63,17 @@ export class ArticleIntermediateClient {
     @Inject("ARTICLE_INTERMEDIATE_ENV") private readonly env: ClientEnv,
   ) {}
 
+  previewSystem(args: {
+    language: string;
+    articleContext?: ArticleContextFields;
+  }): string {
+    return buildIntermediateSystemPrompt({
+      language: args.language,
+      maxLengthGrowth: this.env.ARTICLE_INTERMEDIATE_MAX_GROWTH,
+      articleContext: args.articleContext,
+    });
+  }
+
   async intermediate(args: IntermediateArgs): Promise<IntermediateResult> {
     const inputText = extractPlainText(args.htmlContent);
     const inputLength = inputText.length;
@@ -74,6 +87,7 @@ export class ArticleIntermediateClient {
     const system = buildIntermediateSystemPrompt({
       language: args.language,
       maxLengthGrowth: this.env.ARTICLE_INTERMEDIATE_MAX_GROWTH,
+      articleContext: args.articleContext,
     });
 
     const resp = await this.llm.createBlock({

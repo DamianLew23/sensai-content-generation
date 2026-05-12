@@ -5,14 +5,24 @@ import type {
   StepHandler,
   StepResult,
 } from "../orchestrator/step-handler";
-import { ArticleOptimizeResult, DataEnrichmentResult } from "@sensai/shared";
+import {
+  ArticleOptimizeResult,
+  DataEnrichmentResult,
+  type RunInput,
+} from "@sensai/shared";
 import { ToolCacheService } from "../tools/tool-cache.service";
 import { ArticleOptimizeClient } from "../tools/article-optimize/article-optimize.client";
+import {
+  articleContextHash,
+  pickArticleContext,
+} from "../prompts/article-context";
+import { buildOptimizeSystemPrompt } from "../prompts/article-optimize.prompt";
+import { SOURCE_CITATION_RE } from "../tools/article-protect/article-protect.regex";
 import type { Env } from "../config/env";
 
 type HandlerEnv = Pick<Env, "ARTICLE_OPTIMIZE_MODEL" | "ARTICLE_OPTIMIZE_TTL_DAYS">;
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 
 @Injectable()
 export class ArticleOptimizeHandler implements StepHandler {
@@ -32,12 +42,14 @@ export class ArticleOptimizeHandler implements StepHandler {
     }
     const enrichment = DataEnrichmentResult.parse(prev);
     const inputHash = sha256(enrichment.htmlContent);
+    const articleContext = pickArticleContext(ctx.run.input as RunInput);
 
     const result = await this.cache.getOrSet<ArticleOptimizeResult>({
       tool: "article",
       method: "optimize",
       params: {
         inputHash,
+        articleContextHash: articleContextHash(articleContext),
         model: this.env.ARTICLE_OPTIMIZE_MODEL,
         promptVersion: PROMPT_VERSION,
       },
@@ -51,6 +63,7 @@ export class ArticleOptimizeHandler implements StepHandler {
           keyword: enrichment.meta.keyword,
           language: enrichment.meta.language,
           htmlContent: enrichment.htmlContent,
+          articleContext,
         });
 
         const result: ArticleOptimizeResult = {
@@ -104,8 +117,28 @@ export class ArticleOptimizeHandler implements StepHandler {
       "article.optimize done",
     );
 
-    return { output: result };
+    const previewSystem = buildOptimizeSystemPrompt({
+      language: enrichment.meta.language,
+      sourceCount: countMatches(enrichment.htmlContent, SOURCE_CITATION_RE),
+      articleContext,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: previewSystem,
+        userNote: `User input = HTML z poprzedniego kroku (${enrichment.htmlContent.length} zn., po tokenizacji [[SRC_xxx]] / spanów).`,
+      },
+    };
   }
+}
+
+function countMatches(text: string, re: RegExp): number {
+  const flags = re.flags.includes("g") ? re.flags : `${re.flags}g`;
+  const local = new RegExp(re.source, flags);
+  return (text.match(local) ?? []).length;
 }
 
 function sha256(s: string): string {

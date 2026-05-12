@@ -114,7 +114,24 @@ export class EntityExtractHandler implements StepHandler {
       },
     });
 
-    return { output: result };
+    const previewSystem = entityExtractPrompt.system;
+    const previewUser = entityExtractPrompt.user({
+      keyword,
+      language,
+      cleanedPages: clean.pages.map((p) => ({ url: p.url, markdown: p.markdown })),
+      deepResearch,
+      minEntities: this.env.ENTITY_EXTRACT_MIN_ENTITIES,
+      minRelations: this.env.ENTITY_EXTRACT_MIN_RELATIONS,
+    });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        system: previewSystem,
+        user: previewUser,
+      },
+    };
   }
 
   private composeKeyword(input: RunInput): string {

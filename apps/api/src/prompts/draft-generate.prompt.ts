@@ -1,4 +1,8 @@
 import type { EnrichedSection, PassageFormat } from "../tools/draft-generator/draft-generator.types";
+import {
+  articleContextBlock,
+  type ArticleContextFields,
+} from "./article-context";
 
 interface BuildArgs {
   blockNumber: number;          // 1-indexed
@@ -8,6 +12,7 @@ interface BuildArgs {
   keyword: string;
   h1Title: string;
   language: string;             // "pl" | "en" | ...
+  articleContext?: ArticleContextFields;
 }
 
 const LANG_NAMES: Record<string, string> = {
@@ -98,8 +103,13 @@ export const draftGeneratePrompt = {
     const sectionsInfo = renderSection(args.block);
     const outline = renderOutline(args.allSections, args.currentSectionIndex);
     const bridge = args.blockNumber > 1 ? bridgeInstruction() : "";
+    const ctxBlock = args.articleContext
+      ? articleContextBlock(args.articleContext, "create")
+      : "";
 
+    const ctxPrefix = ctxBlock ? [ctxBlock, ""] : [];
     return [
+      ...ctxPrefix,
       `Write block ${args.blockNumber} of article about: ${args.keyword}`,
       `Article title: ${args.h1Title}`,
       "",

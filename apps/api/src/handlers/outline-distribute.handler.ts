@@ -122,7 +122,17 @@ export class OutlineDistributeHandler implements StepHandler {
       "outline.distribute done",
     );
 
-    return { output: result };
+    const preview = this.client.buildPrompts({ outline, kg });
+
+    return {
+      output: result,
+      input: {
+        kind: "llm.prompt",
+        promptVersion: PROMPT_VERSION,
+        system: preview.system,
+        user: preview.user,
+      },
+    };
   }
 }
 

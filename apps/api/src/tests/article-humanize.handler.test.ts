@@ -96,6 +96,7 @@ describe("ArticleHumanizeHandler", () => {
           totalLatencyMs: 100,
         },
       })),
+      previewSystem: vi.fn().mockReturnValue("S"),
     } as any;
     const stubCache = {
       getOrSet: async (opts: any) => (await opts.fetcher()).result,
@@ -115,7 +116,7 @@ describe("ArticleHumanizeHandler", () => {
     expect(out.meta.keyword).toBe("kortyzol");
     expect(out.meta.language).toBe("pl");
     expect(out.meta.model).toBe("gpt-5.2");
-    expect(out.meta.promptVersion).toBe("v1");
+    expect(out.meta.promptVersion).toBe("v2");
     expect(out.htmlContent).toContain("<h1>T</h1>");
     expect(out.stats.inputLength).toBe(100);
     expect(out.stats.outputLength).toBe(95);

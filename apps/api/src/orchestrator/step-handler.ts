@@ -16,6 +16,7 @@ export interface StepContext {
 
 export interface StepResult {
   output: unknown;
+  input?: unknown;
 }
 
 export interface StepHandler {
