@@ -1,5 +1,6 @@
 "use client";
 import type { ArticleHumanizeResult } from "@sensai/shared";
+import { DownloadMarkdownButton } from "./download-markdown-button";
 
 function isHumanizeResult(v: unknown): v is ArticleHumanizeResult {
   if (!v || typeof v !== "object") return false;
@@ -58,7 +59,10 @@ function ArticleHumanizeRenderer({ output }: { output: ArticleHumanizeResult }) 
       </header>
 
       <section>
-        <div className="mb-2 text-sm font-semibold">Artykuł zhumanizowany (20 reguł anty-AI)</div>
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <div className="text-sm font-semibold">Artykuł zhumanizowany (20 reguł anty-AI)</div>
+          <DownloadMarkdownButton htmlContent={htmlContent} filenameBase={meta.keyword} />
+        </div>
         <iframe
           title="Humanize preview"
           srcDoc={sandboxedHtml}
