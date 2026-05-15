@@ -117,6 +117,12 @@ export default function RunDetailPage() {
                   {run.data.status}
                 </span>
                 <Link
+                  href={`/runs/${run.data.id}/diff`}
+                  className="rounded border px-2 py-1 text-xs font-medium hover:bg-muted/50"
+                >
+                  Diff artykułu
+                </Link>
+                <Link
                   href={`/runs/new?fromRunId=${run.data.id}`}
                   className="rounded border px-2 py-1 text-xs font-medium hover:bg-muted/50"
                 >

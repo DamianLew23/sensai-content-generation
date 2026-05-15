@@ -1,0 +1,63 @@
+/* Scoped article typography for the diff panes. Mirrors the iframe styles used
+   in step-output article renderers, but adds the .diff-html scope so we don't
+   bleed into the rest of the page. */
+
+.diff-html {
+  color: #1e293b;
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+.diff-html h1 { font-size: 1.5rem; margin: 0.5em 0; font-weight: 600; }
+.diff-html h2 {
+  font-size: 1.25rem;
+  margin: 1em 0 0.5em;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.2em;
+}
+.diff-html h3 { font-size: 1.0625rem; margin: 0.875em 0 0.375em; font-weight: 600; }
+.diff-html h4 { font-size: 1rem; margin: 0.75em 0 0.375em; font-weight: 600; }
+.diff-html p  { margin: 0.5em 0; }
+.diff-html ul, .diff-html ol { margin: 0.5em 0; padding-left: 1.25rem; }
+.diff-html li { margin: 0.25em 0; }
+.diff-html blockquote {
+  border-left: 3px solid #cbd5e1;
+  margin: 0.75em 0;
+  padding: 0.25em 0.75em;
+  color: #475569;
+  background: #f8fafc;
+}
+.diff-html strong { color: #0f172a; }
+.diff-html em, .diff-html i { color: #334155; font-style: italic; }
+.diff-html a { color: #2563eb; text-decoration: underline; }
+.diff-html sup { font-size: 0.75em; }
+.diff-html code {
+  background: #f1f5f9;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+/* Word-level highlights inside modified blocks. */
+.diff-html ins {
+  background: #dcfce7;
+  color: #14532d;
+  text-decoration: none;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+.diff-html del {
+  background: #fee2e2;
+  color: #7f1d1d;
+  text-decoration: none;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+/* Row separator — very subtle. */
+.diff-row {
+  padding: 4px 8px;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.diff-row:last-child { border-bottom: 0; }
