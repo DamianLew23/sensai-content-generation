@@ -87,7 +87,7 @@ function makeCtx(overrides: Partial<StepContext> = {}): StepContext {
     project: {
       id: "proj-1",
       name: "Demo",
-      config: { toneOfVoice: "", targetAudience: "", guidelines: "", defaultModels: {}, promptOverrides: {} },
+      config: { toneOfVoice: "", targetAudience: "", guidelines: "", promptOverrides: {} },
     } as any,
     previousOutputs: {},
     attempt: 1,

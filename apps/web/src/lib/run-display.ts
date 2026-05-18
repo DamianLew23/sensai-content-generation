@@ -1,4 +1,4 @@
-import type { Run, Template } from "./api";
+import type { LlmCall, Run, Template } from "./api";
 
 type RunInputLike = { topic?: string; mainKeyword?: string };
 
@@ -48,4 +48,60 @@ export function formatDuration(startIso: string, endIso: string | null): string 
 
 export function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString();
+}
+
+export interface LlmCallsSummary {
+  count: number;
+  totalPromptTokens: number;
+  totalCompletionTokens: number;
+  totalCostUsd: number;
+  totalLatencyMs: number;
+  models: string[];
+  providers: string[];
+}
+
+export function summarizeLlmCalls(calls: LlmCall[] | undefined): LlmCallsSummary | null {
+  if (!calls || calls.length === 0) return null;
+  const models = new Set<string>();
+  const providers = new Set<string>();
+  let totalPromptTokens = 0;
+  let totalCompletionTokens = 0;
+  let totalCostUsd = 0;
+  let totalLatencyMs = 0;
+  for (const c of calls) {
+    models.add(c.model);
+    providers.add(c.provider);
+    totalPromptTokens += c.promptTokens;
+    totalCompletionTokens += c.completionTokens;
+    totalLatencyMs += c.latencyMs;
+    const cost = Number(c.costUsd);
+    if (Number.isFinite(cost)) totalCostUsd += cost;
+  }
+  return {
+    count: calls.length,
+    totalPromptTokens,
+    totalCompletionTokens,
+    totalCostUsd,
+    totalLatencyMs,
+    models: [...models],
+    providers: [...providers],
+  };
+}
+
+export function formatUsd(value: number | string): string {
+  const n = typeof value === "string" ? Number(value) : value;
+  if (!Number.isFinite(n)) return "$0";
+  if (n === 0) return "$0";
+  if (n < 0.01) return `$${n.toFixed(4)}`;
+  if (n < 1) return `$${n.toFixed(3)}`;
+  return `$${n.toFixed(2)}`;
+}
+
+export function formatLatency(ms: number): string {
+  if (ms < 1000) return `${ms}ms`;
+  const sec = ms / 1000;
+  if (sec < 60) return `${sec.toFixed(1)}s`;
+  const min = Math.floor(sec / 60);
+  const rem = Math.round(sec % 60);
+  return rem ? `${min}m ${rem}s` : `${min}m`;
 }

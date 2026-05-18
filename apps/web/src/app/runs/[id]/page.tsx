@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useCancelRun, useProjects, useRun, useTemplates } from "@/lib/hooks";
 import { RunTimeline } from "@/components/run-timeline";
 import { StepInput } from "@/components/step-input";
+import { StepLlmCalls } from "@/components/step-llm-calls";
 import { hasRichRenderer, StepOutput } from "@/components/step-output";
 import {
   formatDateTime,
@@ -227,6 +228,7 @@ export default function RunDetailPage() {
                   {selectedStep.input != null && (
                     <StepInput value={selectedStep.input} />
                   )}
+                  <StepLlmCalls calls={selectedStep.llmCalls} />
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-medium text-muted-foreground">Output</h3>

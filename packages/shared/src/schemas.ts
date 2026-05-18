@@ -107,15 +107,6 @@ export const ProjectConfig = z.object({
   toneOfVoice: z.string().default(""),
   targetAudience: z.string().default(""),
   guidelines: z.string().default(""),
-  defaultModels: z
-    .object({
-      research: z.string().optional(),
-      brief: z.string().optional(),
-      draft: z.string().optional(),
-      edit: z.string().optional(),
-      seo: z.string().optional(),
-    })
-    .default({}),
   researchEffort: ResearchEffort.optional(),
   promptOverrides: z.record(z.string()).default({}),
   // Plan 17 — domain context for topic disambiguation

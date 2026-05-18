@@ -7,8 +7,6 @@ import type { CreateProjectDto, ResearchEffort } from "@sensai/shared";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const RESEARCH_EFFORTS: ResearchEffort[] = ["lite", "standard", "deep", "exhaustive"];
-const MODEL_KEYS = ["research", "brief", "draft", "edit", "seo"] as const;
-type ModelKey = (typeof MODEL_KEYS)[number];
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -20,21 +18,10 @@ export default function NewProjectPage() {
   const [targetAudience, setTargetAudience] = useState("");
   const [guidelines, setGuidelines] = useState("");
   const [researchEffort, setResearchEffort] = useState<"" | ResearchEffort>("");
-  const [models, setModels] = useState<Record<ModelKey, string>>({
-    research: "",
-    brief: "",
-    draft: "",
-    edit: "",
-    seo: "",
-  });
   const [overrides, setOverrides] = useState<Array<{ key: string; value: string }>>([]);
 
   const slugValid = SLUG_RE.test(slug);
   const canSubmit = slugValid && name.trim().length >= 2 && !create.isPending;
-
-  function setModel(k: ModelKey, v: string) {
-    setModels((prev) => ({ ...prev, [k]: v }));
-  }
 
   function addOverride() {
     setOverrides((prev) => [...prev, { key: "", value: "" }]);
@@ -48,12 +35,6 @@ export default function NewProjectPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    const defaultModels: Record<string, string> = {};
-    for (const k of MODEL_KEYS) {
-      const v = models[k].trim();
-      if (v) defaultModels[k] = v;
-    }
 
     const promptOverrides: Record<string, string> = {};
     for (const o of overrides) {
@@ -69,7 +50,6 @@ export default function NewProjectPage() {
         toneOfVoice: toneOfVoice.trim(),
         targetAudience: targetAudience.trim(),
         guidelines: guidelines.trim(),
-        defaultModels,
         ...(researchEffort ? { researchEffort } : {}),
         promptOverrides,
         productPitch: "",
@@ -163,27 +143,6 @@ export default function NewProjectPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-medium">Domyślne modele</h2>
-          <p className="text-xs text-muted-foreground">
-            Identyfikatory modeli (np. <code className="font-mono">openai/gpt-5-mini</code>).
-            Pozostaw puste, by użyć domyślnych z szablonu.
-          </p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {MODEL_KEYS.map((k) => (
-              <div key={k} className="space-y-1">
-                <label className="text-sm font-medium capitalize">{k}</label>
-                <input
-                  value={models[k]}
-                  onChange={(e) => setModel(k, e.target.value)}
-                  placeholder={k === "brief" ? "openai/gpt-5-mini" : "—"}
-                  className="w-full rounded border px-3 py-2 font-mono text-sm"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-4">
           <h2 className="text-lg font-medium">Research effort</h2>
           <div className="space-y-1">
             <select
@@ -213,7 +172,7 @@ export default function NewProjectPage() {
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Klucz = identyfikator promptu (np. <code className="font-mono">brief.system</code>),
+            Klucz = identyfikator promptu (np. <code className="font-mono">tool.outline.generate</code>),
             wartość = treść override.
           </p>
           {overrides.length === 0 && (

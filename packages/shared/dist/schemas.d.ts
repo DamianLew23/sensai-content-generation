@@ -165,25 +165,6 @@ export declare const ProjectConfig: z.ZodObject<{
     toneOfVoice: z.ZodDefault<z.ZodString>;
     targetAudience: z.ZodDefault<z.ZodString>;
     guidelines: z.ZodDefault<z.ZodString>;
-    defaultModels: z.ZodDefault<z.ZodObject<{
-        research: z.ZodOptional<z.ZodString>;
-        brief: z.ZodOptional<z.ZodString>;
-        draft: z.ZodOptional<z.ZodString>;
-        edit: z.ZodOptional<z.ZodString>;
-        seo: z.ZodOptional<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
-        research?: string | undefined;
-        brief?: string | undefined;
-        draft?: string | undefined;
-        edit?: string | undefined;
-        seo?: string | undefined;
-    }, {
-        research?: string | undefined;
-        brief?: string | undefined;
-        draft?: string | undefined;
-        edit?: string | undefined;
-        seo?: string | undefined;
-    }>>;
     researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
     promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
     productPitch: z.ZodDefault<z.ZodString>;
@@ -195,13 +176,6 @@ export declare const ProjectConfig: z.ZodObject<{
     toneOfVoice: string;
     targetAudience: string;
     guidelines: string;
-    defaultModels: {
-        research?: string | undefined;
-        brief?: string | undefined;
-        draft?: string | undefined;
-        edit?: string | undefined;
-        seo?: string | undefined;
-    };
     promptOverrides: Record<string, string>;
     productPitch: string;
     domain: string;
@@ -213,13 +187,6 @@ export declare const ProjectConfig: z.ZodObject<{
     toneOfVoice?: string | undefined;
     targetAudience?: string | undefined;
     guidelines?: string | undefined;
-    defaultModels?: {
-        research?: string | undefined;
-        brief?: string | undefined;
-        draft?: string | undefined;
-        edit?: string | undefined;
-        seo?: string | undefined;
-    } | undefined;
     researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
     promptOverrides?: Record<string, string> | undefined;
     productPitch?: string | undefined;
@@ -325,25 +292,6 @@ export declare const CreateProjectDto: z.ZodObject<{
         toneOfVoice: z.ZodDefault<z.ZodString>;
         targetAudience: z.ZodDefault<z.ZodString>;
         guidelines: z.ZodDefault<z.ZodString>;
-        defaultModels: z.ZodDefault<z.ZodObject<{
-            research: z.ZodOptional<z.ZodString>;
-            brief: z.ZodOptional<z.ZodString>;
-            draft: z.ZodOptional<z.ZodString>;
-            edit: z.ZodOptional<z.ZodString>;
-            seo: z.ZodOptional<z.ZodString>;
-        }, "strip", z.ZodTypeAny, {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        }, {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        }>>;
         researchEffort: z.ZodOptional<z.ZodEnum<["lite", "standard", "deep", "exhaustive"]>>;
         promptOverrides: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
         productPitch: z.ZodDefault<z.ZodString>;
@@ -355,13 +303,6 @@ export declare const CreateProjectDto: z.ZodObject<{
         toneOfVoice: string;
         targetAudience: string;
         guidelines: string;
-        defaultModels: {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        };
         promptOverrides: Record<string, string>;
         productPitch: string;
         domain: string;
@@ -373,13 +314,6 @@ export declare const CreateProjectDto: z.ZodObject<{
         toneOfVoice?: string | undefined;
         targetAudience?: string | undefined;
         guidelines?: string | undefined;
-        defaultModels?: {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        } | undefined;
         researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
         promptOverrides?: Record<string, string> | undefined;
         productPitch?: string | undefined;
@@ -395,13 +329,6 @@ export declare const CreateProjectDto: z.ZodObject<{
         toneOfVoice: string;
         targetAudience: string;
         guidelines: string;
-        defaultModels: {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        };
         promptOverrides: Record<string, string>;
         productPitch: string;
         domain: string;
@@ -417,13 +344,6 @@ export declare const CreateProjectDto: z.ZodObject<{
         toneOfVoice?: string | undefined;
         targetAudience?: string | undefined;
         guidelines?: string | undefined;
-        defaultModels?: {
-            research?: string | undefined;
-            brief?: string | undefined;
-            draft?: string | undefined;
-            edit?: string | undefined;
-            seo?: string | undefined;
-        } | undefined;
         researchEffort?: "lite" | "standard" | "deep" | "exhaustive" | undefined;
         promptOverrides?: Record<string, string> | undefined;
         productPitch?: string | undefined;

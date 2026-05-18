@@ -95,15 +95,6 @@ exports.ProjectConfig = zod_1.z.object({
     toneOfVoice: zod_1.z.string().default(""),
     targetAudience: zod_1.z.string().default(""),
     guidelines: zod_1.z.string().default(""),
-    defaultModels: zod_1.z
-        .object({
-        research: zod_1.z.string().optional(),
-        brief: zod_1.z.string().optional(),
-        draft: zod_1.z.string().optional(),
-        edit: zod_1.z.string().optional(),
-        seo: zod_1.z.string().optional(),
-    })
-        .default({}),
     researchEffort: exports.ResearchEffort.optional(),
     promptOverrides: zod_1.z.record(zod_1.z.string()).default({}),
     // Plan 17 — domain context for topic disambiguation

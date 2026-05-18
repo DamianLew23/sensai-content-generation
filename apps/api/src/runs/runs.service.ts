@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Inject, Injectable, NotFoundExc
 import { and, desc, eq, sql } from "drizzle-orm";
 import { DB_TOKEN } from "../db/db.module";
 import type { Db } from "../db/client";
-import { pipelineRuns, pipelineSteps, pipelineTemplates } from "../db/schema";
+import { llmCalls, pipelineRuns, pipelineSteps, pipelineTemplates } from "../db/schema";
 import { ProjectsService } from "../projects/projects.service";
 import { TemplatesService } from "../templates/templates.service";
 import { OrchestratorService } from "../orchestrator/orchestrator.service";
@@ -33,7 +33,22 @@ export class RunsService {
       .from(pipelineSteps)
       .where(eq(pipelineSteps.runId, id))
       .orderBy(pipelineSteps.stepOrder);
-    return { ...run, steps };
+
+    const calls = await this.db
+      .select()
+      .from(llmCalls)
+      .where(eq(llmCalls.runId, id))
+      .orderBy(llmCalls.createdAt);
+
+    const callsByStep = new Map<string, typeof calls>();
+    for (const c of calls) {
+      const arr = callsByStep.get(c.stepId);
+      if (arr) arr.push(c);
+      else callsByStep.set(c.stepId, [c]);
+    }
+    const stepsWithCalls = steps.map((s) => ({ ...s, llmCalls: callsByStep.get(s.id) ?? [] }));
+
+    return { ...run, steps: stepsWithCalls };
   }
 
   async start(dto: StartRunDto) {

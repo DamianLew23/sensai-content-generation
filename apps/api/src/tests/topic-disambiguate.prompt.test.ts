@@ -7,7 +7,6 @@ const cfg: ProjectConfig = {
   toneOfVoice: "konkretny, profesjonalny",
   targetAudience: "firmy SaaS",
   guidelines: "",
-  defaultModels: {},
   promptOverrides: {},
   productPitch: "click2docs.pl to SaaS do generowania instrukcji obsługi aplikacji webowych z nagrań kliknięć.",
   domain: "SaaS / dokumentacja techniczna",
@@ -48,7 +47,7 @@ describe("topicDisambiguatePrompt.system", () => {
   it("omits empty fields cleanly when ProjectConfig has no domain context", () => {
     const empty: ProjectConfig = {
       toneOfVoice: "", targetAudience: "", guidelines: "",
-      defaultModels: {}, promptOverrides: {},
+      promptOverrides: {},
       productPitch: "", domain: "", keyTerms: [], antiTerms: [], competitors: [],
     };
     const sysEmpty = topicDisambiguatePrompt.system("demo", empty);

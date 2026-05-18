@@ -74,7 +74,7 @@ export function ApproveScrapeForm({ runId, stepId, serpItems }: Props) {
         <h2 className="text-lg font-medium">Wybierz strony do scrapowania</h2>
         <p className="text-sm text-muted-foreground">
           Wybrano <strong>{selected.size}</strong> z {MAX_URLS}. Zaznacz strony konkurencji których
-          treść trafi do promptu briefu.
+          treść trafi do pipeline'u ekstrakcji (clean → extract/entities → kg).
         </p>
       </div>
       <ul className="space-y-2">

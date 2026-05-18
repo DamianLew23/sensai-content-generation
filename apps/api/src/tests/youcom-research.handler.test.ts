@@ -13,7 +13,7 @@ function makeCtx(overrides: Partial<StepContext> = {}): StepContext {
       name: "Demo",
       config: {
         toneOfVoice: "", targetAudience: "", guidelines: "",
-        defaultModels: {}, promptOverrides: {},
+        promptOverrides: {},
       },
     } as any,
     previousOutputs: {},
@@ -91,7 +91,7 @@ describe("YoucomResearchHandler", () => {
         id: "p", name: "P",
         config: {
           toneOfVoice: "", targetAudience: "", guidelines: "",
-          defaultModels: {}, promptOverrides: {},
+          promptOverrides: {},
           researchEffort: "exhaustive",
         },
       } as any,
@@ -114,7 +114,6 @@ describe("YoucomResearchHandler", () => {
         id: "p", name: "P",
         config: {
           toneOfVoice: "", targetAudience: "", guidelines: "",
-          defaultModels: {},
           promptOverrides: { "tool.youcom.research": "Research: {topic} | {mainKeyword}" },
         },
       } as any,

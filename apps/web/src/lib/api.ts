@@ -35,6 +35,19 @@ export interface Template {
   };
   createdAt: string;
 }
+export interface LlmCall {
+  id: string;
+  runId: string;
+  stepId: string;
+  attempt: number;
+  provider: string;
+  model: string;
+  promptTokens: number;
+  completionTokens: number;
+  costUsd: string;
+  latencyMs: number;
+  createdAt: string;
+}
 export interface Step {
   id: string;
   runId: string;
@@ -49,6 +62,7 @@ export interface Step {
   retryCount: number;
   startedAt: string | null;
   finishedAt: string | null;
+  llmCalls?: LlmCall[];
 }
 export interface Run {
   id: string;

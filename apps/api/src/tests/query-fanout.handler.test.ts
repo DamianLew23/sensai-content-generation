@@ -30,7 +30,6 @@ function makeCtx(overrides: Partial<StepContext> = {}): StepContext {
         toneOfVoice: "",
         targetAudience: "",
         guidelines: "",
-        defaultModels: {},
         promptOverrides: {},
       },
     } as any,

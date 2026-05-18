@@ -8,7 +8,7 @@ const baseProject = {
   name: "click2docs",
   config: {
     toneOfVoice: "", targetAudience: "", guidelines: "",
-    defaultModels: {}, promptOverrides: {},
+    promptOverrides: {},
     productPitch: "click2docs.pl SaaS",
     domain: "SaaS",
     keyTerms: ["instrukcja aplikacji"],

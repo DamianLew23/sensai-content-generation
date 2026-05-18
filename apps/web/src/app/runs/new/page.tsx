@@ -185,7 +185,7 @@ export default function NewRunPage() {
             className="w-full rounded border px-3 py-2"
           />
           <p className="text-xs text-muted-foreground">
-            Opcjonalne. Trafia do disambiguate, briefa (i w kolejnych etapach do optimize/humanize).
+            Opcjonalne. Trafia do disambiguate, outline'a, draftu, optimize i humanize.
           </p>
         </div>
 
@@ -199,7 +199,7 @@ export default function NewRunPage() {
             className="w-full rounded border px-3 py-2"
           />
           <p className="text-xs text-muted-foreground">
-            Opcjonalne. Trafia do disambiguate i briefa jako teza do obrony.
+            Opcjonalne. Trafia do disambiguate i outline'a jako teza do obrony.
           </p>
         </div>
 

@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { BriefHandler } from "./brief.handler";
 import { SerpFetchHandler } from "./serp-fetch.handler";
 import { ScrapeFetchHandler } from "./scrape-fetch.handler";
 import { YoucomResearchHandler } from "./youcom-research.handler";
@@ -41,7 +40,6 @@ import { loadEnv } from "../config/env";
     TopicDisambiguatorModule,
   ],
   providers: [
-    BriefHandler,
     SerpFetchHandler,
     ScrapeFetchHandler,
     YoucomResearchHandler,
@@ -113,7 +111,6 @@ import { loadEnv } from "../config/env";
     {
       provide: STEP_HANDLERS,
       useFactory: (
-        brief: BriefHandler,
         serp: SerpFetchHandler,
         scrape: ScrapeFetchHandler,
         youcom: YoucomResearchHandler,
@@ -131,7 +128,6 @@ import { loadEnv } from "../config/env";
         articleHumanize: ArticleHumanizeHandler,
         disambiguateTopic: DisambiguateTopicHandler,
       ): StepHandler[] => [
-        brief,
         serp,
         scrape,
         youcom,
@@ -150,7 +146,6 @@ import { loadEnv } from "../config/env";
         disambiguateTopic,
       ],
       inject: [
-        BriefHandler,
         SerpFetchHandler,
         ScrapeFetchHandler,
         YoucomResearchHandler,
