@@ -25,7 +25,7 @@ vi.mock("../config/env", () => ({
   loadEnv: () => ({
     OPENROUTER_API_KEY: "or-key",
     OPENROUTER_BASE_URL: "https://openrouter.ai/api/v1",
-    DEFAULT_MODEL: "openai/gpt-5-mini",
+    DEFAULT_MODEL: "openai/gpt-5.4-mini",
     OPENAI_API_KEY: "sk-test",
   }),
 }));

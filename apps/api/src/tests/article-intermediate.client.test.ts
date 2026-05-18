@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ArticleIntermediateClient } from "../tools/article-intermediate/article-intermediate.client";
 
 const stubEnv = {
-  ARTICLE_INTERMEDIATE_MODEL: "gpt-5.2",
+  ARTICLE_INTERMEDIATE_MODEL: "gpt-5.5",
   ARTICLE_INTERMEDIATE_MAX_GROWTH: 0.10,
 } as const;
 
@@ -11,7 +11,7 @@ function llmEcho() {
     createBlock: vi.fn(async ({ input }: any) => ({
       id: "r",
       outputText: input,
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptTokens: 1,
       completionTokens: 1,
       costUsd: "0",
@@ -32,7 +32,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
           /<span data-token-id="NUM_[a-f0-9]+">20%<\/span>/,
           (m: string) => `<strong>${m}</strong>`,
         ),
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 100,
         completionTokens: 105,
         costUsd: "0.0019",
@@ -55,7 +55,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
       createBlock: vi.fn(async () => ({
         id: "r",
         outputText: "<p>no heading here</p>",
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -80,7 +80,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
         id: "r",
         // 200 chars of x — well over +10%.
         outputText: "<h1>T</h1><p>" + "x".repeat(200) + "</p>",
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -105,7 +105,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
         id: "r",
         // Model dropped the percent.
         outputText: "<h1>T</h1><p>Spada w 2024.</p>",
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -130,7 +130,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
       createBlock: vi.fn(async () => ({
         id: "r",
         outputText: "<h1>T</h1><p>X.</p>", // citation gone
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -154,7 +154,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
       createBlock: vi.fn(async () => ({
         id: "r",
         outputText: '<h1>T</h1><p><a href="x">x</a>.</p>',
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -182,7 +182,7 @@ describe("ArticleIntermediateClient.intermediate", () => {
         id: "r",
         outputText:
           "<h1>T</h1><p>Zanim przejdziemy do meritum, warto zaznaczyć krótko x.</p>",
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",

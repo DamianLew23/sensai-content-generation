@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TopicDisambiguatorClient } from "../tools/topic-disambiguator/topic-disambiguator.client";
 
 const stubEnv = {
-  DISAMBIGUATE_MODEL: "openai/gpt-5-mini",
+  DISAMBIGUATE_MODEL: "openai/gpt-5.4-mini",
   DISAMBIGUATE_MAX_INPUT_CHARS: 20_000,
 } as const;
 
@@ -21,7 +21,7 @@ describe("TopicDisambiguatorClient", () => {
     const stubLlm = {
       generateObject: vi.fn(async () => ({
         object: stubObject,
-        model: "openai/gpt-5-mini",
+        model: "openai/gpt-5.4-mini",
         promptTokens: 800,
         completionTokens: 300,
         costUsd: "0.0021",
@@ -40,7 +40,7 @@ describe("TopicDisambiguatorClient", () => {
     const args = stubLlm.generateObject.mock.calls[0][0];
     expect(args.system).toBe("system prompt");
     expect(args.prompt).toBe("user prompt");
-    expect(args.ctx.model).toBe("openai/gpt-5-mini");
+    expect(args.ctx.model).toBe("openai/gpt-5.4-mini");
     expect(out.result.refinedTopic).toMatch(/aplikacj/i);
     expect(out.costUsd).toBe("0.0021");
     expect(out.latencyMs).toBe(2300);
@@ -49,7 +49,7 @@ describe("TopicDisambiguatorClient", () => {
   it("rejects when prompt exceeds DISAMBIGUATE_MAX_INPUT_CHARS", async () => {
     const stubLlm = { generateObject: vi.fn() } as any;
     const client = new TopicDisambiguatorClient(stubLlm, {
-      DISAMBIGUATE_MODEL: "openai/gpt-5-mini",
+      DISAMBIGUATE_MODEL: "openai/gpt-5.4-mini",
       DISAMBIGUATE_MAX_INPUT_CHARS: 100,
     } as any);
     await expect(

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ArticleHumanizeClient } from "../tools/article-humanize/article-humanize.client";
 
 const stubEnv = {
-  ARTICLE_HUMANIZE_MODEL: "gpt-5.2",
+  ARTICLE_HUMANIZE_MODEL: "gpt-5.5",
   ARTICLE_HUMANIZE_ASL_MIN: 12,
   ARTICLE_HUMANIZE_ASL_MAX: 20,
   ARTICLE_HUMANIZE_SENTENCE_HARD_CAP: 24,
@@ -21,7 +21,7 @@ function llmEcho() {
     createBlock: vi.fn(async ({ input }: any) => ({
       id: "r",
       outputText: input,
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptTokens: 10,
       completionTokens: 10,
       costUsd: "0.000100",
@@ -95,7 +95,7 @@ describe("ArticleHumanizeClient.humanize — retry trigger", () => {
         return {
           id: `r${i}`,
           outputText: out,
-          model: "gpt-5.2",
+          model: "gpt-5.5",
           promptTokens: 5,
           completionTokens: 5,
           costUsd: "0.000050",
@@ -187,7 +187,7 @@ describe("ArticleHumanizeClient.humanize — hard-fail guards", () => {
       createBlock: vi.fn(async () => ({
         id: "r",
         outputText: html,
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",

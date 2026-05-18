@@ -10,7 +10,7 @@ const EnvSchema = z.object({
   REDIS_URL: z.string().url(),
   OPENROUTER_API_KEY: z.string().min(1),
   OPENROUTER_BASE_URL: z.string().url().default("https://openrouter.ai/api/v1"),
-  DEFAULT_MODEL: z.string().default("openai/gpt-5-mini"),
+  DEFAULT_MODEL: z.string().default("openai/gpt-5.4-mini"),
   API_BEARER_TOKEN: z.string().min(1),
   DATAFORSEO_LOGIN: z.string().min(1),
   DATAFORSEO_PASSWORD: z.string().min(1),
@@ -67,7 +67,7 @@ const EnvSchema = z.object({
     .int()
     .positive()
     .default(120_000),
-  QUERY_FANOUT_MODEL: z.string().default("openai/gpt-5.4"),
+  QUERY_FANOUT_MODEL: z.string().default("openai/gpt-5.5"),
   QUERY_FANOUT_LANGUAGE: z.string().min(2).max(10).default("pl"),
   QUERY_FANOUT_MAX_AREAS_PER_INTENT: z.coerce
     .number()
@@ -94,13 +94,13 @@ const EnvSchema = z.object({
   QUERY_FANOUT_REASONING_PAA: z
     .enum(["low", "medium", "high"])
     .default("medium"),
-  OUTLINE_GENERATE_MODEL: z.string().default("openai/gpt-5.4"),
+  OUTLINE_GENERATE_MODEL: z.string().default("openai/gpt-5.5"),
   OUTLINE_GENERATE_REASONING: z.enum(["low", "medium", "high"]).default("medium"),
   OUTLINE_GENERATE_TTL_DAYS: z.coerce.number().int().positive().default(7),
   OUTLINE_DISTRIBUTE_MODEL: z.string().default("google/gemini-3-flash-preview"),
   OUTLINE_DISTRIBUTE_TTL_DAYS: z.coerce.number().int().positive().default(7),
   // ----- Plan 13 — Draft Generation -----
-  DRAFT_GENERATE_MODEL: z.string().default("gpt-5.2"),
+  DRAFT_GENERATE_MODEL: z.string().default("gpt-5.5"),
   DRAFT_GENERATE_USE_REASONING: z
     .union([z.boolean(), z.string()])
     .transform((v) => (typeof v === "boolean" ? v : v.toLowerCase() === "true"))
@@ -110,20 +110,20 @@ const EnvSchema = z.object({
   DRAFT_GENERATE_BLOCK_DELAY_MS: z.coerce.number().int().min(0).max(10_000).default(800),
   DRAFT_GENERATE_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
   // ----- Plan 14 — Data Enrichment -----
-  DATA_ENRICH_VERIFY_MODEL: z.string().default("gpt-5.2"),
+  DATA_ENRICH_VERIFY_MODEL: z.string().default("gpt-5.5"),
   DATA_ENRICH_QUESTION_MODEL: z.string().default("gpt-4.1-mini"),
   DATA_ENRICH_MAX_CLAIMS: z.coerce.number().int().min(1).max(50).default(15),
   DATA_ENRICH_MIN_SCORE: z.coerce.number().int().min(1).max(10).default(2),
   DATA_ENRICH_LOW_CONFIRM_WARNING: z.coerce.number().min(0).max(1).default(0.2),
   DATA_ENRICH_TTL_DAYS: z.coerce.number().int().min(1).max(60).default(7),
   // ----- Plan 15 — Article Optimize + Intermediate -----
-  ARTICLE_OPTIMIZE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_OPTIMIZE_MODEL: z.string().default("gpt-5.5"),
   ARTICLE_OPTIMIZE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
-  ARTICLE_INTERMEDIATE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_INTERMEDIATE_MODEL: z.string().default("gpt-5.5"),
   ARTICLE_INTERMEDIATE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
   ARTICLE_INTERMEDIATE_MAX_GROWTH: z.coerce.number().nonnegative().default(0.10),
   // ----- Plan 16 — Article Humanize -----
-  ARTICLE_HUMANIZE_MODEL: z.string().default("gpt-5.2"),
+  ARTICLE_HUMANIZE_MODEL: z.string().default("gpt-5.5"),
   ARTICLE_HUMANIZE_TTL_DAYS: z.coerce.number().int().nonnegative().default(7),
   ARTICLE_HUMANIZE_ASL_MIN: z.coerce.number().int().positive().default(12),
   ARTICLE_HUMANIZE_ASL_MAX: z.coerce.number().int().positive().default(20),
@@ -140,7 +140,7 @@ const EnvSchema = z.object({
     .default(true),
   ARTICLE_HUMANIZE_LANG_PROBE_THRESHOLD: z.coerce.number().int().nonnegative().default(8),
   // ----- Plan 17 — Topic Disambiguator -----
-  DISAMBIGUATE_MODEL: z.string().default("openai/gpt-5-mini"),
+  DISAMBIGUATE_MODEL: z.string().default("openai/gpt-5.4-mini"),
   DISAMBIGUATE_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(14),
   DISAMBIGUATE_MAX_INPUT_CHARS: z.coerce.number().int().min(1000).default(20_000),
   OUTLINE_COVERAGE_MIN_WARNING: z.coerce.number().min(0).max(100).default(50),

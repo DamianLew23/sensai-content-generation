@@ -31,7 +31,7 @@ const click2docsConfig: ProjectConfig = {
   toneOfVoice: "konkretny, profesjonalny",
   targetAudience: "firmy SaaS, product managerowie",
   guidelines: "",
-  defaultModels: { disambiguate: "openai/gpt-5-mini" },
+  defaultModels: { disambiguate: "openai/gpt-5.4-mini" },
   promptOverrides: {},
   productPitch:
     "click2docs.pl to SaaS generujący instrukcje obsługi aplikacji webowych na podstawie nagrań kliknięć użytkownika.",

@@ -10,7 +10,7 @@ import { queryFanoutPrompt } from "../prompts/query-fanout.prompt";
 
 const env = {
   QUERY_FANOUT_LANGUAGE: "pl",
-  QUERY_FANOUT_MODEL: "openai/gpt-5.4",
+  QUERY_FANOUT_MODEL: "openai/gpt-5.5",
   QUERY_FANOUT_PAA_DEPTH: 2,
   QUERY_FANOUT_PAA_MAX_QUESTIONS: 20,
   QUERY_FANOUT_PAA_ENABLED: true,

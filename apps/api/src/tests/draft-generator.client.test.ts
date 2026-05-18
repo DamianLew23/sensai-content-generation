@@ -52,7 +52,7 @@ describe("DraftGeneratorClient.generate", () => {
     const sdk = { createBlock } as unknown as OpenAIResponsesClient;
 
     const client = new DraftGeneratorClient(sdk, {
-      DRAFT_GENERATE_MODEL: "gpt-5.2",
+      DRAFT_GENERATE_MODEL: "gpt-5.5",
       DRAFT_GENERATE_USE_REASONING: true,
       DRAFT_GENERATE_REASONING_EFFORT: "medium",
       DRAFT_GENERATE_VERBOSITY: "medium",

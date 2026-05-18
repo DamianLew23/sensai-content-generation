@@ -7,7 +7,7 @@ function fakeOptimize(): ArticleOptimizeResult {
     meta: {
       keyword: "kortyzol",
       language: "pl",
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptVersion: "v1",
       generatedAt: new Date().toISOString(),
     },
@@ -80,7 +80,7 @@ describe("ArticleIntermediateHandler", () => {
       getOrSet: vi.fn(async (opts: any) => (await opts.fetcher()).result),
     } as any;
     const env = {
-      ARTICLE_INTERMEDIATE_MODEL: "gpt-5.2",
+      ARTICLE_INTERMEDIATE_MODEL: "gpt-5.5",
       ARTICLE_INTERMEDIATE_TTL_DAYS: 7,
     } as any;
 
@@ -94,7 +94,7 @@ describe("ArticleIntermediateHandler", () => {
     });
     expect(client.intermediate).toHaveBeenCalledTimes(1);
     expect(res.output).toMatchObject({
-      meta: { keyword: "kortyzol", language: "pl", model: "gpt-5.2" },
+      meta: { keyword: "kortyzol", language: "pl", model: "gpt-5.5" },
       htmlContent: optimize.htmlContent,
       stats: { growth: 0.05, formattingAfter: { strong: 2 } },
     });

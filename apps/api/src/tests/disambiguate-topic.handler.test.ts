@@ -46,7 +46,7 @@ describe("DisambiguateTopicHandler", () => {
   it("returns the LLM output when no antiTerms violation occurs", async () => {
     const { stubClient, stubCache } = makeStubs(async () => ({
       result: validOutput,
-      model: "openai/gpt-5-mini",
+      model: "openai/gpt-5.4-mini",
       promptTokens: 100, completionTokens: 50,
       costUsd: "0.001", latencyMs: 1000,
     }));
@@ -71,7 +71,7 @@ describe("DisambiguateTopicHandler", () => {
       call += 1;
       return {
         result: call === 1 ? violatingOutput : validOutput,
-        model: "openai/gpt-5-mini",
+        model: "openai/gpt-5.4-mini",
         promptTokens: 100, completionTokens: 50,
         costUsd: "0.001", latencyMs: 1000,
       };
@@ -98,7 +98,7 @@ describe("DisambiguateTopicHandler", () => {
   it("throws after the retry also violates the antiTerms guard", async () => {
     const { stubClient, stubCache } = makeStubs(async () => ({
       result: violatingOutput,
-      model: "openai/gpt-5-mini",
+      model: "openai/gpt-5.4-mini",
       promptTokens: 100, completionTokens: 50,
       costUsd: "0.001", latencyMs: 1000,
     }));
@@ -120,7 +120,7 @@ describe("DisambiguateTopicHandler", () => {
   it("treats antiTerms violation in serpQueries as a violation too", async () => {
     const { stubClient, stubCache } = makeStubs(async () => ({
       result: { ...validOutput, serpQueries: ["instrukcja AGD"] }, // violation
-      model: "openai/gpt-5-mini",
+      model: "openai/gpt-5.4-mini",
       promptTokens: 100, completionTokens: 50,
       costUsd: "0.001", latencyMs: 1000,
     }));
@@ -146,7 +146,7 @@ describe("DisambiguateTopicHandler", () => {
     };
     const { stubClient, stubCache } = makeStubs(async () => ({
       result: violatingOutput, // would violate if guard ran
-      model: "openai/gpt-5-mini",
+      model: "openai/gpt-5.4-mini",
       promptTokens: 100, completionTokens: 50,
       costUsd: "0.001", latencyMs: 1000,
     }));

@@ -7,7 +7,7 @@ function fakeEnrichment(): DataEnrichmentResult {
     meta: {
       keyword: "kortyzol",
       language: "pl",
-      verifyModel: "gpt-5.2",
+      verifyModel: "gpt-5.5",
       questionModel: "gpt-4.1-mini",
       generatedAt: new Date().toISOString(),
     },
@@ -73,7 +73,7 @@ describe("ArticleOptimizeHandler", () => {
       getOrSet: vi.fn(async (opts: any) => (await opts.fetcher()).result),
     } as any;
     const env = {
-      ARTICLE_OPTIMIZE_MODEL: "gpt-5.2",
+      ARTICLE_OPTIMIZE_MODEL: "gpt-5.5",
       ARTICLE_OPTIMIZE_TTL_DAYS: 7,
     } as any;
 
@@ -87,7 +87,7 @@ describe("ArticleOptimizeHandler", () => {
     });
     expect(client.optimize).toHaveBeenCalledTimes(1);
     expect(res.output).toMatchObject({
-      meta: { keyword: "kortyzol", language: "pl", model: "gpt-5.2" },
+      meta: { keyword: "kortyzol", language: "pl", model: "gpt-5.5" },
       htmlContent: enrichment.htmlContent,
       stats: { sourcesAfter: 1, anchorsRemoved: 0 },
     });

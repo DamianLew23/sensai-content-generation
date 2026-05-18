@@ -7,7 +7,7 @@ describe("OpenAIResponsesClient", () => {
     const fakeResponse = {
       id: "resp_abc123",
       output_text: "<h2>Section</h2><p>Body</p>",
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       usage: { input_tokens: 100, output_tokens: 200 },
     };
     const create = vi.fn().mockResolvedValue(fakeResponse);
@@ -20,7 +20,7 @@ describe("OpenAIResponsesClient", () => {
 
     const result = await client.createBlock({
       ctx: { runId: "r1", stepId: "s1", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       system: "SYS",
       input: "USER",
       previousResponseId: "resp_prev",
@@ -30,7 +30,7 @@ describe("OpenAIResponsesClient", () => {
 
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         previous_response_id: "resp_prev",
         reasoning: { effort: "medium" },
         text: { verbosity: "medium" },
@@ -42,7 +42,7 @@ describe("OpenAIResponsesClient", () => {
     expect(cost.record).toHaveBeenCalledOnce();
     const recordedCall = (cost.record as any).mock.calls[0][0];
     expect(recordedCall.provider).toBe("openai");
-    expect(recordedCall.model).toBe("gpt-5.2");
+    expect(recordedCall.model).toBe("gpt-5.5");
     expect(recordedCall.promptTokens).toBe(100);
     expect(recordedCall.completionTokens).toBe(200);
   });
@@ -51,7 +51,7 @@ describe("OpenAIResponsesClient", () => {
     const create = vi.fn().mockResolvedValue({
       id: "resp_x",
       output_text: "ok",
-      model: "gpt-5.2-2025-12-11", // OpenAI returns date-versioned name
+      model: "gpt-5.5-2025-12-11", // OpenAI returns date-versioned name
       usage: { input_tokens: 1_000_000, output_tokens: 1_000_000 },
     });
     const recordedCalls: any[] = [];
@@ -60,18 +60,18 @@ describe("OpenAIResponsesClient", () => {
 
     const res = await client.createBlock({
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2", // requested
+      model: "gpt-5.5", // requested
       system: "S",
       input: "I",
     });
 
-    // Cost is computed against args.model ("gpt-5.2" → priced) not response.model
+    // Cost is computed against args.model ("gpt-5.5" → priced) not response.model
     // (date-versioned, missing from price table → would yield "0").
     expect(res.costUsd).not.toBe("0");
     expect(Number(res.costUsd)).toBeGreaterThan(0);
     expect(recordedCalls[0].costUsd).toBe(res.costUsd);
     // The audit-trail `model` field still carries the versioned name from the response
-    expect(res.model).toBe("gpt-5.2-2025-12-11");
+    expect(res.model).toBe("gpt-5.5-2025-12-11");
   });
 
   it("omits chaining and reasoning params when not provided", async () => {
@@ -108,7 +108,7 @@ describe("OpenAIResponsesClient.createBlock", () => {
   function fakeResponse() {
     return {
       id: "r1",
-      model: "gpt-5.2-2025-12-11",
+      model: "gpt-5.5-2025-12-11",
       output_text: "ok",
       usage: { input_tokens: 10, output_tokens: 5 },
     };
@@ -120,7 +120,7 @@ describe("OpenAIResponsesClient.createBlock", () => {
 
     await client.createBlock({
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       system: "sys",
       input: "hi",
     });
@@ -136,7 +136,7 @@ describe("OpenAIResponsesClient.createBlock", () => {
 
     await client.createBlock({
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       system: "sys",
       input: "hi",
       tools: [{ type: "web_search_preview" }],

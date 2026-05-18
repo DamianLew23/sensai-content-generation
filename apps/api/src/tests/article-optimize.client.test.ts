@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ArticleOptimizeClient } from "../tools/article-optimize/article-optimize.client";
 
 const stubEnv = {
-  ARTICLE_OPTIMIZE_MODEL: "gpt-5.2",
+  ARTICLE_OPTIMIZE_MODEL: "gpt-5.5",
 } as const;
 
 describe("ArticleOptimizeClient.optimize", () => {
@@ -19,7 +19,7 @@ describe("ArticleOptimizeClient.optimize", () => {
         return {
           id: "resp_1",
           outputText: input,
-          model: "gpt-5.2",
+          model: "gpt-5.5",
           promptTokens: 100,
           completionTokens: 100,
           costUsd: "0.0021",
@@ -53,7 +53,7 @@ describe("ArticleOptimizeClient.optimize", () => {
       createBlock: vi.fn(async ({ input }: any) => ({
         id: "r",
         outputText: input.replace(/\[\[SRC_000\]\]/, ""),
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",
@@ -78,7 +78,7 @@ describe("ArticleOptimizeClient.optimize", () => {
         id: "r",
         // Strip the span tags but keep text — simulates model unwrapping.
         outputText: input.replace(/<span[^>]*>([^<]*)<\/span>/g, "$1"),
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1,
         completionTokens: 1,
         costUsd: "0",

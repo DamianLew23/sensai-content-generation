@@ -7,7 +7,7 @@ import {
 } from "@sensai/shared";
 
 const env = {
-  QUERY_FANOUT_MODEL: "openai/gpt-5.4",
+  QUERY_FANOUT_MODEL: "openai/gpt-5.5",
   QUERY_FANOUT_LANGUAGE: "pl",
   QUERY_FANOUT_MAX_AREAS_PER_INTENT: 5,
   QUERY_FANOUT_REASONING_INTENTS: "medium",
@@ -88,7 +88,7 @@ describe("QueryFanOutClient", () => {
 
       expect(llm.generateObject).toHaveBeenCalledTimes(1);
       const call = llm.generateObject.mock.calls[0][0];
-      expect(call.ctx.model).toBe("openai/gpt-5.4");
+      expect(call.ctx.model).toBe("openai/gpt-5.5");
       expect(call.schema).toBe(FanOutIntentsCall);
       expect(call.system).toContain("maks. 5 obszarów");
       expect(call.prompt).toContain('"kortyzol"');
@@ -172,7 +172,7 @@ describe("QueryFanOutClient", () => {
       runId: "run-1",
       stepId: "step-1",
       attempt: 1,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
   });
 });

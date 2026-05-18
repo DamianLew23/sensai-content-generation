@@ -28,7 +28,7 @@ describe("DraftGenerateHandler.execute", () => {
     const client = { generate: vi.fn() } as unknown as DraftGeneratorClient;
     const cache = { getOrSet: vi.fn() } as unknown as ToolCacheService;
     const handler = new DraftGenerateHandler(client, cache, {
-      DRAFT_GENERATE_MODEL: "gpt-5.2",
+      DRAFT_GENERATE_MODEL: "gpt-5.5",
       DRAFT_GENERATE_USE_REASONING: true,
       DRAFT_GENERATE_REASONING_EFFORT: "medium",
       DRAFT_GENERATE_VERBOSITY: "medium",
@@ -69,7 +69,7 @@ describe("DraftGenerateHandler.execute", () => {
     } as unknown as ToolCacheService;
 
     const handler = new DraftGenerateHandler(client, cache, {
-      DRAFT_GENERATE_MODEL: "gpt-5.2",
+      DRAFT_GENERATE_MODEL: "gpt-5.5",
       DRAFT_GENERATE_USE_REASONING: true,
       DRAFT_GENERATE_REASONING_EFFORT: "medium",
       DRAFT_GENERATE_VERBOSITY: "medium",

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ArticleHumanizeHandler } from "../handlers/article-humanize.handler";
 
 const stubEnv = {
-  ARTICLE_HUMANIZE_MODEL: "gpt-5.2",
+  ARTICLE_HUMANIZE_MODEL: "gpt-5.5",
   ARTICLE_HUMANIZE_TTL_DAYS: 7,
 } as const;
 
@@ -10,7 +10,7 @@ const sampleIntermediate = {
   meta: {
     keyword: "kortyzol",
     language: "pl",
-    model: "gpt-5.2",
+    model: "gpt-5.5",
     promptVersion: "v1",
     generatedAt: "2026-05-04T12:00:00.000Z",
   },
@@ -115,7 +115,7 @@ describe("ArticleHumanizeHandler", () => {
     const out = res.output as any;
     expect(out.meta.keyword).toBe("kortyzol");
     expect(out.meta.language).toBe("pl");
-    expect(out.meta.model).toBe("gpt-5.2");
+    expect(out.meta.model).toBe("gpt-5.5");
     expect(out.meta.promptVersion).toBe("v2");
     expect(out.htmlContent).toContain("<h1>T</h1>");
     expect(out.stats.inputLength).toBe(100);

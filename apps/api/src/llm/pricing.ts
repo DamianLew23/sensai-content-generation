@@ -6,14 +6,13 @@ export interface ModelPricing {
 }
 
 export const MODEL_PRICING: Record<string, ModelPricing> = {
-  "openai/gpt-5-mini": { inputPer1M: 0.25, outputPer1M: 2.0 },
-  "openai/gpt-5.4": { inputPer1M: 2.5, outputPer1M: 10.0 },
-  "gpt-5.2": { inputPer1M: 1.25, outputPer1M: 10.0 },
-  "gpt-4.1-mini": { inputPer1M: 0.15, outputPer1M: 0.60 },
+  "openai/gpt-5.4-mini": { inputPer1M: 0.75, outputPer1M: 4.5 },
+  "openai/gpt-5.5": { inputPer1M: 5.0, outputPer1M: 30.0 },
+  "gpt-5.5": { inputPer1M: 5.0, outputPer1M: 30.0 },
+  "gpt-4.1-mini": { inputPer1M: 0.4, outputPer1M: 1.6 },
   "anthropic/claude-sonnet-4.6": { inputPer1M: 3.0, outputPer1M: 15.0 },
-  "anthropic/claude-haiku-4.5": { inputPer1M: 0.25, outputPer1M: 1.25 },
-  "google/gemini-2.5-flash": { inputPer1M: 0.075, outputPer1M: 0.3 },
-  "google/gemini-3-flash-preview": { inputPer1M: 0.3, outputPer1M: 2.5 },
+  "anthropic/claude-haiku-4.5": { inputPer1M: 1, outputPer1M: 5.0 },
+  "google/gemini-3-flash-preview": { inputPer1M: 0.5, outputPer1M: 3.0 },
 };
 
 export function calculateCostUsd(

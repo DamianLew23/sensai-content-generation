@@ -49,7 +49,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.outline[0].type).toBe("intro");
     expect(r.outline[0].order).toBe(0);
@@ -64,7 +64,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     const h2s = r.outline.filter(s => s.type === "h2") as Extract<typeof r.outline[number], { type: "h2" }>[];
     expect(h2s[0].sectionVariant).toBe("full");
@@ -82,7 +82,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.warnings.some(w => w.kind === "outline_h3_count_mismatch")).toBe(true);
   });
@@ -96,7 +96,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.warnings.some(w => w.kind === "outline_unused_area")).toBe(true);
   });
@@ -110,7 +110,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.warnings.some(w => w.kind === "outline_unused_area")).toBe(true);
   });
@@ -122,7 +122,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: "User-provided title",
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.meta.h1Title).toBe("User-provided title");
     expect(r.meta.h1Source).toBe("user");
@@ -135,7 +135,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.meta.h1Title).toBe("LLM title");
     expect(r.meta.h1Source).toBe("llm");
@@ -152,7 +152,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.warnings.some(w => w.kind === "outline_intent_override_no_match")).toBe(true);
   });
@@ -164,7 +164,7 @@ describe("postprocessOutline", () => {
       keyword: "kortyzol",
       language: "pl",
       userH1Title: undefined,
-      model: "openai/gpt-5.4",
+      model: "openai/gpt-5.5",
     });
     expect(r.meta.fullSectionsCount).toBe(2);
     expect(r.meta.contextSectionsCount).toBe(2);

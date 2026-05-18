@@ -46,7 +46,7 @@ const mkLLMResult = () => ({
     fullSections: [{ sourceArea: "snu", header: "Higiena snu", h3s: [] }],
     contextSections: [],
   },
-  model: "openai/gpt-5.4",
+  model: "openai/gpt-5.5",
   promptTokens: 100,
   completionTokens: 50,
   costUsd: 0.001,
@@ -63,7 +63,7 @@ describe("OutlineGenerateHandler", () => {
     };
     const env = {
       OUTLINE_GENERATE_TTL_DAYS: 7,
-      OUTLINE_GENERATE_MODEL: "openai/gpt-5.4",
+      OUTLINE_GENERATE_MODEL: "openai/gpt-5.5",
       OUTLINE_GENERATE_REASONING: "medium" as const,
     };
 

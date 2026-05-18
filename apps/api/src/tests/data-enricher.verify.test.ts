@@ -26,7 +26,7 @@ describe("verifyClaims", () => {
         "2": { status: "corrected", source: "Źródło: NFZ, 2024", source_url: "https://nfz.pl/y", note: "value off by 5%", corrected_value: "actually 25%" },
         "3": { status: "unverified", source: "", source_url: "", note: "no PL source" },
       }),
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptTokens: 200,
       completionTokens: 100,
       costUsd: "0.005",
@@ -42,7 +42,7 @@ describe("verifyClaims", () => {
     const out = await verifyClaims({
       llm,
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       keyword: "kortyzol",
       language: "pl",
       claims,
@@ -73,7 +73,7 @@ describe("verifyClaims", () => {
     const out = await verifyClaims({
       llm,
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       keyword: "k",
       language: "pl",
       claims: [makeClaim(1, "x", "Q")],
@@ -87,7 +87,7 @@ describe("verifyClaims", () => {
     const createBlock = vi.fn().mockResolvedValue({
       id: "r",
       outputText: JSON.stringify({ "1": { status: "unverified", source: "", source_url: "", note: "" } }),
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptTokens: 1,
       completionTokens: 1,
       costUsd: "0",
@@ -98,7 +98,7 @@ describe("verifyClaims", () => {
     await verifyClaims({
       llm,
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       keyword: "k",
       language: "en",
       claims: [makeClaim(1, "x", "Q")],
@@ -115,7 +115,7 @@ describe("verifyClaims", () => {
       outputText: JSON.stringify({
         "1": { status: "confirmed", source: "Źródło: x", source_url: "https://x.pl", note: "" },
       }),
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       promptTokens: 1,
       completionTokens: 1,
       costUsd: "0",
@@ -126,7 +126,7 @@ describe("verifyClaims", () => {
     const out = await verifyClaims({
       llm,
       ctx: { runId: "r", stepId: "s", attempt: 1 },
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       keyword: "k",
       language: "pl",
       claims: [makeClaim(1, "a", "Q1"), makeClaim(2, "b", "Q2")],

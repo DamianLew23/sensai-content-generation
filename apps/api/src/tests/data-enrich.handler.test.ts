@@ -10,7 +10,7 @@ function fakeDraft() {
       h1Title: "Jak obniżyć kortyzol",
       language: "pl",
       primaryIntent: "Instrukcyjna",
-      model: "gpt-5.2",
+      model: "gpt-5.5",
       generatedAt: new Date().toISOString(),
       useReasoning: true,
       reasoningEffort: "medium",
@@ -45,7 +45,7 @@ describe("DataEnrichHandler.execute", () => {
     const client = { enrich: vi.fn() } as unknown as DataEnrichmentClient;
     const cache = { getOrSet: vi.fn() } as unknown as ToolCacheService;
     const handler = new DataEnrichHandler(client, cache, {
-      DATA_ENRICH_VERIFY_MODEL: "gpt-5.2",
+      DATA_ENRICH_VERIFY_MODEL: "gpt-5.5",
       DATA_ENRICH_QUESTION_MODEL: "gpt-4.1-mini",
       DATA_ENRICH_MAX_CLAIMS: 15,
       DATA_ENRICH_MIN_SCORE: 2,
@@ -101,7 +101,7 @@ describe("DataEnrichHandler.execute", () => {
     } as unknown as ToolCacheService;
 
     const handler = new DataEnrichHandler(client, cache, {
-      DATA_ENRICH_VERIFY_MODEL: "gpt-5.2",
+      DATA_ENRICH_VERIFY_MODEL: "gpt-5.5",
       DATA_ENRICH_QUESTION_MODEL: "gpt-4.1-mini",
       DATA_ENRICH_MAX_CLAIMS: 15,
       DATA_ENRICH_MIN_SCORE: 2,

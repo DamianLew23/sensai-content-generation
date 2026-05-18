@@ -8,7 +8,7 @@ const mkOutline = (): OutlineGenerationResult => ({
     keyword: "kortyzol", h1Title: "X", h1Source: "llm", language: "pl",
     primaryIntent: "Instrukcyjna", primaryIntentSource: "fanout",
     fullSectionsCount: 1, contextSectionsCount: 1,
-    generatedAt: "2026-04-29T10:00:00.000Z", model: "openai/gpt-5.4",
+    generatedAt: "2026-04-29T10:00:00.000Z", model: "openai/gpt-5.5",
   },
   outline: [
     { type: "intro", order: 0, header: null, sectionVariant: null, h3s: [] },

@@ -20,14 +20,14 @@ describe("OutlineGeneratorClient", () => {
     const mockLlm = {
       generateObject: vi.fn().mockResolvedValue({
         object: { h1Title: "X", fullSections: [], contextSections: [] },
-        model: "openai/gpt-5.4",
+        model: "openai/gpt-5.5",
         promptTokens: 100,
         completionTokens: 50,
         costUsd: "0.01",
         latencyMs: 1000,
       }),
     };
-    const env = { OUTLINE_GENERATE_MODEL: "openai/gpt-5.4", OUTLINE_GENERATE_REASONING: "medium" as const };
+    const env = { OUTLINE_GENERATE_MODEL: "openai/gpt-5.5", OUTLINE_GENERATE_REASONING: "medium" as const };
     const client = new OutlineGeneratorClient(mockLlm as any, env);
 
     await client.generate({
@@ -40,7 +40,7 @@ describe("OutlineGeneratorClient", () => {
 
     expect(mockLlm.generateObject).toHaveBeenCalledTimes(1);
     const call = mockLlm.generateObject.mock.calls[0][0];
-    expect(call.ctx.model).toBe("openai/gpt-5.4");
+    expect(call.ctx.model).toBe("openai/gpt-5.5");
     expect(call.schema).toBe(LLMOutlineCallResult);
     expect(call.providerOptions.openrouter.reasoning.effort).toBe("medium");
     expect(call.system).toContain("BLUF");
@@ -52,14 +52,14 @@ describe("OutlineGeneratorClient", () => {
     const mockLlm = {
       generateObject: vi.fn().mockResolvedValue({
         object: { h1Title: "X", fullSections: [], contextSections: [] },
-        model: "openai/gpt-5.4",
+        model: "openai/gpt-5.5",
         promptTokens: 100,
         completionTokens: 50,
         costUsd: "0.00",
         latencyMs: 500,
       }),
     };
-    const env = { OUTLINE_GENERATE_MODEL: "openai/gpt-5.4", OUTLINE_GENERATE_REASONING: "medium" as const };
+    const env = { OUTLINE_GENERATE_MODEL: "openai/gpt-5.5", OUTLINE_GENERATE_REASONING: "medium" as const };
     const client = new OutlineGeneratorClient(mockLlm as any, env);
 
     await client.generate({

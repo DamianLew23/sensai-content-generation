@@ -27,13 +27,13 @@ describe("DataEnrichmentClient.enrich", () => {
         costUsd: "0.0001",
         latencyMs: 200,
       })
-      // 2nd call = verify stage (gpt-5.2 + web_search_preview)
+      // 2nd call = verify stage (gpt-5.5 + web_search_preview)
       .mockResolvedValueOnce({
         id: "v1",
         outputText: JSON.stringify({
           "1": { status: "confirmed", source: "Źródło: WHO, 2024", source_url: "https://who.int/x", note: "" },
         }),
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 200,
         completionTokens: 100,
         costUsd: "0.005",
@@ -42,7 +42,7 @@ describe("DataEnrichmentClient.enrich", () => {
 
     const llm = { createBlock } as unknown as OpenAIResponsesClient;
     const client = new DataEnrichmentClient(llm, {
-      DATA_ENRICH_VERIFY_MODEL: "gpt-5.2",
+      DATA_ENRICH_VERIFY_MODEL: "gpt-5.5",
       DATA_ENRICH_QUESTION_MODEL: "gpt-4.1-mini",
       DATA_ENRICH_MAX_CLAIMS: 15,
       DATA_ENRICH_MIN_SCORE: 2,
@@ -69,7 +69,7 @@ describe("DataEnrichmentClient.enrich", () => {
     const createBlock = vi.fn();
     const llm = { createBlock } as any;
     const client = new DataEnrichmentClient(llm, {
-      DATA_ENRICH_VERIFY_MODEL: "gpt-5.2",
+      DATA_ENRICH_VERIFY_MODEL: "gpt-5.5",
       DATA_ENRICH_QUESTION_MODEL: "gpt-4.1-mini",
       DATA_ENRICH_MAX_CLAIMS: 15,
       DATA_ENRICH_MIN_SCORE: 99, // impossibly high
@@ -117,13 +117,13 @@ describe("DataEnrichmentClient.enrich", () => {
           "9": { status: "unverified", source: "", source_url: "", note: "" },
           "10": { status: "unverified", source: "", source_url: "", note: "" },
         }),
-        model: "gpt-5.2",
+        model: "gpt-5.5",
         promptTokens: 1, completionTokens: 1, costUsd: "0", latencyMs: 1,
       });
     const llm = { createBlock } as any;
 
     const client = new DataEnrichmentClient(llm, {
-      DATA_ENRICH_VERIFY_MODEL: "gpt-5.2",
+      DATA_ENRICH_VERIFY_MODEL: "gpt-5.5",
       DATA_ENRICH_QUESTION_MODEL: "gpt-4.1-mini",
       DATA_ENRICH_MAX_CLAIMS: 15,
       DATA_ENRICH_MIN_SCORE: 2,
